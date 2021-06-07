@@ -2,9 +2,12 @@
 
 # config.py
 
+# 기본 폴더 위치
+dirBase = 'D:\\workspace\\krx\\'
+
 # 조회할 기업 코드 목록 파일
 # codePathFile = '/home/ec2-user/krx/codes.txt'
-codePathFile = 'D:\\workspace\\krx\\codes.txt'
+codePathFile = dirBase + 'codes.txt'
 
 # 재무제표 크롤링 데이터 저장 위치
 # outputRawPath = '/home/ec2-user/krx/raw/'
