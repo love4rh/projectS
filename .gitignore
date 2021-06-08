@@ -130,3 +130,6 @@ dmypy.json
 
 # hiding folder
 noup/
+
+output/
+temporary/

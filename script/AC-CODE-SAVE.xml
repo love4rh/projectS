@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="TYPE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[PL]]></param>
+		</macro>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\temporary\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="RawCodes" type="FILE">
+			<path><![CDATA[$(IN_PATH)annual$(TYPE)-accNames.txt]]></path>
+			<columns>
+				<column name="PCODE" type="string" />
+				<column name="ACCODE" type="string" />
+				<column name="NAME" type="string" />
+				<column name="P_ACCODE" type="string" />
+			</columns>
+			<ui>
+				<position x="151" y="133" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="CompanyInfo" type="FILE">
+			<path><![CDATA[$(OUT_PATH)companyInfo-20210530.txt]]></path>
+			<columns>
+				<column name="회사명" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="업종" type="string" />
+				<column name="주요제품" type="string" />
+				<column name="상장일" type="string" />
+				<column name="결산월" type="string" />
+				<column name="대표자명" type="string" />
+				<column name="홈페이지" type="string" />
+				<column name="지역" type="string" />
+			</columns>
+			<ui>
+				<position x="167" y="363" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[RawCodes]]></dataSource>
+				<dataSource alias="A2"><![CDATA[CompanyInfo]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_COMKIND]]></dataGroupName>
+			<ui>
+				<position x="322" y="306" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="CompanyInfo"><![CDATA[종목코드]]></equalKey>
+				<equalKey source="RawCodes"><![CDATA[PCODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="CompanyInfo"><![CDATA[업종]]></columns>
+				<columns source="RawCodes"><![CDATA[*]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[ADD_COMKIND]]></dataSource>
+			<dataGroupName><![CDATA[GRP_ACCODE]]></dataGroupName>
+			<ui>
+				<position x="443" y="304" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[PCODE, 업종]]></groupingColumns>
+			<generate>
+				<column type="uniqueMerge" delimiter=";"><![CDATA[ACCODE]]></column>
+				<column type="uniqueCount" delimiter=";" toName="COUNT"><![CDATA[ACCODE]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[GRP_ACCODE]]></dataSource>
+			<dataGroupName><![CDATA[HASH_KEY]]></dataGroupName>
+			<ui>
+				<position x="551" y="389" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="HASH"><![CDATA[MD({ACCODE_uniqueMerge}, 'MD5')]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[HASH_KEY]]></dataSource>
+			<dataGroupName><![CDATA[JUST_ONE]]></dataGroupName>
+			<ui>
+				<position x="550" y="249" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[HASH]]></groupingColumns>
+			<selectColumn type="min"><![CDATA[업종]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[CompanyInfo]]></dataSource>
+			<dataGroupName><![CDATA[KIND_STAT]]></dataGroupName>
+			<ui>
+				<position x="320" y="443" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[업종]]></groupingColumns>
+			<generate>
+				<column type="count" delimiter=";"><![CDATA[업종]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[RawCodes]]></dataSource>
+			<dataGroupName><![CDATA[ACCODE_MAP]]></dataGroupName>
+			<ui>
+				<position x="287" y="58" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[ACCODE]]></groupingColumns>
+			<generate>
+				<column type="uniqueMerge" delimiter=";" toName="NAMES"><![CDATA[NAME]]></column>
+				<column type="uniqueCount" delimiter=";" toName="NM_COUNT"><![CDATA[NAME]]></column>
+				<column type="count" delimiter=";" toName="COUNT"><![CDATA[ACCODE]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[HASH_KEY]]></dataSource>
+			<dataGroupName><![CDATA[KIND_GROUP]]></dataGroupName>
+			<ui>
+				<position x="773" y="388" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[HASH]]></groupingColumns>
+			<generate>
+				<column type="uniqueMerge" delimiter=";" toName="업종들"><![CDATA[업종]]></column>
+				<column type="count" delimiter=";" toName="COUNT"><![CDATA[업종]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[JUST_ONE]]></dataSource>
+				<dataSource alias="A2"><![CDATA[CLEAN_KIND]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[TMP_MERGE]]></dataGroupName>
+			<ui>
+				<position x="769" y="248" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="CLEAN_KIND"><![CDATA[HASH]]></equalKey>
+				<equalKey source="JUST_ONE"><![CDATA[HASH]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="CLEAN_KIND"><![CDATA[업종구분]]></columns>
+				<columns source="JUST_ONE"><![CDATA[PCODE]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A2"><![CDATA[TMP_MERGE]]></dataSource>
+				<dataSource alias="A1"><![CDATA[RawCodes]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[EXTRACT_COLUMNS]]></dataGroupName>
+			<ui>
+				<position x="768" y="132" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="RawCodes"><![CDATA[PCODE]]></equalKey>
+				<equalKey source="TMP_MERGE"><![CDATA[PCODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="RawCodes"><![CDATA[ACCODE,NAME,P_ACCODE]]></columns>
+				<columns source="TMP_MERGE"><![CDATA[업종구분]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[KIND_GROUP]]></dataSource>
+			<dataGroupName><![CDATA[CLEAN_KIND]]></dataGroupName>
+			<ui>
+				<position x="911" y="387" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="업종구분"><![CDATA[IIF(LENGTH({업종들}) > 200, "BASIC", {업종들} + ";")]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="EXTRACT_COLUMNS" type="file">
+			<filePath><![CDATA[$(OUT_PATH)accCodes-$(TYPE).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="947" y="133" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
