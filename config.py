@@ -6,7 +6,10 @@
 # 만료 기간이 지나면 네이버에서 확인 후 수정해야 함.
 encParamKey = 'MzcxaGJUeEt4blBJQmVmT1hiWnRHUT09'
 
-onLinux = False
+runServerType = 2 # 1: window, 2: mac, 3: linux
+
+print('running on', ['Window', 'Mac', 'Linux'][runServerType - 1])
+
 
 # 기본 폴더 위치
 dirBase = 'D:\\work\\jupyter\\krx\\' # for Window
@@ -24,13 +27,20 @@ crawlegoPath = '/home/ec2-user/krx/analysis/jar/crawlego-1.0.0.jar'
 # Pivot용 Jar 파일 경로
 pivotPath = '/home/ec2-user/krx/analysis/jar/pivot.jar'
 
-if onLinux:
+
+if runServerType == 3:
     dirBase = '/home/ec2-user/krx/'
     resourceDir = dirBase + 'resource/'
     outputRawPath = dirBase + 'output/'
     temporaryPath = dirBase + 'temporary/'
     crawlegoPath = '/home/ec2-user/krx/analysis/jar/crawlego-1.0.0.jar'
     pivotPath = '/home/ec2-user/krx/analysis/jar/pivot.jar'
+elif runServerType == 2:
+    dirBase = '/Users/TurboK/workspace/krx/'
+    resourceDir = dirBase + 'resource/'
+    outputRawPath = dirBase + 'output/'
+    temporaryPath = dirBase + 'temporary/'
 
+    
 # 조회할 기업 코드 목록 파일
 codePathFile = resourceDir + 'companyInfo-20210530.txt'
