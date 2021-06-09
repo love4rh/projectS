@@ -18,15 +18,16 @@ time_checker = {}
 
 def begin(job):
     global time_checker
+    print('>>>>>>>', job, 'started')
     time_checker[job] = tm.time()
     
     
 def end(job):
     global time_checker
     if job in time_checker:
-        print(job, 'done', tm.time() - time_checker[job], flush=True)
+        print('<<<<<<<', job, 'done', round((tm.time() - time_checker[job]) * 1000), 'ms', flush=True)
     else:
-        print(job, 'not defined')
+        print('<<<<<<<', job, 'not defined')
         
 
 def set_enc_param(s):

@@ -4,11 +4,11 @@
 
 # 네이버 API를 호출하기 위한 암호화 파라미터
 # 만료 기간이 지나면 네이버에서 확인 후 수정해야 함.
-encParamKey = 'MzcxaGJUeEt4blBJQmVmT1hiWnRHUT09'
+encParamKey = 'SDc2VjNHMjhMWUJyWjdMUGFnVXovZz09'
 
-runServerType = 2 # 1: window, 2: mac, 3: linux
+runServerType = 1 # 1: window, 2: mac, 3: linux
 
-print('running on', ['Window', 'Mac', 'Linux'][runServerType - 1])
+print('running on', ['Windows', 'OS X', 'Linux'][runServerType - 1])
 
 
 # 기본 폴더 위치
@@ -21,11 +21,14 @@ outputRawPath = dirBase + 'output\\'
 # 임시파일 저장용 폴더
 temporaryPath = dirBase + 'temporary\\'
 
-# Crawlego 경로
-crawlegoPath = '/home/ec2-user/krx/analysis/jar/crawlego-1.0.0.jar'
+# Crawlego Jar 경로
+crawlegoPath = dirBase + 'jar\\crawlego-1.0.0.jar'
 
 # Pivot용 Jar 파일 경로
-pivotPath = '/home/ec2-user/krx/analysis/jar/pivot.jar'
+pivotPath = dirBase + 'jar\\pivot.jar'
+
+# Crawlego 스크립트 경로
+crawlegoScriptPath = dirBase + 'script\\'
 
 
 if runServerType == 3:
@@ -33,14 +36,19 @@ if runServerType == 3:
     resourceDir = dirBase + 'resource/'
     outputRawPath = dirBase + 'output/'
     temporaryPath = dirBase + 'temporary/'
-    crawlegoPath = '/home/ec2-user/krx/analysis/jar/crawlego-1.0.0.jar'
-    pivotPath = '/home/ec2-user/krx/analysis/jar/pivot.jar'
+    crawlegoPath = dirBase + 'jar/crawlego-1.0.0.jar'
+    pivotPath = dirBase + 'jar/pivot.jar'
+    crawlegoScriptPath = dirBase + 'script/'
 elif runServerType == 2:
     dirBase = '/Users/TurboK/workspace/krx/'
     resourceDir = dirBase + 'resource/'
     outputRawPath = dirBase + 'output/'
     temporaryPath = dirBase + 'temporary/'
+    crawlegoPath = dirBase + 'jar/crawlego-1.0.0.jar'
+    pivotPath = dirBase + 'jar/pivot.jar'
+    crawlegoScriptPath = dirBase + 'script/'
 
-    
+
 # 조회할 기업 코드 목록 파일
+# 출처: https://kind.krx.co.kr/corpgeneral/corpList.do?method=loadInitPage --> 메뉴 중 상장법인 목록
 codePathFile = resourceDir + 'companyInfo-20210530.txt'
