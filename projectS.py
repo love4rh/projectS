@@ -13,7 +13,12 @@ set_enc_param(encParamKey)
 
 print('enc_param', enc_param_value)
 print('codeFile', codePathFile)
-print('outputFolder', outputRawPath, flush=True)
+
+outputDirPath = outputRawPath + today() + os.path.sep
+if( not os.path.exists(outputDirPath) ):
+    os.mkdir(outputDirPath)
+
+print('outputFolder', outputDirPath, flush=True)
 
 
 # https://kind.krx.co.kr/corpgeneral/corpList.do?method=loadInitPage --> 메뉴 중 상장법인 목록
@@ -39,12 +44,12 @@ def getCompanyCodeFromFile():
 
         items = line.split('\t')
         
-        codes.append(items[1])
-        types.append(items[2])
+        codes.append(items[0])
+        types.append(items[12])
         
-        if not items[2] in referChecker:
-            referChecker[items[2]] = items[1]
-            referCodes.append(items[1])
+        if not items[12] in referChecker:
+            referChecker[items[12]] = items[0]
+            referCodes.append(items[0])
 
     fileCodes.close()
     
@@ -63,7 +68,7 @@ def doFetchDataNames(referenceCodes, outPath, fetchType, funcGet):
     out.write('PCODE' + deli + 'ACCODE' + deli + 'NAME' + deli + 'P_ACCODE\n')
 
     for code in referenceCodes:
-        # print('fetching', code, flush=True)
+        print('fetching', code, flush=True)
         resp = funcGet(code)
 
         if resp.status_code == 200:
@@ -133,13 +138,9 @@ def crawlCompFinancials(codeList, outFile, accCheck, accCount, funcGet):
             items = [extendList([code, title], accCount + 2) for title in yearName] # DATA1, ..., DATA4
             
             for rec in data:
-                if not rec['ACCODE'] in accCheck:
-                    accCheck[rec['ACCODE']] = len(accNames)
-                    accNm = rec['ACC_NM'].lstrip('.').lstrip('*')
-                    accNames.append(accNm if rec['P_ACCODE'] is None else accNames[accCheck[rec['P_ACCODE']]] + '/' + accNm)
-                    accItems.append([rec['ACCODE'], accNames[-1], rec['P_ACCODE']])
-                    items = [extendList(T, len(accNames) + 2) for T in items]
-
+                if not rec['ACCODE'] in accCheck: # 데이터가 제대로 없는 경우임
+                    continue
+                    
                 # 저장할 위치
                 valCol = accCheck[rec['ACCODE']] + 2
                 
@@ -172,6 +173,37 @@ def crawlCompFinancials(codeList, outFile, accCheck, accCount, funcGet):
 
 
 
+# In[ ]:
+
+
+# 0. 기업 코드 / 업종 정보 가져 오기
+
+def step0_writeCodes():
+    deli = '\t'
+    columnNames, records = getCompanyCodes()
+    
+    print('writing', codePathFile)
+    outFile = open(codePathFile, 'w', encoding='utf-8')
+    outFile.write(deli.join(columnNames))
+    outFile.write('\n')
+    
+    for rec in records:
+        outFile.write(deli.join(rec))
+        outFile.write('\n')
+    
+    outFile.close()
+
+
+# In[ ]:
+
+
+if doingAllJob:
+    jobName = 'getting company codes'
+    begin(jobName)
+    step0_writeCodes()
+    end(jobName)
+
+
 # In[2]:
 
 
@@ -191,22 +223,23 @@ end(jobName)
 
 
 
-# In[ ]:
+# In[4]:
 
 
 # 2. 업종별 재무 데이터 항목 가져와 파일에 저장하기 (매번 수행할 필요 없음)
 # 최종 필요한 파일은 Step 3에서 생성되는 파일로 여기서 crawling하는 데이터는 임시 폴더에 넣음
 
-jobName = 'crawling data name'
-begin(jobName)
+def step2_crawAcNames():
+    jobName = 'crawling data name'
+    begin(jobName)
 
-print('reference codes count: ', len(referCodes))
-fetchFunc = { 'annualBS': fetchFinacialData, 'annualCF': fetchCashFlowData, 'annualPL': fetchProfitLossData }
+    print('reference codes count: ', len(referCodes))
+    fetchFunc = { 'annualBS': fetchFinacialData, 'annualCF': fetchCashFlowData, 'annualPL': fetchProfitLossData }
 
-for dataType in fetchFunc.keys():
-    doFetchDataNames(referCodes, temporaryPath, dataType, fetchFunc[dataType])
+    for dataType in fetchFunc.keys():
+        doFetchDataNames(referCodes, temporaryPath, dataType, fetchFunc[dataType])
 
-end(jobName)
+    end(jobName)
 
 
 # In[ ]:
@@ -215,25 +248,35 @@ end(jobName)
 
 
 
-# In[4]:
+# In[ ]:
 
 
 # 3. 2에서 가져온 재무 항목 정리 (매번 수행할 필요 없음)
 # Crawlego 스크립트 실행 (AC-CODE-SAVE.xml)
 # ./resource 폴더 내 accCodes-XX.txt 파일 생성 (XX: BS, CF, PL)
 
-jobName = '데이터 항목명 정리 작업'
-begin(jobName)
+def step3_cleanupAcNames():
+    jobName = '데이터 항목명 정리 작업'
+    begin(jobName)
 
-# IN_PATH(temporaryPath), OUT_PATH (resourceDir), TYPE(BS, CF, PL)
-scriptPathName = crawlegoScriptPath + 'AC-CODE-SAVE.xml'
+    # IN_PATH(temporaryPath), OUT_PATH (resourceDir), TYPE(BS, CF, PL)
+    scriptPathName = crawlegoScriptPath + 'AC-CODE-SAVE.xml'
 
-for typeStr in ['BS', 'CF', 'PL']:
-    cmdStr = 'java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName         + ' IN_PATH=' + temporaryPath + ' OUT_PATH=' + resourceDir + ' TYPE=' + typeStr
-    retCode = os.system(cmdStr)
-    print('Type', typeStr, 'processed.', 'return code', retCode, flush=True)
+    for typeStr in ['BS', 'CF', 'PL']:
+        cmdStr = 'java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName             + ' IN_PATH=' + temporaryPath + ' OUT_PATH=' + resourceDir + ' TYPE=' + typeStr
+        retCode = os.system(cmdStr)
+        print('Type', typeStr, 'processed.', 'return code', retCode, flush=True)
 
-end(jobName)
+    end(jobName)
+
+
+# In[ ]:
+
+
+# 수집할 데이터 항목을 다시 정리하려면 아래 두 함수를 순차적으로 실행
+if doingAllJob:
+    step2_crawAcNames()
+    step3_cleanupAcNames()
 
 
 # In[ ]:
@@ -242,7 +285,13 @@ end(jobName)
 
 
 
-# In[3]:
+# In[ ]:
+
+
+
+
+
+# In[ ]:
 
 
 # 4. 3에서 분석된 재무 항목을 업종별 컬럼목록 객체로 변환하여 반환
@@ -250,8 +299,11 @@ end(jobName)
 jobName = '수집 대상 항목 메모리 로딩'
 begin(jobName)
 
-# 데이터 종류별 --> 업종별 --> 데이터 항목 { accMap: 컬럼코드 --> 인덱스, accNames: 컬럼명 목록 }
+# 데이터 종류별(BS, CF, PL) --> 업종별 --> 데이터 항목 { accMap: 컬럼코드 --> 인덱스, accNames: 컬럼명 목록 }
 columnsMap = {}
+dupChecker = {}
+businessIndex = []
+businessKey = []
 
 for typeStr in ['BS', 'CF', 'PL']:
     columnNameFile = resourceDir + 'accCodes-' + typeStr + '.txt'
@@ -260,7 +312,6 @@ for typeStr in ['BS', 'CF', 'PL']:
     line = file.readline() # Title
 
     cMap = {}
-
 
     while True:
         line = file.readline()
@@ -273,6 +324,12 @@ for typeStr in ['BS', 'CF', 'PL']:
 
         # 업종구분, ACCODE, NAME, P_ACCODE
         items = line.split('\t')
+        
+        if not items[0] in dupChecker:
+            dupChecker[items[0]] = True
+            if items[0] != 'BASIC': 
+                businessIndex.append(items[0])
+                businessKey.append(items[0])
 
         if not items[0] in cMap:
             cMap[items[0]] = { 'accMap':{}, 'accNames':[] }
@@ -288,6 +345,9 @@ for typeStr in ['BS', 'CF', 'PL']:
     print('Type', typeStr, 'processed.', flush=True)
 
 # print(columnsMap)
+dupCheker = {}
+
+print(businessIndex)
 
 end(jobName)
 
@@ -298,49 +358,59 @@ end(jobName)
 
 
 
-# In[15]:
+# In[ ]:
 
 
-# 5. 회사별 재무제표 가져오기 업종에 따라 다른 파일에 저장됨.
+# 5. 회사 업종별로 분리하여 저장
+basicCode = 99
+
+# 업종명에 해당하는 그룹 인덱스 반환. basicCode는 기본 종류
+def getBusinessIndex(typeStr):
+    for i in range(0, len(businessIndex)):
+        if -1 != businessIndex[i].find(typeStr + ';'):
+            return i
+    return basicCode
 
 # 데이터 페치 함수 정의
 fetchFuncMap = { 'annualBS': fetchFinacialData, 'annualCF': fetchCashFlowData, 'annualPL': fetchProfitLossData,
     'quarterBS': fetchQuaterFinacialData, 'quarterCF': fetchQuaterCashFlowData, 'quarterPL': fetchQuaterProfitLossData }
 
-# codes, types --> 업종별 코드 목록
+# codes, types에서 업종별 코드 목록을 저장함.
+# { basicCode--> [코드], 0 --> [코드], .. }
 categoricCodes = {}
-# for i in range(0, len(codes)):
-for i in range(0, 10):
-    if not types[i] in categoricCodes:
-        categoricCodes[types[i]] = []
+
+columnsMap['BS'].keys()
+
+for i in range(0, len(codes)):
+    bIdx = getBusinessIndex(types[i])
+    if not bIdx in categoricCodes:
+        categoricCodes[bIdx] = []
     
-    categoricCodes[types[i]].append(codes[i])
+    categoricCodes[bIdx].append(codes[i])
+
+
+# In[ ]:
+
+
+#6. 회사별 재무제표 가져오기 업종에 따라 다른 파일에 저장됨.
 
 begin('crawing financial data')
+
 for typeStr in ['BS', 'CF', 'PL']:
     tmpMap = columnsMap[typeStr]
 
-    for typeKey in categoricCodes.keys():
-        codeList = categoricCodes[typeKey]
-        mapKey = 'BASIC'
-        keyIndex = 9
-        idx = 0
-        for s in tmpMap.keys():
-            if -1 != s.find(typeKey + ';'):
-                mapKey = s
-                keyIndex = idx
-                break
-            idx += 1
-
-        accMap = tmpMap[mapKey]
+    for keyIndex in categoricCodes.keys():
+        codeList = categoricCodes[keyIndex]
+        accMap = tmpMap['BASIC' if keyIndex == basicCode else businessKey[keyIndex]]
     
         for periodStr in ['annual', 'quarter']:
             dataType = periodStr + typeStr
-            
-            begin(dataType)
+            jobName = 'B' + str(keyIndex) + '.' + dataType 
+
+            begin(jobName)
             
             deli = '\t'
-            outFile = open(outputRawPath + dataType + '-' + str(keyIndex) + '.txt', 'w', encoding='utf-8')
+            outFile = open(outputDirPath + jobName + '.txt', 'w', encoding='utf-8')
             outFile.write('P_CODE' + deli + 'TERM')
             
             for nn in accMap['accNames']:
@@ -348,11 +418,15 @@ for typeStr in ['BS', 'CF', 'PL']:
                 outFile.write(nn)
 
             outFile.write('\n')
-            
             crawlCompFinancials(codeList, outFile, accMap['accMap'], len(accMap['accNames']), fetchFuncMap[dataType])
 
             outFile.close()
-            end(dataType)
+            end(jobName)
+
+print('Business Type Index', businessIndex)
+
+for key in categoricCodes.keys():
+    print(key, 'count:', len(categoricCodes[key]))
 
 end('crawing financial data')
 # end of category loop
@@ -367,13 +441,62 @@ end('crawing financial data')
 # In[ ]:
 
 
+# 7. HTML 소스에서 재무정보 가져오기
 
+begin('crawing basic status')
 
+deli = '\t'
+for basis in ['Q', 'Y']:
+    begin('get data from HTML [' + basis + ']')
+    
+    for keyIndex in categoricCodes.keys():
+        begin('business type ' + str(keyIndex))
+        
+        # 대상 기업 코드
+        codeList = categoricCodes[keyIndex]
 
-# In[ ]:
+        # 컬럼명칭
+        (valueTitle, yearTitle) = getDataTitles(basis, codeList[0])
+        columnNames = "P_CODE" + deli + "TERM" + deli + deli.join(valueTitle)
+        
+        # 저장할 파일 열기
+        savedPathName = outputDirPath + 'B' + str(keyIndex) + '.' + ('annual' if basis == 'Y' else 'quarter') + 'HTML' + '.txt'
+        outFile = open(savedPathName, 'w', encoding='utf-8')
+        outFile.write(columnNames)
+        outFile.write("\n")
+    
+        for code in codeList:
+            print('fetching', code, flush=True)
+            da = getDataArray(code, basis)
+            if da is None:
+                print('no data', flush=True)
+                continue
 
+            (data, yearTitle) = da
 
+            for i in range(0, len(yearTitle)):
+                if len(data[0][i]) == 0 or data[0][i] is None:
+                    continue
+                outFile.write(code)
+                outFile.write("\t")
+                outFile.write(yearTitle[i])
 
+                for j in range(0, len(data)):
+                    outFile.write("\t")
+                    outFile.write(str(data[j][i]))
+
+                outFile.write("\n")
+
+        outFile.close()
+        end('business type ' + str(keyIndex))
+        
+    end('get data from HTML [' + basis + ']')
+    
+print('Business Type Index', businessIndex)
+for key in categoricCodes.keys():
+    print(key, 'count:', len(categoricCodes[key]))
+    
+end('crawing basic status')
 
 
 # In[ ]:

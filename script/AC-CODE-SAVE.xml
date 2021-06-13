@@ -36,17 +36,21 @@
 		</inputNode>
 
 		<inputNode name="CompanyInfo" type="FILE">
-			<path><![CDATA[$(OUT_PATH)companyInfo-20210530.txt]]></path>
+			<path><![CDATA[$(OUT_PATH)companyCodes.txt]]></path>
 			<columns>
-				<column name="회사명" type="string" />
-				<column name="종목코드" type="string" />
-				<column name="업종" type="string" />
-				<column name="주요제품" type="string" />
+				<column name="P_CODE" type="string" />
+				<column name="표준코드" type="string" />
+				<column name="한글 종목명" type="string" />
+				<column name="한글 종목약명" type="string" />
+				<column name="영문 종목명" type="string" />
 				<column name="상장일" type="string" />
-				<column name="결산월" type="string" />
-				<column name="대표자명" type="string" />
-				<column name="홈페이지" type="string" />
-				<column name="지역" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="증권구분" type="string" />
+				<column name="소속부" type="string" />
+				<column name="주식종류" type="string" />
+				<column name="액면가" type="string" />
+				<column name="상장주식수" type="string" />
+				<column name="업종" type="string" />
 			</columns>
 			<ui>
 				<position x="167" y="363" />
@@ -70,7 +74,7 @@
 			<joinMethod>inner</joinMethod>
 			<addKeyColumn>false</addKeyColumn>
 			<equalKeys>
-				<equalKey source="CompanyInfo"><![CDATA[종목코드]]></equalKey>
+				<equalKey source="CompanyInfo"><![CDATA[P_CODE]]></equalKey>
 				<equalKey source="RawCodes"><![CDATA[PCODE]]></equalKey>
 			</equalKeys>
 			<selectColumns>

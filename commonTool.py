@@ -7,6 +7,8 @@ import os
 import re
 import time as tm
 
+import datetime as dt
+
 import io
 import json
 from bs4 import BeautifulSoup
@@ -15,6 +17,17 @@ from bs4 import BeautifulSoup
 enc_param_value = 'UWtSVjg4a0tjL3psTkRScjMzdDFtQT09'
 
 time_checker = {}
+
+
+def today():
+    now = dt.datetime.now()
+    return now.strftime('%Y-%m-%d')
+
+
+def mkdir(dirPath):
+    if( not os.path.exists(dirPath) ):
+        os.mkdir(dirPath)
+
 
 def begin(job):
     global time_checker
@@ -105,7 +118,6 @@ def fetchDailyStockData(code, start, end):
     return requests.post(url, headers=headers, data=data)
 
 
-
 # 기업 상태 데이터용 페치용 헤더 생성
 def makeHeader(code):
     headers = CaseInsensitiveDict()
@@ -121,7 +133,8 @@ def makeHeader(code):
     headers['user-agent'] = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.85 Safari/537.36'
     
     return headers
-    
+
+
 # 손익계산표 가져오기
 # 06670
 # returns response(has status_code, text)
@@ -201,8 +214,14 @@ def fetchQuaterCashFlowData(code):
     return requests.get(url, headers=headers)
 
 
+def fetchBusinussType(code):
+    url = 'https://navercomp.wisereport.co.kr/v2/company/c1010001.aspx?cmp_cd=' + code
+    headers = makeHeader(code)
+    return requests.get(url, headers=headers)
+
+
 # 전체 회사 기본정보 가져오기
-def fetchCompanyInfo():
+def fetchCompanyCodes():
     url = 'http://data.krx.co.kr/comm/bldAttendant/getJsonData.cmd'
 
     headers = CaseInsensitiveDict()
@@ -220,6 +239,46 @@ def fetchCompanyInfo():
     data = "bld=dbms/MDC/STAT/standard/MDCSTAT01901&mktId=ALL&share=1&csvxls_isNo=false"
 
     return requests.post(url, headers=headers, data=data)
+
+
+def getCompanyCodes():
+    columnNames = ["P_CODE", "표준코드", "한글 종목명", "한글 종목약명", "영문 종목명", "상장일", "시장구분", "증권구분", "소속부", "주식종류", "액면가", "상장주식수", "업종"]
+    colKeys = ["ISU_SRT_CD", "ISU_CD", "ISU_NM", "ISU_ABBRV", "ISU_ENG_NM", "LIST_DD", "MKT_TP_NM", "SECUGRP_NM", "SECT_TP_NM", "KIND_STKCERT_TP_NM", "PARVAL", "LIST_SHRS"]
+
+    resp = fetchCompanyCodes()
+
+    records = []
+    if resp.status_code == 200:
+        obj = json.loads(resp.text)
+        data = obj['OutBlock_1']
+        
+        for rec in data:
+            code = rec['ISU_SRT_CD']
+            if code is None or code == '':
+                continue
+            items = []
+            for dataKey in colKeys:
+                items.append( '' if rec[dataKey] is None else rec[dataKey] )
+
+            # 업종 붙이기
+            print('fetching', code, flush=True)
+            r2 = fetchBusinussType(code)
+            if r2.status_code == 200:
+                bs = BeautifulSoup(r2.text, 'html.parser')
+                tagBody = bs.select('.cmp-table-cell dt')
+                if len(tagBody) > 3:
+                    items.append(tagBody[2].text.split(':')[1].strip() + '(' + tagBody[3].text.split(':')[1].strip() + ')')
+                else:
+                    items.append('N/A')
+            else:
+                print('failed to get the business type of', code)
+                items.append('N/A')
+
+            records.append(items)
+    else:
+        print('failed to fetch company codes', flush=True)
+
+    return (columnNames, records)
 
 
 # 지정한 종목의 월단위 주가 저장. 파일명: [code]-stock.txt, 
@@ -341,8 +400,8 @@ def fetchCompanyInformation(code, basis):
     return requests.get(url, headers=headers)
 
 
-def getDataTitles(basis):
-    resp = fetchCompanyInformation('066570', basis)
+def getDataTitles(basis, baseCode = '066570'):
+    resp = fetchCompanyInformation(baseCode, basis)
     bs = BeautifulSoup(resp.text, 'html.parser')
     tagBody = bs.findAll('tbody') # len(tagBody) == 2
     records = tagBody[1].findAll('tr')

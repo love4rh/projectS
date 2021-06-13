@@ -2,9 +2,12 @@
 
 # config.py
 
+# True이며, 기업 코드 및 업종별 크롤링 데이터 정리까지 모든 작업을 수행함.
+doingAllJob = False
+
 # 네이버 API를 호출하기 위한 암호화 파라미터
 # 만료 기간이 지나면 네이버에서 확인 후 수정해야 함.
-encParamKey = 'OWdIZzA5TG13RkhFbHI1amtYMGNpdz09'
+encParamKey = 'NG43RHFQTzJtQWhVeUc4b01Tdzdndz09'
 
 runServerType = 1 # 1: window, 2: mac, 3: linux
 
@@ -51,4 +54,4 @@ elif runServerType == 2:
 
 # 조회할 기업 코드 목록 파일
 # 출처: https://kind.krx.co.kr/corpgeneral/corpList.do?method=loadInitPage --> 메뉴 중 상장법인 목록
-codePathFile = resourceDir + 'companyInfo-20210530.txt'
+codePathFile = resourceDir + 'companyCodes.txt'
