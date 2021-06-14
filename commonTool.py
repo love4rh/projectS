@@ -513,3 +513,37 @@ def writeDailyPriceFromKRX(dayNo, outPath):
     
     print(dayNo, 'done', flush=True)
 
+
+# https://kind.krx.co.kr/corpgeneral/corpList.do?method=loadInitPage --> 메뉴 중 상장법인 목록
+# 위에서 Excel로 내려 받은 파일임
+# (code 목록, 업종 목록, 업종별 대표 코드 목록)을 반환.
+def getCompanyCodeFromFile(codePathFile):
+    codes = []
+    types = []
+    referCodes = []
+    referChecker = {}
+
+    fileCodes = open(codePathFile, 'r', encoding='utf-8')
+    line = fileCodes.readline() # Title
+    
+    while True:
+        line = fileCodes.readline()
+        if not line:
+            break
+
+        line = line.strip()
+        if len(line) <= 0:
+            continue
+
+        items = line.split('\t')
+        
+        codes.append(items[0])
+        types.append(items[12])
+        
+        if not items[12] in referChecker:
+            referChecker[items[12]] = items[0]
+            referCodes.append(items[0])
+
+    fileCodes.close()
+    
+    return (codes, types, referCodes)
