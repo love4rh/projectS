@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="DATAFILE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\companyCodes.txt]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="COMPANY" type="FILE">
+			<path><![CDATA[$(DATAFILE)]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="표준코드" type="string" />
+				<column name="한글종목명" type="string" />
+				<column name="한글종목약명" type="string" />
+				<column name="영문종목명" type="string" />
+				<column name="상장일" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="증권구분" type="string" />
+				<column name="소속부" type="string" />
+				<column name="주식종류" type="string" />
+				<column name="액면가" type="string" />
+				<column name="상장주식수" type="string" />
+				<column name="업종" type="string" />
+			</columns>
+			<ui>
+				<position x="90" y="100" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="OLD_COMPANY" type="dataOn">
+			<query><![CDATA[SELECT * FROM COMPANY]]></query>
+			<params>
+				<param name="collection"><![CDATA[KRX]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="표준코드" type="string" />
+				<column name="한글종목명" type="string" />
+				<column name="한글종목약명" type="string" />
+				<column name="영문종목명" type="string" />
+				<column name="상장일" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="증권구분" type="string" />
+				<column name="소속부" type="string" />
+				<column name="주식종류" type="string" />
+				<column name="액면가" type="string" />
+				<column name="상장주식수" type="string" />
+				<column name="업종" type="string" />
+				<column name="유효여부" type="real" />
+			</columns>
+			<ui>
+				<position x="90" y="268" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[APPEND_ALL]]></dataSource>
+			<dataGroupName><![CDATA[MAKE_INDEX]]></dataGroupName>
+			<ui>
+				<position x="634" y="184" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">P_CODE</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[COMPANY]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="384" y="99" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="유효여부"><![CDATA[1]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[OLD_COMPANY]]></dataSource>
+				<dataSource alias="A2"><![CDATA[COMPANY]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[GET_INVALID]]></dataGroupName>
+			<ui>
+				<position x="237" y="268" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>anti</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="COMPANY"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="OLD_COMPANY"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="COMPANY"><![CDATA[]]></columns>
+				<columns source="OLD_COMPANY"><![CDATA[*]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[GET_INVALID]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF2]]></dataGroupName>
+			<ui>
+				<position x="384" y="269" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="유효여부"><![CDATA[0]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="append">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+				<dataSource alias="A2"><![CDATA[ADD_DF2]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[APPEND_ALL]]></dataGroupName>
+			<ui>
+				<position x="499" y="184" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<appendMethod>first</appendMethod>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="UPLOAD" source="MAKE_INDEX" type="dataOn">
+			<dataGroup>COMPANY</dataGroup>
+			<loadType>2</loadType>
+			<useIncubator>false</useIncubator>
+			<remainHistory>true</remainHistory>
+			<params>
+				<param name="collection"><![CDATA[KRX]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<ui>
+				<position x="769" y="184" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

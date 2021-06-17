@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[ ]:
 
 
 #-*- coding:utf-8 -*-
@@ -15,46 +15,20 @@ print('enc_param', enc_param_value)
 print('codeFile', codePathFile)
 
 outputDirPath = outputRawPath + today() + os.path.sep
-if( not os.path.exists(outputDirPath) ):
-    os.mkdir(outputDirPath)
 
 print('outputFolder', outputDirPath, flush=True)
 
 
-# https://kind.krx.co.kr/corpgeneral/corpList.do?method=loadInitPage --> 메뉴 중 상장법인 목록
-# 위에서 Excel로 내려 받은 파일임
-# (code 목록, 업종 목록, 업종별 대표 코드 목록)을 반환.
-def getCompanyCodeFromFile():
-    codes = []
-    types = []
-    referCodes = []
-    referChecker = {}
-
-    fileCodes = open(codePathFile, 'r', encoding='utf-8')
-    line = fileCodes.readline() # Title
-    
-    while True:
-        line = fileCodes.readline()
-        if not line:
-            break
-
-        line = line.strip()
-        if len(line) <= 0:
-            continue
-
-        items = line.split('\t')
+def runDashScript(scriptPathName, parameter):
+    optionStr = ''
+    for key in parameter:
+        optionStr += ' ' + key + '=' + parameter[key]
         
-        codes.append(items[0])
-        types.append(items[12])
-        
-        if not items[12] in referChecker:
-            referChecker[items[12]] = items[0]
-            referCodes.append(items[0])
-
-    fileCodes.close()
+    cmdStr = 'java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName + optionStr
+    print(cmdStr, flush=True)
+    retCode = os.system(cmdStr)
     
-    return (codes, types, referCodes)
-
+    return retCode
 
 
 # 데이터명 분석을 위한 데이터 페치
@@ -176,6 +150,12 @@ def crawlCompFinancials(codeList, outFile, accCheck, accCount, funcGet):
 # In[ ]:
 
 
+print('STRAT at', dt.datetime.today())
+
+
+# In[ ]:
+
+
 # 0. 기업 코드 / 업종 정보 가져 오기
 
 def step0_writeCodes():
@@ -197,21 +177,35 @@ def step0_writeCodes():
 # In[ ]:
 
 
-if doingAllJob:
-    jobName = 'getting company codes'
-    begin(jobName)
-    step0_writeCodes()
-    end(jobName)
 
 
-# In[2]:
+
+# In[ ]:
+
+
+# 0-1. 업종정보 페치
+jobName = 'getting company codes'
+begin(jobName)
+step0_writeCodes()
+end(jobName)
+
+
+# 0-2. 회사 정보 DB 로딩
+jobName = 'upload company info to db'
+begin(jobName)
+parameter = { 'DATAPATH': codePathFile, 'DO_SERVER': '13.124.29.70' }
+retCode = runDashScript(scriptPathName, parameter)
+end(jobName)
+
+
+# In[ ]:
 
 
 # 1. 데이터를 가져올 회사 정보 가져 오기
 jobName = 'setup company codes'
 begin(jobName)
 
-(codes, types, referCodes) = getCompanyCodeFromFile()
+(codes, types, referCodes) = getCompanyCodeFromFile(codePathFile)
 print('codes', len(codes), len(types), len(referCodes)) # 첫 번째, 두 번째 값 같아야 함.
 
 end(jobName)
@@ -223,7 +217,7 @@ end(jobName)
 
 
 
-# In[4]:
+# In[ ]:
 
 
 # 2. 업종별 재무 데이터 항목 가져와 파일에 저장하기 (매번 수행할 필요 없음)
@@ -263,8 +257,8 @@ def step3_cleanupAcNames():
     scriptPathName = crawlegoScriptPath + 'AC-CODE-SAVE.xml'
 
     for typeStr in ['BS', 'CF', 'PL']:
-        cmdStr = 'java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName             + ' IN_PATH=' + temporaryPath + ' OUT_PATH=' + resourceDir + ' TYPE=' + typeStr
-        retCode = os.system(cmdStr)
+        parameter = { 'IN_PATH': temporaryPath, 'OUT_PATH': resourceDir, 'TYPE': typeStr }
+        retCode = runDashScript(scriptPathName, parameter)
         print('Type', typeStr, 'processed.', 'return code', retCode, flush=True)
 
     end(jobName)
@@ -277,12 +271,6 @@ def step3_cleanupAcNames():
 if doingAllJob:
     step2_crawAcNames()
     step3_cleanupAcNames()
-
-
-# In[ ]:
-
-
-
 
 
 # In[ ]:
@@ -347,7 +335,16 @@ for typeStr in ['BS', 'CF', 'PL']:
 # print(columnsMap)
 dupCheker = {}
 
-print(businessIndex)
+
+def printBusinessIndex():
+    print('Business Category Count:', len(businessIndex) + 1)
+    
+    for i in range(0, len(businessIndex)):
+        print('[', i, ']', businessIndex[i])
+    print('[', 99, ']', 'BASIC')
+
+        
+printBusinessIndex()
 
 end(jobName)
 
@@ -363,6 +360,9 @@ end(jobName)
 
 # 5. 회사 업종별로 분리하여 저장
 basicCode = 99
+
+# 결과 저장 폴더 확인 및 생성
+mkdir(outputDirPath)
 
 # 업종명에 해당하는 그룹 인덱스 반환. basicCode는 기본 종류
 def getBusinessIndex(typeStr):
@@ -423,7 +423,7 @@ for typeStr in ['BS', 'CF', 'PL']:
             outFile.close()
             end(jobName)
 
-print('Business Type Index', businessIndex)
+printBusinessIndex()
 
 for key in categoricCodes.keys():
     print(key, 'count:', len(categoricCodes[key]))
@@ -492,7 +492,8 @@ for basis in ['Q', 'Y']:
         
     end('get data from HTML [' + basis + ']')
     
-print('Business Type Index', businessIndex)
+printBusinessIndex()
+
 for key in categoricCodes.keys():
     print(key, 'count:', len(categoricCodes[key]))
     
@@ -503,4 +504,37 @@ end('crawing basic status')
 
 
 
+
+
+# In[ ]:
+
+
+# 8. DB에 넣기 (dataOn 사용)
+scriptPathName = crawlegoScriptPath + 'BS-CF-PL.xml'
+
+# 업종 99(일반 기업)만 넣음
+for rType in ['annual', 'quarter']:
+    jobName = 'upload ' + rType + ' to db'
+    begin(jobName)
+    parameter = { 'IN_PATH': outputDirPath, 'PERIOD': rType, 'DO_SERVER': '13.124.29.70' }
+    retCode = runDashScript(scriptPathName, parameter)
+    end(jobName)
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+
+
+
+# In[ ]:
+
+
+print('END at', dt.datetime.today())
 

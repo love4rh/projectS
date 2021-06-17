@@ -7,7 +7,7 @@ doingAllJob = False
 
 # 네이버 API를 호출하기 위한 암호화 파라미터
 # 만료 기간이 지나면 네이버에서 확인 후 수정해야 함.
-encParamKey = 'NG43RHFQTzJtQWhVeUc4b01Tdzdndz09'
+encParamKey = 'dllGejUrZmdPRkVOSjFiSjVIOXZDUT09'
 
 runServerType = 1 # 1: window, 2: mac, 3: linux
 
@@ -22,7 +22,7 @@ resourceDir = dirBase + 'resource\\'
 outputRawPath = dirBase + 'output\\'
 
 # 임시파일 저장용 폴더
-temporaryPath = dirBase + 'temporary\\'
+temporaryPath = dirBase + 'intermediate\\'
 
 # Crawlego Jar 경로
 crawlegoPath = dirBase + 'jar\\crawlego-1.0.0.jar'

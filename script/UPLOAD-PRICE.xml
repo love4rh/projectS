@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="ADJ_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\adjustPrice\adjDailyPrice]]></param>
+		</macro>
+		<macro name="KRX_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\priceDaily\2020\]]></param>
+		</macro>
+		<macro name="YEAR" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2020]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="ADJ_PRICE" type="FILE">
+			<path><![CDATA[$(ADJ_PATH)-$(YEAR).csv]]></path>
+			<params>
+				<param name="delimiter"><![CDATA[Comma(,)]]></param>
+				<param name="nameAtHead"><![CDATA[true]]></param>
+			</params>
+			<columns>
+				<column name="종목코드" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
+				<column name="외국인소진율" type="real" />
+			</columns>
+			<ui>
+				<position x="85" y="88" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="KRX_PRICE" type="FILE">
+			<path><![CDATA[$(KRX_PATH)krx-price-*.txt]]></path>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="소속부" type="string" />
+				<column name="종가" type="integer" />
+				<column name="대비" type="real" />
+				<column name="등락률" type="real" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="거래량" type="real" />
+				<column name="거래대금" type="real" />
+				<column name="시가총액" type="real" />
+				<column name="상장주식수" type="real" />
+			</columns>
+			<ui>
+				<position x="89" y="240" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[ADJ_PRICE]]></dataSource>
+				<dataSource alias="A2"><![CDATA[KRX_PRICE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[MERGE_COLUMNS]]></dataGroupName>
+			<ui>
+				<position x="198" y="161" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>outer</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="ADJ_PRICE"><![CDATA[종목코드,날짜]]></equalKey>
+				<equalKey source="KRX_PRICE"><![CDATA[종목코드,날짜]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="ADJ_PRICE"><![CDATA[*]]></columns>
+				<columns source="KRX_PRICE"><![CDATA[종목명,시장구분,등락률,거래대금,시가총액,상장주식수]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[MERGE_COLUMNS]]></dataSource>
+			<dataGroupName><![CDATA[PR_COLUMNS]]></dataGroupName>
+			<ui>
+				<position x="353" y="162" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>날짜</column>
+				<column>종목코드</column>
+				<column>종목명</column>
+				<column>시장구분</column>
+				<column>상장주식수</column>
+				<column>시가총액</column>
+				<column>시가</column>
+				<column>고가</column>
+				<column>저가</column>
+				<column>종가</column>
+				<column>등락률</column>
+				<column>거래량</column>
+				<column>거래대금</column>
+				<column>외국인소진율</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[PR_COLUMNS]]></dataSource>
+			<dataGroupName><![CDATA[MAKE_INDEX]]></dataGroupName>
+			<ui>
+				<position x="485" y="161" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">날짜</column>
+				<column order="ascending">종목코드</column>
+			</sortColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="UPLOAD" source="MAKE_INDEX" type="dataOn">
+			<dataGroup>Y$(YEAR)</dataGroup>
+			<loadType>2</loadType>
+			<useIncubator>false</useIncubator>
+			<remainHistory>true</remainHistory>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<ui>
+				<position x="622" y="162" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
