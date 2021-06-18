@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="YEAR" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2020]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="QK_DATA" type="FILE">
+			<path><![CDATA[D:\workspace\krx\result\$(YEAR)-cfp-qk.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="매출액(수익)" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="지배주주순이익" type="real" />
+				<column name="매출총이익율(%)" type="real" />
+				<column name="판관비율(%)" type="real" />
+				<column name="영업이익률(%)" type="real" />
+				<column name="매출액 YOY(%)" type="real" />
+				<column name="영업이익 YOY(%)" type="real" />
+				<column name="지배순이익 YOY(%)" type="real" />
+				<column name="매출액(개별)" type="real" />
+				<column name="영업이익(개별)" type="real" />
+				<column name="순이익(개별)" type="real" />
+				<column name="영업이익율(%개별)" type="real" />
+				<column name="개별/연결 순익(%)" type="real" />
+				<column name="연간 주가 상승율" type="real" />
+				<column name="시가총액" type="real" />
+				<column name="주가" type="real" />
+				<column name="EPS" type="real" />
+				<column name="BPS" type="real" />
+				<column name="EPS증가율(%)" type="real" />
+				<column name="BPS증가율(%)" type="real" />
+				<column name="PER" type="real" />
+				<column name="PBR" type="real" />
+				<column name="PSR" type="real" />
+				<column name="ROE" type="real" />
+				<column name="ROA" type="real" />
+				<column name="EV" type="real" />
+				<column name="EBITDA" type="real" />
+				<column name="EV/EBITDA" type="real" />
+				<column name="DPS" type="real" />
+				<column name="배당성향(%)" type="real" />
+				<column name="시가배당율(%)" type="real" />
+				<column name="차입금비율(%)" type="real" />
+				<column name="부채비율(%)" type="real" />
+				<column name="매출채권회전일수" type="real" />
+				<column name="재고자산회전일수" type="real" />
+				<column name="상장주식수 (만주)" type="real" />
+				<column name="매출액(수익)" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="+- 비영업손익" type="real" />
+				<column name="금융수익 - 금융원가" type="real" />
+				<column name="종속기업,공동지배기업및관계기업관련손익" type="real" />
+				<column name="(외환손익)" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="법인세비용" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="당기순이익/(지배주주지분)당기순이익" type="real" />
+				<column name="당기순이익/(비지배주주지분)당기순이익" type="real" />
+				<column name="매출원가/매출액(수익)*100" type="real" />
+				<column name="매출총이익/매출액(수익)*100" type="real" />
+				<column name="판매비와관리비/매출액(수익)*100" type="real" />
+				<column name="영업이익/매출액(수익)*100" type="real" />
+				<column name="지배주주순익/매출액(수익)*100" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="판매비와관리비/(감가상각비+기타무형자산상각비)" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="유형자산취득" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="UNTITLED" type="string" />
+				<column name="연간 재무상태표" type="string" />
+				<column name="유동자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="매출채권및기타채권/매출채권" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="비유동자산" type="real" />
+				<column name="유형자산" type="real" />
+				<column name="무형자산" type="real" />
+				<column name="투자자산 등" type="real" />
+				<column name="관계기업등지분관련투자자산" type="real" />
+				<column name="자산총계" type="real" />
+				<column name="매입채무및기타채무/매입채무" type="real" />
+				<column name="이자발생부채" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="총자산(개별)" type="real" />
+				<column name="부채총계(개별)" type="real" />
+				<column name="자본총계(개별)" type="real" />
+			</columns>
+			<ui>
+				<position x="73" y="98" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[QK_FILTER]]></dataGroupName>
+			<ui>
+				<position x="351" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>TERM</column>
+				<column toName="매출액">매출액(수익)</column>
+				<column>영업이익</column>
+				<column toName="당기순이익_지배">지배주주순이익</column>
+				<column toName="영업이익률">영업이익률(%)</column>
+				<column>ROE</column>
+				<column>ROA</column>
+				<column toName="현금배당성향">배당성향(%)</column>
+				<column toName="부채비율">부채비율(%)</column>
+				<column>매출원가</column>
+				<column>매출총이익</column>
+				<column>판매비와관리비</column>
+				<column>법인세비용차감전계속사업이익</column>
+				<column>법인세비용</column>
+				<column>당기순이익</column>
+				<column toName="당기순이익_비지배">당기순이익/(비지배주주지분)당기순이익</column>
+				<column>영업활동으로인한현금흐름</column>
+				<column toName="감가상각비">판매비와관리비/(감가상각비+기타무형자산상각비)</column>
+				<column>투자활동으로인한현금흐름</column>
+				<column>재무활동으로인한현금흐름</column>
+				<column>유동자산</column>
+				<column>현금및현금성자산</column>
+				<column>재고자산</column>
+				<column>비유동자산</column>
+				<column>유형자산</column>
+				<column>무형자산</column>
+				<column toName="투자자산">투자자산 등</column>
+				<column>자산총계</column>
+				<column>이자발생부채</column>
+				<column>부채총계</column>
+				<column>자본총계</column>
+				<column>지배주주지분</column>
+				<column toName="발행주식수">발행주식수(천주)</column>
+				<column>순자산</column>
+				<column>주당순이익</column>
+				<column>주당순이익_지배</column>
+				<column>순이익률</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[QK_DATA]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="213" y="98" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="발행주식수"><![CDATA[{시가총액} / {주가}]]></derivedColumn>
+				<derivedColumn name="순자산"><![CDATA[{자산총계} - {부채총계}]]></derivedColumn>
+				<derivedColumn name="주당순이익"><![CDATA[{당기순이익} / {발행주식수}]]></derivedColumn>
+				<derivedColumn name="주당순이익_지배"><![CDATA[{지배주주순이익} / {발행주식수}]]></derivedColumn>
+				<derivedColumn name="순이익률"><![CDATA[{당기순이익} / {매출액(수익)} * 100]]></derivedColumn>
+				<derivedColumn name="발행주식수(천주)"><![CDATA[{발행주식수} / 1000]]></derivedColumn>
+				<derivedColumn name="TERM"><![CDATA['$(YEAR)/12']]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[QK_FILTER2]]></dataGroupName>
+			<ui>
+				<position x="315" y="234" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>TERM</column>
+				<column toName="매출액">매출액(수익)</column>
+				<column>영업이익</column>
+				<column>지배주주순이익</column>
+				<column toName="매출총이익율">매출총이익율(%)</column>
+				<column toName="판관비율">판관비율(%)</column>
+				<column toName="영업이익률">영업이익률(%)</column>
+				<column toName="YOY_매출액">매출액 YOY(%)</column>
+				<column toName="YOY_영업이익">영업이익 YOY(%)</column>
+				<column toName="YOY_지배순이익">지배순이익 YOY(%)</column>
+				<column toName="매출액_개별">매출액(개별)</column>
+				<column toName="영업이익_개별">영업이익(개별)</column>
+				<column toName="순이익_개별">순이익(개별)</column>
+				<column toName="영업이익율_개별">영업이익율(%개별)</column>
+				<column toName="개별연결순익율">개별/연결 순익(%)</column>
+				<column toName="연간주가상승율">연간 주가 상승율</column>
+				<column>시가총액</column>
+				<column>주가</column>
+				<column>EPS</column>
+				<column>BPS</column>
+				<column toName="EPS증가율">EPS증가율(%)</column>
+				<column toName="BPS증가율">BPS증가율(%)</column>
+				<column>PER</column>
+				<column>PBR</column>
+				<column>PSR</column>
+				<column>ROE</column>
+				<column>ROA</column>
+				<column>EV</column>
+				<column>EBITDA</column>
+				<column toName="EV_EBITDA">EV/EBITDA</column>
+				<column>DPS</column>
+				<column toName="배당성향">배당성향(%)</column>
+				<column toName="시가배당율">시가배당율(%)</column>
+				<column toName="차입금비율">차입금비율(%)</column>
+				<column toName="부채비율">부채비율(%)</column>
+				<column>매출채권회전일수</column>
+				<column>재고자산회전일수</column>
+				<column toName="상장주식수_만주">상장주식수 (만주)</column>
+				<column>매출원가</column>
+				<column>매출총이익</column>
+				<column>판매비와관리비</column>
+				<column toName="비영업손익">+- 비영업손익</column>
+				<column toName="금융수익_금융원가">금융수익 - 금융원가</column>
+				<column toName="종속기업_공동지배기업및관계기업관련손익">종속기업,공동지배기업및관계기업관련손익</column>
+				<column toName="외환손익">(외환손익)</column>
+				<column>법인세비용차감전계속사업이익</column>
+				<column>법인세비용</column>
+				<column>당기순이익</column>
+				<column toName="당기순이익_지배주주지분">당기순이익/(지배주주지분)당기순이익</column>
+				<column toName="당기순이익_비지배주주지분">당기순이익/(비지배주주지분)당기순이익</column>
+				<column>영업활동으로인한현금흐름</column>
+				<column>당기순이익</column>
+				<column toName="감가상각비">판매비와관리비/(감가상각비+기타무형자산상각비)</column>
+				<column>투자활동으로인한현금흐름</column>
+				<column>유형자산취득</column>
+				<column>재무활동으로인한현금흐름</column>
+				<column>유동자산</column>
+				<column>현금및현금성자산</column>
+				<column toName="매출채권및기타채권_매출채권">매출채권및기타채권/매출채권</column>
+				<column>재고자산</column>
+				<column>비유동자산</column>
+				<column>유형자산</column>
+				<column>무형자산</column>
+				<column>투자자산 등</column>
+				<column>관계기업등지분관련투자자산</column>
+				<column>자산총계</column>
+				<column toName="매입채무및기타채무_매입채무">매입채무및기타채무/매입채무</column>
+				<column>이자발생부채</column>
+				<column>부채총계</column>
+				<column>자본총계</column>
+				<column>지배주주지분</column>
+				<column toName="총자산_개별">총자산(개별)</column>
+				<column toName="부채총계_개별">부채총계(개별)</column>
+				<column toName="자본총계_개별">자본총계(개별)</column>
+			</orderAndFilter>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="FileOutput_1" source="QK_FILTER2" type="file">
+			<filePath><![CDATA[D:\work\jupyter\krx\temporary\qk-raw-$(YEAR).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="457" y="235" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="FileOutput_2" source="QK_FILTER" type="file">
+			<filePath><![CDATA[D:\work\jupyter\krx\temporary\qk-adj-$(YEAR).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="470" y="103" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

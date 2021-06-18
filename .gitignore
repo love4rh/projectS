@@ -134,3 +134,7 @@ noup/
 output/
 temporary/
 jar/
+
+*.xlsx
+
+

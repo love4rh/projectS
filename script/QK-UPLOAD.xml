@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="QK_ADJ" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\temporary\qk-adj-*.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="TERM" type="string" />
+				<column name="매출액" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="당기순이익_지배" type="real" />
+				<column name="영업이익률" type="real" />
+				<column name="ROE" type="real" />
+				<column name="ROA" type="real" />
+				<column name="현금배당성향" type="real" />
+				<column name="부채비율" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="법인세비용" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="당기순이익_비지배" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="감가상각비" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="유동자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="비유동자산" type="real" />
+				<column name="유형자산" type="real" />
+				<column name="무형자산" type="real" />
+				<column name="투자자산" type="real" />
+				<column name="자산총계" type="real" />
+				<column name="이자발생부채" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="발행주식수" type="real" />
+				<column name="순자산" type="real" />
+				<column name="주당순이익" type="real" />
+				<column name="주당순이익_지배" type="real" />
+				<column name="순이익률" type="real" />
+			</columns>
+			<ui>
+				<position x="90" y="98" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="QK_RAW" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\temporary\qk-raw-*.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="TERM" type="string" />
+				<column name="매출액" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="지배주주순이익" type="real" />
+				<column name="매출총이익율" type="real" />
+				<column name="판관비율" type="real" />
+				<column name="영업이익률" type="real" />
+				<column name="YOY_매출액" type="real" />
+				<column name="YOY_영업이익" type="real" />
+				<column name="YOY_지배순이익" type="real" />
+				<column name="매출액_개별" type="real" />
+				<column name="영업이익_개별" type="real" />
+				<column name="순이익_개별" type="real" />
+				<column name="영업이익율_개별" type="real" />
+				<column name="개별연결순익율" type="real" />
+				<column name="연간주가상승율" type="real" />
+				<column name="시가총액" type="real" />
+				<column name="주가" type="real" />
+				<column name="EPS" type="real" />
+				<column name="BPS" type="real" />
+				<column name="EPS증가율" type="real" />
+				<column name="BPS증가율" type="real" />
+				<column name="PER" type="real" />
+				<column name="PBR" type="real" />
+				<column name="PSR" type="real" />
+				<column name="ROE" type="real" />
+				<column name="ROA" type="real" />
+				<column name="EV" type="real" />
+				<column name="EBITDA" type="real" />
+				<column name="EV_EBITDA" type="real" />
+				<column name="DPS" type="real" />
+				<column name="배당성향" type="real" />
+				<column name="시가배당율" type="real" />
+				<column name="차입금비율" type="real" />
+				<column name="부채비율" type="real" />
+				<column name="매출채권회전일수" type="real" />
+				<column name="재고자산회전일수" type="real" />
+				<column name="상장주식수_만주" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="비영업손익" type="real" />
+				<column name="금융수익_금융원가" type="real" />
+				<column name="종속기업_공동지배기업및관계기업관련손익" type="real" />
+				<column name="외환손익" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="법인세비용" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="당기순이익_지배주주지분" type="real" />
+				<column name="당기순이익_비지배주주지분" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="감가상각비" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="유형자산취득" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="유동자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="매출채권및기타채권_매출채권" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="비유동자산" type="real" />
+				<column name="유형자산" type="real" />
+				<column name="무형자산" type="real" />
+				<column name="투자자산등" type="real" />
+				<column name="관계기업등지분관련투자자산" type="real" />
+				<column name="자산총계" type="real" />
+				<column name="매입채무및기타채무_매입채무" type="real" />
+				<column name="이자발생부채" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="총자산_개별" type="real" />
+				<column name="부채총계_개별" type="real" />
+				<column name="자본총계_개별" type="real" />
+			</columns>
+			<ui>
+				<position x="97" y="205" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="NV" type="dataOn">
+			<query><![CDATA[SELECT * FROM ANNUAL_BSCFPL]]></query>
+			<params>
+				<param name="collection"><![CDATA[KRX]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="TERM" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="유동자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="비유동자산" type="real" />
+				<column name="유형자산" type="real" />
+				<column name="무형자산" type="real" />
+				<column name="투자부동산" type="real" />
+				<column name="투자자산" type="real" />
+				<column name="순자산" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="유동부채" type="real" />
+				<column name="매입채무및기타채무" type="real" />
+				<column name="이자발생부채" type="real" />
+				<column name="순부채" type="real" />
+				<column name="CAPEX" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="자본금" type="real" />
+				<column name="자본잉여금" type="real" />
+				<column name="당기순이익_지배" type="real" />
+				<column name="당기순이익_비지배" type="real" />
+				<column name="비지배주주지분" type="real" />
+				<column name="수권주식수" type="real" />
+				<column name="주당금액" type="real" />
+				<column name="발행주식수" type="real" />
+				<column name="보통주" type="real" />
+				<column name="매출액" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="감가상각비" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="법인세비용" type="real" />
+				<column name="기타포괄이익" type="real" />
+				<column name="총포괄이익" type="real" />
+				<column name="주당순이익" type="real" />
+				<column name="주당순이익_지배" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="영업에서창출된현금흐름" type="real" />
+				<column name="배당금수입" type="real" />
+				<column name="배당금지급" type="real" />
+				<column name="법인세납부" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="투자활동현금유입액" type="real" />
+				<column name="투자활동현금유출액" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="재무활동현금유입액" type="real" />
+				<column name="재무활동현금유출액" type="real" />
+				<column name="현금및현금성자산의증가" type="real" />
+				<column name="FCF" type="real" />
+				<column name="ROA" type="real" />
+				<column name="ROE" type="real" />
+				<column name="부채비율" type="real" />
+				<column name="세전계속사업이익" type="real" />
+				<column name="순이익률" type="real" />
+				<column name="영업이익률" type="real" />
+				<column name="자본유보율" type="real" />
+				<column name="현금배당성향" type="real" />
+				<column name="현금배당수익률" type="real" />
+			</columns>
+			<ui>
+				<position x="113" y="393" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="QK" type="dataOn">
+			<query><![CDATA[SELECT * FROM ADJUST_DATA WHERE TERM < '2016']]></query>
+			<params>
+				<param name="collection"><![CDATA[QK]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="TERM" type="string" />
+				<column name="매출액" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="당기순이익_지배" type="real" />
+				<column name="영업이익률" type="real" />
+				<column name="ROE" type="real" />
+				<column name="ROA" type="real" />
+				<column name="현금배당성향" type="real" />
+				<column name="부채비율" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="법인세비용" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="당기순이익_비지배" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="감가상각비" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="유동자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="비유동자산" type="real" />
+				<column name="유형자산" type="real" />
+				<column name="무형자산" type="real" />
+				<column name="투자자산" type="real" />
+				<column name="자산총계" type="real" />
+				<column name="이자발생부채" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="발행주식수" type="real" />
+				<column name="순자산" type="real" />
+				<column name="주당순이익" type="real" />
+				<column name="주당순이익_지배" type="real" />
+				<column name="순이익률" type="real" />
+			</columns>
+			<ui>
+				<position x="110" y="502" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[QK_ADJ]]></dataSource>
+			<dataGroupName><![CDATA[MAKE_INDEX]]></dataGroupName>
+			<ui>
+				<position x="235" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">P_CODE</column>
+				<column order="ascending">TERM</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[QK_RAW]]></dataSource>
+			<dataGroupName><![CDATA[MAKE_INDEX2]]></dataGroupName>
+			<ui>
+				<position x="238" y="206" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">P_CODE</column>
+				<column order="ascending">TERM</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[QK]]></dataSource>
+			<dataGroupName><![CDATA[SelectData_1]]></dataGroupName>
+			<ui>
+				<position x="259" y="504" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{매출액} > 0]]></condition>
+		</processingElem>
+
+		<processingElem type="append">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[NV]]></dataSource>
+				<dataSource alias="A2"><![CDATA[SelectData_1]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[AppendData_1]]></dataGroupName>
+			<ui>
+				<position x="362" y="419" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<appendMethod>first</appendMethod>
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[AppendData_1]]></dataSource>
+			<dataGroupName><![CDATA[MAKE_INDEX3]]></dataGroupName>
+			<ui>
+				<position x="511" y="415" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">P_CODE</column>
+				<column order="ascending">TERM</column>
+			</sortColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="UPLOAD" source="MAKE_INDEX" type="dataOn">
+			<dataGroup>ADJUST_DATA</dataGroup>
+			<loadType>2</loadType>
+			<useIncubator>false</useIncubator>
+			<remainHistory>true</remainHistory>
+			<params>
+				<param name="collection"><![CDATA[QK]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<ui>
+				<position x="383" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="UPLOAD2" source="MAKE_INDEX2" type="dataOn">
+			<dataGroup>RAW_DATA</dataGroup>
+			<loadType>2</loadType>
+			<useIncubator>false</useIncubator>
+			<remainHistory>true</remainHistory>
+			<params>
+				<param name="collection"><![CDATA[QK]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<ui>
+				<position x="386" y="206" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="UPLOAD3" source="MAKE_INDEX3" type="dataOn">
+			<dataGroup>ANNUAL_BSCFPL</dataGroup>
+			<loadType>2</loadType>
+			<useIncubator>false</useIncubator>
+			<remainHistory>true</remainHistory>
+			<params>
+				<param name="collection"><![CDATA[KRX]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<ui>
+				<position x="648" y="415" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
