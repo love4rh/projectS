@@ -143,7 +143,7 @@
 				<column name="자본총계_개별" type="real" />
 			</columns>
 			<ui>
-				<position x="97" y="205" />
+				<position x="95" y="228" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -224,7 +224,7 @@
 				<column name="현금배당수익률" type="real" />
 			</columns>
 			<ui>
-				<position x="113" y="393" />
+				<position x="110" y="418" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -279,7 +279,7 @@
 				<column name="순이익률" type="real" />
 			</columns>
 			<ui>
-				<position x="110" y="502" />
+				<position x="109" y="536" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -304,7 +304,7 @@
 			<dataSource alias="A1"><![CDATA[QK_RAW]]></dataSource>
 			<dataGroupName><![CDATA[MAKE_INDEX2]]></dataGroupName>
 			<ui>
-				<position x="238" y="206" />
+				<position x="235" y="229" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
@@ -315,9 +315,9 @@
 
 		<processingElem type="select">
 			<dataSource alias="A1"><![CDATA[QK]]></dataSource>
-			<dataGroupName><![CDATA[SelectData_1]]></dataGroupName>
+			<dataGroupName><![CDATA[SEL_QK]]></dataGroupName>
 			<ui>
-				<position x="259" y="504" />
+				<position x="257" y="535" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[{매출액} > 0]]></condition>
@@ -325,12 +325,12 @@
 
 		<processingElem type="append">
 			<dataSources>
-				<dataSource alias="A1"><![CDATA[NV]]></dataSource>
-				<dataSource alias="A2"><![CDATA[SelectData_1]]></dataSource>
+				<dataSource alias="A1"><![CDATA[SEL_NV]]></dataSource>
+				<dataSource alias="A2"><![CDATA[SEL_QK]]></dataSource>
 			</dataSources>
 			<dataGroupName><![CDATA[AppendData_1]]></dataGroupName>
 			<ui>
-				<position x="362" y="419" />
+				<position x="414" y="419" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<appendMethod>first</appendMethod>
@@ -340,13 +340,23 @@
 			<dataSource alias="A1"><![CDATA[AppendData_1]]></dataSource>
 			<dataGroupName><![CDATA[MAKE_INDEX3]]></dataGroupName>
 			<ui>
-				<position x="511" y="415" />
+				<position x="570" y="420" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
 				<column order="ascending">P_CODE</column>
 				<column order="ascending">TERM</column>
 			</sortColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[NV]]></dataSource>
+			<dataGroupName><![CDATA[SEL_NV]]></dataGroupName>
+			<ui>
+				<position x="251" y="418" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{TERM} > '2015/12']]></condition>
 		</processingElem>
 	</dataProcessing>
 
@@ -355,7 +365,7 @@
 			<dataGroup>ADJUST_DATA</dataGroup>
 			<loadType>2</loadType>
 			<useIncubator>false</useIncubator>
-			<remainHistory>true</remainHistory>
+			<remainHistory>false</remainHistory>
 			<params>
 				<param name="collection"><![CDATA[QK]]></param>
 				<param name="password"><![CDATA[1234]]></param>
@@ -382,7 +392,7 @@
 				<param name="user"><![CDATA[admin]]></param>
 			</params>
 			<ui>
-				<position x="386" y="206" />
+				<position x="384" y="229" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>
@@ -400,7 +410,7 @@
 				<param name="user"><![CDATA[admin]]></param>
 			</params>
 			<ui>
-				<position x="648" y="415" />
+				<position x="707" y="420" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

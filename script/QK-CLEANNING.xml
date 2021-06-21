@@ -8,7 +8,7 @@
 
 	<macros>
 		<macro name="YEAR" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[2020]]></param>
+			<param name="value"><![CDATA[2013]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
@@ -171,10 +171,10 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="발행주식수"><![CDATA[{시가총액} / {주가}]]></derivedColumn>
+				<derivedColumn name="발행주식수"><![CDATA[{시가총액} * 100000000 / {주가}]]></derivedColumn>
 				<derivedColumn name="순자산"><![CDATA[{자산총계} - {부채총계}]]></derivedColumn>
-				<derivedColumn name="주당순이익"><![CDATA[{당기순이익} / {발행주식수}]]></derivedColumn>
-				<derivedColumn name="주당순이익_지배"><![CDATA[{지배주주순이익} / {발행주식수}]]></derivedColumn>
+				<derivedColumn name="주당순이익"><![CDATA[{당기순이익} * 100000000 / {발행주식수}]]></derivedColumn>
+				<derivedColumn name="주당순이익_지배"><![CDATA[{지배주주순이익} * 100000000 / {발행주식수}]]></derivedColumn>
 				<derivedColumn name="순이익률"><![CDATA[{당기순이익} / {매출액(수익)} * 100]]></derivedColumn>
 				<derivedColumn name="발행주식수(천주)"><![CDATA[{발행주식수} / 1000]]></derivedColumn>
 				<derivedColumn name="TERM"><![CDATA['$(YEAR)/12']]></derivedColumn>

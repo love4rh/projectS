@@ -1,0 +1,479 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="YEAR" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2017]]></param>
+		</macro>
+		<macro name="B_MONTH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[02]]></param>
+		</macro>
+		<macro name="P_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[STR($(YEAR) - 1)]]></param>
+		</macro>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\workspace\krx\result\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\workspace\krx\result\]]></param>
+		</macro>
+		<macro name="C_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(NOW(), 'yyyy')]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="PREV_CFP" type="FILE">
+			<path><![CDATA[$(IN_PATH)$(P_YEAR)-cfp.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="자산총계(전기)" type="real" />
+				<column name="부채총계(전기)" type="real" />
+				<column name="순자산(전기)" type="real" />
+				<column name="유동자산(전기)" type="real" />
+				<column name="재고자산(전기)" type="real" />
+				<column name="현금및현금성자산(전기)" type="real" />
+				<column name="투자부동산(전기)" type="real" />
+				<column name="투자자산(전기)" type="real" />
+				<column name="유동부채(전기)" type="real" />
+				<column name="CAPEX(전기)" type="real" />
+				<column name="자본총계(전기)" type="real" />
+				<column name="자본금(전기)" type="real" />
+				<column name="보통주자본금(전기)" type="real" />
+				<column name="우선주자본금(전기)" type="real" />
+				<column name="지배주주지분(전기)" type="real" />
+				<column name="비지배주주지분(전기)" type="real" />
+				<column name="발행주식수(전기)" type="integer" />
+				<column name="보통주(전기)" type="integer" />
+				<column name="우선주(전기)" type="integer" />
+				<column name="매출액(전기)" type="real" />
+				<column name="매출원가(전기)" type="real" />
+				<column name="매출총이익(전기)" type="real" />
+				<column name="판매비와관리비(전기)" type="real" />
+				<column name="판매비와관리비/감가상각비(전기)" type="real" />
+				<column name="판매비와관리비/기타무형자산상각비(전기)" type="real" />
+				<column name="영업이익(전기)" type="real" />
+				<column name="당기순이익(전기)" type="real" />
+				<column name="당기순이익(지배주주)(전기)" type="real" />
+				<column name="당기순이익(비지배주주)(전기)" type="real" />
+				<column name="주당순이익(전기)" type="real" />
+				<column name="영업활동으로인한현금흐름(전기)" type="real" />
+				<column name="투자활동으로인한현금흐름(전기)" type="real" />
+				<column name="법인세비용차감전계속사업이익(전기)" type="real" />
+				<column name="재무활동으로인한현금흐름(전기)" type="real" />
+				<column name="배당금지급(-)(전기)" type="real" />
+			</columns>
+			<ui>
+				<position x="84" y="268" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="NOW_CFP" type="FILE">
+			<path><![CDATA[$(IN_PATH)$(YEAR)-cfp.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="순자산" type="real" />
+				<column name="유동자산" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="투자부동산" type="real" />
+				<column name="투자자산" type="real" />
+				<column name="유동부채" type="real" />
+				<column name="CAPEX" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="자본금" type="real" />
+				<column name="보통주자본금" type="real" />
+				<column name="우선주자본금" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="비지배주주지분" type="real" />
+				<column name="발행주식수" type="integer" />
+				<column name="보통주" type="integer" />
+				<column name="우선주" type="integer" />
+				<column name="매출액" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="판매비와관리비/감가상각비" type="real" />
+				<column name="판매비와관리비/기타무형자산상각비" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="당기순이익(지배주주)" type="real" />
+				<column name="당기순이익(비지배주주)" type="real" />
+				<column name="주당순이익" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="배당금지급(-)" type="real" />
+			</columns>
+			<ui>
+				<position x="87" y="110" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="COMPANY" type="FILE">
+			<path><![CDATA[$(IN_PATH)company-info.txt]]></path>
+			<columns>
+				<column name="표준코드" type="string" />
+				<column name="단축코드" type="string" />
+				<column name="한글 종목명" type="string" />
+				<column name="한글 종목약명" type="string" />
+				<column name="영문 종목명" type="string" />
+				<column name="상장일" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="증권구분" type="string" />
+				<column name="소속부" type="string" />
+				<column name="주식종류" type="string" />
+				<column name="액면가" type="string" />
+				<column name="상장주식수" type="real" />
+			</columns>
+			<ui>
+				<position x="408" y="58" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="MONTH_PRICE" type="FILE">
+			<path><![CDATA[$(IN_PATH)monthPrice.csv]]></path>
+			<params>
+				<param name="delimiter"><![CDATA[Comma(,)]]></param>
+				<param name="nameAtHead"><![CDATA[true]]></param>
+				<param name="quote"><![CDATA[true]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
+				<column name="외국인소진율" type="real" />
+			</columns>
+			<ui>
+				<position x="1163" y="67" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[NOW_CFP]]></dataSource>
+				<dataSource alias="A2"><![CDATA[PREV_CFP]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[NOW_AND_PREV]]></dataGroupName>
+			<ui>
+				<position x="239" y="187" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>outer</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="NOW_CFP"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="PREV_CFP"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="NOW_CFP"><![CDATA[*]]></columns>
+				<columns source="PREV_CFP"><![CDATA[순자산(전기),보통주(전기)]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[COMPANY]]></dataSource>
+				<dataSource alias="A2"><![CDATA[NOW_AND_PREV]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_COMPANY]]></dataGroupName>
+			<ui>
+				<position x="408" y="187" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="COMPANY"><![CDATA[단축코드]]></equalKey>
+				<equalKey source="NOW_AND_PREV"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="COMPANY"><![CDATA[표준코드,단축코드,한글 종목명,상장일,시장구분,상장주식수]]></columns>
+				<columns source="NOW_AND_PREV"><![CDATA[*]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[ADD_COMPANY]]></dataSource>
+				<dataSource alias="A2"><![CDATA[PICK_PROXY]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ATTACH_PRICE]]></dataGroupName>
+			<ui>
+				<position x="551" y="186" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="ADD_COMPANY"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="PICK_PROXY"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="ADD_COMPANY"><![CDATA[*]]></columns>
+				<columns source="PICK_PROXY"><![CDATA[날짜,종가,날짜(차기),종가(차기)]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[DATE_PICK]]></dataSource>
+			<dataGroupName><![CDATA[PICK_ONE]]></dataGroupName>
+			<ui>
+				<position x="852" y="177" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[P_CODE, DATE_KEY]]></groupingColumns>
+			<selectColumn type="max"><![CDATA[날짜]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[DATE_KEY]]></dataSource>
+			<dataGroupName><![CDATA[DATE_PICK]]></dataGroupName>
+			<ui>
+				<position x="971" y="177" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{DATE_KEY} = ($(YEAR) + 1) + '$(B_MONTH)']]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ADD_COMP_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[PICK_PROXY]]></dataGroupName>
+			<ui>
+				<position x="696" y="187" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>날짜</column>
+				<column>종가</column>
+				<column>날짜(차기)</column>
+				<column>종가(차기)</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ATTACH_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[CALC_INDEX]]></dataGroupName>
+			<ui>
+				<position x="296" y="324" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="시가총액"><![CDATA[{보통주} * {종가} / 100000]]></derivedColumn>
+				<derivedColumn name="감가상각비합"><![CDATA[NVL({판매비와관리비/감가상각비}, 0) + NVL({판매비와관리비/기타무형자산상각비}, 0)]]></derivedColumn>
+				<derivedColumn name="평균자기자본"><![CDATA[({순자산} + NVL({순자산(전기)}, {순자산})) / 2]]></derivedColumn>
+				<derivedColumn name="EV"><![CDATA[{시가총액} + {부채총계} - NVL({현금및현금성자산}, 0)]]></derivedColumn>
+				<derivedColumn name="현금흐름"><![CDATA[NVL({영업활동으로인한현금흐름}, 0) + NVL({재무활동으로인한현금흐름}, 0)]]></derivedColumn>
+				<derivedColumn name="PER"><![CDATA[{시가총액} / NVL({당기순이익(지배주주)}, 1)]]></derivedColumn>
+				<derivedColumn name="PBR"><![CDATA[{시가총액} / ({자산총계} - {부채총계})]]></derivedColumn>
+				<derivedColumn name="PCR"><![CDATA[IIF(ISNULL({현금흐름}), 0, IIF({현금흐름} = 0, 0, {시가총액} / {현금흐름}))]]></derivedColumn>
+				<derivedColumn name="PSR"><![CDATA[{시가총액} / {매출액}]]></derivedColumn>
+				<derivedColumn name="EV/EBIT"><![CDATA[{EV} / {영업이익}]]></derivedColumn>
+				<derivedColumn name="EV/EBITDA"><![CDATA[{EV} / ({영업이익} + {감가상각비합})]]></derivedColumn>
+				<derivedColumn name="GP/A"><![CDATA[IIF(NVL({매출액}, 0) = 0 OR NVL({매출원가}, 0) = 0 OR NVL({자산총계}, 0) = 0, -1, ({매출액} - {매출원가}) / {자산총계})]]></derivedColumn>
+				<derivedColumn name="부채비율"><![CDATA[{부채총계} / {자본총계} * 100]]></derivedColumn>
+				<derivedColumn name="유동비율"><![CDATA[{유동자산} / {유동부채} * 100]]></derivedColumn>
+				<derivedColumn name="ROE"><![CDATA[{당기순이익} / {평균자기자본} * 100]]></derivedColumn>
+				<derivedColumn name="ROA"><![CDATA[{당기순이익} / {자산총계} * 100]]></derivedColumn>
+				<derivedColumn name="배당수익률"><![CDATA[IIF(ISNULL({배당금지급(-)}), 0, - {배당금지급(-)} * 100000 / {발행주식수} / {종가} * 100)]]></derivedColumn>
+				<derivedColumn name="F-Score(Adj)"><![CDATA[IIF(NVL({보통주(전기)}, 0) >= {보통주}, 1, 0) + IIF({당기순이익} > 0, 1, 0) + IIF({영업활동으로인한현금흐름} > 0, 1, 0)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[DATE_KEY]]></dataSource>
+			<dataGroupName><![CDATA[NEXT_DATE]]></dataGroupName>
+			<ui>
+				<position x="1145" y="249" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{DATE_KEY} = IIF( $(YEAR) + 2 > $(C_YEAR), '202104', ($(YEAR) + 2) + '$(B_MONTH)' )]]></condition>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[NEXT_DATE]]></dataSource>
+			<dataGroupName><![CDATA[PICK_ONE_2]]></dataGroupName>
+			<ui>
+				<position x="1041" y="288" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[P_CODE]]></groupingColumns>
+			<selectColumn type="max"><![CDATA[날짜]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[PICK_ONE]]></dataSource>
+				<dataSource alias="A2"><![CDATA[PRICE_COLUMN]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_COMP_PRICE]]></dataGroupName>
+			<ui>
+				<position x="778" y="269" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>outer</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="PICK_ONE"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="PRICE_COLUMN"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="PICK_ONE"><![CDATA[P_CODE,날짜,종가]]></columns>
+				<columns source="PRICE_COLUMN"><![CDATA[날짜(차기),종가(차기)]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[PICK_ONE_2]]></dataSource>
+			<dataGroupName><![CDATA[PRICE_COLUMN]]></dataGroupName>
+			<ui>
+				<position x="915" y="304" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column toName="날짜(차기)">날짜</column>
+				<column toName="종가(차기)">종가</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[CALC_INDEX]]></dataSource>
+			<dataGroupName><![CDATA[FILTER_BADS]]></dataGroupName>
+			<ui>
+				<position x="302" y="439" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {ROA} > 3 AND {PSR} > 0.01 AND {PER} > 0 AND {PCR} > 0 AND {시장구분} <> 'KONEX']]></condition>
+		</processingElem>
+
+		<processingElem type="rank">
+			<dataSource alias="A1"><![CDATA[FILTER_BADS]]></dataSource>
+			<dataGroupName><![CDATA[RANK_4IDX]]></dataGroupName>
+			<ui>
+				<position x="450" y="444" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<rankColumns><![CDATA[시가총액,PBR,PER,PSR,PCR]]></rankColumns>
+			<prefix><![CDATA[RANK_]]></prefix>
+			<usePercentage>true</usePercentage>
+			<acsending>true</acsending>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[RANK_4IDX]]></dataSource>
+			<dataGroupName><![CDATA[SCORING]]></dataGroupName>
+			<ui>
+				<position x="552" y="368" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="S_PBR"><![CDATA[INT({RANK_PBR})]]></derivedColumn>
+				<derivedColumn name="S_PER"><![CDATA[INT({RANK_PER})]]></derivedColumn>
+				<derivedColumn name="S_PSR"><![CDATA[INT({RANK_PSR})]]></derivedColumn>
+				<derivedColumn name="S_PCR"><![CDATA[INT({RANK_PCR})]]></derivedColumn>
+				<derivedColumn name="SCORE"><![CDATA[{S_PBR} + {S_PER} + {S_PSR} + {S_PCR}]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[SCORING]]></dataSource>
+			<dataGroupName><![CDATA[ORDERING]]></dataGroupName>
+			<ui>
+				<position x="636" y="468" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">SCORE</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ORDERING]]></dataSource>
+			<dataGroupName><![CDATA[SMALL_SIZE]]></dataGroupName>
+			<ui>
+				<position x="775" y="406" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{RANK_시가총액} < 21]]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[SMALL_SIZE]]></dataSource>
+			<dataGroupName><![CDATA[FSCORE3]]></dataGroupName>
+			<ui>
+				<position x="831" y="503" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{F-Score(Adj)} = 3]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[FSCORE3]]></dataSource>
+			<dataGroupName><![CDATA[C_RESULT]]></dataGroupName>
+			<ui>
+				<position x="668" y="568" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>표준코드</column>
+				<column>한글 종목명</column>
+				<column>상장일</column>
+				<column>시장구분</column>
+				<column>상장주식수</column>
+				<column>날짜</column>
+				<column>종가</column>
+				<column>날짜(차기)</column>
+				<column>종가(차기)</column>
+				<column>F-Score(Adj)</column>
+				<column>SCORE</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[C_RESULT]]></dataSource>
+			<dataGroupName><![CDATA[AFTER_DF]]></dataGroupName>
+			<ui>
+				<position x="496" y="569" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="차액"><![CDATA[{종가(차기)} - {종가}]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[MONTH_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[DATE_KEY]]></dataGroupName>
+			<ui>
+				<position x="1133" y="163" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="DATE_KEY"><![CDATA[SUBSTR({날짜}, 1, 6)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="PRICE_BASIS" type="FILE">
+			<path><![CDATA[$(IN_PATH)sp-*.txt]]></path>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="상장주식수" type="real" />
+				<column name="시가총액" type="real" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+				<column name="등락률" type="real" />
+				<column name="거래량" type="real" />
+				<column name="거래대금" type="real" />
+				<column name="외국인소진율" type="real" />
+			</columns>
+			<ui>
+				<position x="112" y="105" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[PRICE_BASIS]]></dataSource>
+			<dataGroupName><![CDATA[MAKE_INDEX]]></dataGroupName>
+			<ui>
+				<position x="288" y="106" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">날짜</column>
+				<column order="ascending">종목코드</column>
+			</sortColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="UPLOAD" source="MAKE_INDEX" type="dataOn">
+			<dataGroup>BASIS</dataGroup>
+			<loadType>2</loadType>
+			<useIncubator>false</useIncubator>
+			<remainHistory>false</remainHistory>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<ui>
+				<position x="461" y="106" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
