@@ -34,3 +34,6 @@ Referer: https://finance.naver.com/item/coinfo.nhn?code=000810
 Accept-Encoding: gzip, deflate, br
 Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
 
+
+
+년간 재무제표를 2번 이상 제출하는 기업의 경우 참조하는 재무제표가 최근 + 최근 바로 전이 아니라, 최근 + 최근 1년전 이게 됨.

@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="BSCFPL_DATA" type="dataOn">
+			<query><![CDATA[SELECT *
+  FROM KRX.ANNUAL_BSCFPL]]></query>
+			<params>
+				<param name="collection"><![CDATA[KRX]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="TERM" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="유동자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="비유동자산" type="real" />
+				<column name="유형자산" type="real" />
+				<column name="무형자산" type="real" />
+				<column name="투자부동산" type="real" />
+				<column name="투자자산" type="real" />
+				<column name="순자산" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="유동부채" type="real" />
+				<column name="매입채무및기타채무" type="real" />
+				<column name="이자발생부채" type="real" />
+				<column name="순부채" type="real" />
+				<column name="CAPEX" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="자본금" type="real" />
+				<column name="자본잉여금" type="real" />
+				<column name="당기순이익_지배" type="real" />
+				<column name="당기순이익_비지배" type="real" />
+				<column name="비지배주주지분" type="real" />
+				<column name="수권주식수" type="real" />
+				<column name="주당금액" type="real" />
+				<column name="발행주식수" type="real" />
+				<column name="보통주" type="real" />
+				<column name="매출액" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="감가상각비" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="법인세비용" type="real" />
+				<column name="기타포괄이익" type="real" />
+				<column name="총포괄이익" type="real" />
+				<column name="주당순이익" type="real" />
+				<column name="주당순이익_지배" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="영업에서창출된현금흐름" type="real" />
+				<column name="배당금수입" type="real" />
+				<column name="배당금지급" type="real" />
+				<column name="법인세납부" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="투자활동현금유입액" type="real" />
+				<column name="투자활동현금유출액" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="재무활동현금유입액" type="real" />
+				<column name="재무활동현금유출액" type="real" />
+				<column name="현금및현금성자산의증가" type="real" />
+				<column name="FCF" type="real" />
+				<column name="ROA" type="real" />
+				<column name="ROE" type="real" />
+				<column name="부채비율" type="real" />
+				<column name="세전계속사업이익" type="real" />
+				<column name="순이익률" type="real" />
+				<column name="영업이익률" type="real" />
+				<column name="자본유보율" type="real" />
+				<column name="현금배당성향" type="real" />
+				<column name="현금배당수익률" type="real" />
+			</columns>
+			<ui>
+				<position x="103" y="105" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="BSCFPL_DATA" type="file">
+			<filePath><![CDATA[$(OUT_PATH)ANNUAL-BSCFPL.pmd]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="268" y="105" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

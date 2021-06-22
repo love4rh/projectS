@@ -1,5 +1,4 @@
 #-*- coding:utf-8 -*-
-
 import requests
 from requests.structures import CaseInsensitiveDict
 
@@ -13,8 +12,12 @@ import io
 import json
 from bs4 import BeautifulSoup
 
+import sys
 
-enc_param_value = 'UWtSVjg4a0tjL3psTkRScjMzdDFtQT09'
+from config import *
+
+
+enc_param_value = encParamKey # 'UWtSVjg4a0tjL3psTkRScjMzdDFtQT09'
 
 time_checker = {}
 
@@ -41,7 +44,19 @@ def end(job):
         print('<<<<<<<', job, 'done', round((tm.time() - time_checker[job]) * 1000), 'ms', flush=True)
     else:
         print('<<<<<<<', job, 'not defined')
+    
         
+def runDashScript(scriptPathName, parameter):
+    optionStr = ''
+    for key in parameter:
+        optionStr += ' "' + key + '=' + parameter[key] + '"'
+        
+    cmdStr = 'java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName + optionStr
+    print(cmdStr, flush=True)
+    retCode = os.system(cmdStr)
+    
+    return retCode
+
 
 def set_enc_param(s):
     global enc_param_value

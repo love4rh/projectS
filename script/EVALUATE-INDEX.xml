@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
+		</macro>
+		<macro name="BASIS_DATE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20210528]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="BS_COND3" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DATE)', 'yyyyMMdd') - 50, 'yyyy/MM')]]></param>
+		</macro>
+		<macro name="BS_COND2" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DATE)', 'yyyyMMdd') - 50 - 365, 'yyyy/MM')]]></param>
+		</macro>
+		<macro name="BS_COND1" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DATE)', 'yyyyMMdd') - 50 - 365 * 2, 'yyyy/MM')]]></param>
+		</macro>
+		<macro name="P_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(BASIS_DATE)', 1, 4)]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="PRICE" type="dataOn">
+			<query><![CDATA[SELECT *
+  FROM PRICE.Y$(P_YEAR)
+ WHERE 날짜 = '$(BASIS_DATE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="상장주식수" type="real" />
+				<column name="시가총액" type="real" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+				<column name="등락률" type="real" />
+				<column name="거래량" type="real" />
+				<column name="거래대금" type="real" />
+				<column name="외국인소진율" type="real" />
+			</columns>
+			<ui>
+				<position x="118" y="418" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="ALL_BCP_DATA" type="FILE">
+			<path><![CDATA[$(IN_PATH)ANNUAL-BSCFPL.pmd]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="TERM" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="유동자산" type="real" />
+				<column name="현금및현금성자산" type="real" />
+				<column name="재고자산" type="real" />
+				<column name="비유동자산" type="real" />
+				<column name="유형자산" type="real" />
+				<column name="무형자산" type="real" />
+				<column name="투자부동산" type="real" />
+				<column name="투자자산" type="real" />
+				<column name="순자산" type="real" />
+				<column name="부채총계" type="real" />
+				<column name="유동부채" type="real" />
+				<column name="매입채무및기타채무" type="real" />
+				<column name="이자발생부채" type="real" />
+				<column name="순부채" type="real" />
+				<column name="CAPEX" type="real" />
+				<column name="자본총계" type="real" />
+				<column name="지배주주지분" type="real" />
+				<column name="자본금" type="real" />
+				<column name="자본잉여금" type="real" />
+				<column name="당기순이익_지배" type="real" />
+				<column name="당기순이익_비지배" type="real" />
+				<column name="비지배주주지분" type="real" />
+				<column name="수권주식수" type="real" />
+				<column name="주당금액" type="real" />
+				<column name="발행주식수" type="real" />
+				<column name="보통주" type="real" />
+				<column name="매출액" type="real" />
+				<column name="매출원가" type="real" />
+				<column name="매출총이익" type="real" />
+				<column name="영업이익" type="real" />
+				<column name="당기순이익" type="real" />
+				<column name="판매비와관리비" type="real" />
+				<column name="감가상각비" type="real" />
+				<column name="법인세비용차감전계속사업이익" type="real" />
+				<column name="법인세비용" type="real" />
+				<column name="기타포괄이익" type="real" />
+				<column name="총포괄이익" type="real" />
+				<column name="주당순이익" type="real" />
+				<column name="주당순이익_지배" type="real" />
+				<column name="영업활동으로인한현금흐름" type="real" />
+				<column name="영업에서창출된현금흐름" type="real" />
+				<column name="배당금수입" type="real" />
+				<column name="배당금지급" type="real" />
+				<column name="법인세납부" type="real" />
+				<column name="투자활동으로인한현금흐름" type="real" />
+				<column name="투자활동현금유입액" type="real" />
+				<column name="투자활동현금유출액" type="real" />
+				<column name="재무활동으로인한현금흐름" type="real" />
+				<column name="재무활동현금유입액" type="real" />
+				<column name="재무활동현금유출액" type="real" />
+				<column name="현금및현금성자산의증가" type="real" />
+				<column name="FCF" type="real" />
+				<column name="ROA" type="real" />
+				<column name="ROE" type="real" />
+				<column name="부채비율" type="real" />
+				<column name="세전계속사업이익" type="real" />
+				<column name="순이익률" type="real" />
+				<column name="영업이익률" type="real" />
+				<column name="자본유보율" type="real" />
+				<column name="현금배당성향" type="real" />
+				<column name="현금배당수익률" type="real" />
+			</columns>
+			<ui>
+				<position x="88" y="177" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[JUST_ONE_NOW]]></dataSource>
+				<dataSource alias="A2"><![CDATA[SEL_DATE]]></dataSource>
+				<dataSource alias="A3"><![CDATA[PREV_PERIOD]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[BS_AND_PRICE]]></dataGroupName>
+			<ui>
+				<position x="506" y="243" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="JUST_ONE_NOW"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="PREV_PERIOD"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="SEL_DATE"><![CDATA[종목코드]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="JUST_ONE_NOW"><![CDATA[*]]></columns>
+				<columns source="PREV_PERIOD"><![CDATA[자산총계_P,순자산_P,보통주_P,자본총계_P,영업이익률_P,순이익률_P,ROE_P,매출액_P,영업이익_P,당기순이익_지배_P]]></columns>
+				<columns source="SEL_DATE"><![CDATA[상장주식수,시가총액,종가]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[PRICE]]></dataSource>
+			<dataGroupName><![CDATA[SEL_DATE]]></dataGroupName>
+			<ui>
+				<position x="399" y="420" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[1]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[JUST_ONE_PREV]]></dataSource>
+			<dataGroupName><![CDATA[PREV_PERIOD]]></dataGroupName>
+			<ui>
+				<position x="431" y="93" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column toName="자산총계_P">자산총계</column>
+				<column toName="순자산_P">순자산</column>
+				<column toName="보통주_P">보통주</column>
+				<column toName="자본총계_P">자본총계</column>
+				<column toName="영업이익률_P">영업이익률</column>
+				<column toName="순이익률_P">순이익률</column>
+				<column toName="ROE_P">ROE</column>
+				<column toName="매출액_P">매출액</column>
+				<column toName="영업이익_P">영업이익</column>
+				<column toName="당기순이익_지배_P">당기순이익_지배</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[CURRENT_BCP]]></dataSource>
+			<dataGroupName><![CDATA[JUST_ONE_NOW]]></dataGroupName>
+			<ui>
+				<position x="354" y="266" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[P_CODE]]></groupingColumns>
+			<selectColumn type="max"><![CDATA[TERM]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[PREV_BCP]]></dataSource>
+			<dataGroupName><![CDATA[JUST_ONE_PREV]]></dataGroupName>
+			<ui>
+				<position x="311" y="93" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[P_CODE]]></groupingColumns>
+			<selectColumn type="max"><![CDATA[TERM]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[BS_AND_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[CALC_INDEX]]></dataGroupName>
+			<ui>
+				<position x="702" y="242" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="시가총액_억"><![CDATA[{시가총액} / 100000000]]></derivedColumn>
+				<derivedColumn name="평균자기자본"><![CDATA[({순자산} + {순자산_P}) / 2]]></derivedColumn>
+				<derivedColumn name="EV"><![CDATA[IIF(ISNULL({순부채}), {시가총액_억} + {부채총계} - NVL({현금및현금성자산}, 0), {시가총액_억} + {순부채})]]></derivedColumn>
+				<derivedColumn name="현금흐름"><![CDATA[NVL({영업활동으로인한현금흐름}, 0) + NVL({재무활동으로인한현금흐름}, 0)]]></derivedColumn>
+				<derivedColumn name="PER"><![CDATA[{시가총액_억} / NVL({당기순이익_지배}, 1)]]></derivedColumn>
+				<derivedColumn name="PBR"><![CDATA[{시가총액_억} / ({자산총계} - {부채총계})]]></derivedColumn>
+				<derivedColumn name="PCR"><![CDATA[IIF(ISNULL({현금흐름}), 0, IIF({현금흐름} = 0, 0, {시가총액_억} / {현금흐름}))]]></derivedColumn>
+				<derivedColumn name="PSR"><![CDATA[{시가총액_억} / {매출액}]]></derivedColumn>
+				<derivedColumn name="EV/EBIT"><![CDATA[{EV} / {영업이익}]]></derivedColumn>
+				<derivedColumn name="EV/EBITDA"><![CDATA[{EV} / ({영업이익} + {감가상각비})]]></derivedColumn>
+				<derivedColumn name="GP/A"><![CDATA[IIF(NVL({매출액}, 0) = 0 OR NVL({매출원가}, 0) = 0 OR NVL({자산총계}, 0) = 0, -1, ({매출액} - {매출원가}) / {자산총계})]]></derivedColumn>
+				<derivedColumn name="부채비율"><![CDATA[{부채총계} / {자본총계} * 100]]></derivedColumn>
+				<derivedColumn name="순부채비율"><![CDATA[{순부채} / {자본총계} * 100]]></derivedColumn>
+				<derivedColumn name="유동비율"><![CDATA[{유동자산} / {유동부채} * 100]]></derivedColumn>
+				<derivedColumn name="배당수익률"><![CDATA[IIF(ISNULL({배당금지급}), 0, - {배당금지급} * 100000 / {발행주식수} / {종가} * 100)]]></derivedColumn>
+				<derivedColumn name="AdjFScore"><![CDATA[IIF(NVL({보통주_P}, 0) >= {보통주}, 1, 0) + IIF({당기순이익} > 0, 1, 0) + IIF({영업활동으로인한현금흐름} > 0, 1, 0)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ALL_BCP_DATA]]></dataSource>
+			<dataGroupName><![CDATA[CURRENT_BCP]]></dataGroupName>
+			<ui>
+				<position x="204" y="266" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA['$(BS_COND2)' <= {TERM} AND {TERM} < '$(BS_COND3)']]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ALL_BCP_DATA]]></dataSource>
+			<dataGroupName><![CDATA[PREV_BCP]]></dataGroupName>
+			<ui>
+				<position x="199" y="92" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA['$(BS_COND1)' <= {TERM} AND {TERM} < '$(BS_COND2)']]></condition>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[CALC_INDEX]]></dataSource>
+			<dataGroupName><![CDATA[CALC_RATIO]]></dataGroupName>
+			<ui>
+				<position x="684" y="373" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="ROE증가율"><![CDATA[({ROE} - {ROE_P}) / {ROE_P} * 100]]></derivedColumn>
+				<derivedColumn name="자산증가율"><![CDATA[({자산총계} - {자산총계_P}) / {자산총계_P} * 100]]></derivedColumn>
+				<derivedColumn name="자본증가율"><![CDATA[({자본총계} - {자본총계_P}) / {자본총계_P} * 100]]></derivedColumn>
+				<derivedColumn name="영업이익률증가율"><![CDATA[({영업이익률} - {영업이익률_P}) / {영업이익률_P} * 100]]></derivedColumn>
+				<derivedColumn name="순이익률증가율"><![CDATA[({순이익률} - {순이익률_P}) / {순이익률_P} * 100]]></derivedColumn>
+				<derivedColumn name="매출액증가율"><![CDATA[({매출액} - {매출액_P}) / {매출액_P} * 100]]></derivedColumn>
+				<derivedColumn name="영업이익증가율"><![CDATA[({영업이익} - {영업이익_P}) / {영업이익_P} * 100]]></derivedColumn>
+				<derivedColumn name="지배주주순이익증가율"><![CDATA[({당기순이익_지배} - {당기순이익_지배_P}) / {당기순이익_지배_P} * 100]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[CALC_RATIO]]></dataSource>
+			<dataGroupName><![CDATA[CLEANUP_RESULT]]></dataGroupName>
+			<ui>
+				<position x="850" y="370" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>TERM</column>
+				<column>자산총계</column>
+				<column>순자산</column>
+				<column>부채총계</column>
+				<column>자본총계</column>
+				<column>현금및현금성자산</column>
+				<column>유동자산</column>
+				<column>비유동자산</column>
+				<column>이자발생부채</column>
+				<column>순부채</column>
+				<column>CAPEX</column>
+				<column>유동부채</column>
+				<column>당기순이익_지배</column>
+				<column>보통주</column>
+				<column>매출액</column>
+				<column>매출원가</column>
+				<column>매출총이익</column>
+				<column>영업이익</column>
+				<column>당기순이익</column>
+				<column>판매비와관리비</column>
+				<column>법인세비용</column>
+				<column>주당순이익_지배</column>
+				<column>영업활동으로인한현금흐름</column>
+				<column>배당금지급</column>
+				<column>법인세납부</column>
+				<column>투자활동으로인한현금흐름</column>
+				<column>재무활동으로인한현금흐름</column>
+				<column>현금및현금성자산의증가</column>
+				<column>FCF</column>
+				<column>ROA</column>
+				<column>ROE</column>
+				<column>부채비율</column>
+				<column>순이익률</column>
+				<column>영업이익률</column>
+				<column>자본유보율</column>
+				<column>현금배당성향</column>
+				<column>현금배당수익률</column>
+				<column>상장주식수</column>
+				<column>시가총액</column>
+				<column>시가총액_억</column>
+				<column>EV</column>
+				<column>현금흐름</column>
+				<column>PER</column>
+				<column>PBR</column>
+				<column>PCR</column>
+				<column>PSR</column>
+				<column>EV/EBIT</column>
+				<column>EV/EBITDA</column>
+				<column>GP/A</column>
+				<column>순부채비율</column>
+				<column>유동비율</column>
+				<column>배당수익률</column>
+				<column>AdjFScore</column>
+				<column>ROE증가율</column>
+				<column>자산증가율</column>
+				<column>자본증가율</column>
+				<column>영업이익률증가율</column>
+				<column>순이익률증가율</column>
+				<column>매출액증가율</column>
+				<column>영업이익증가율</column>
+				<column>지배주주순이익증가율</column>
+			</orderAndFilter>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="CLEANUP_RESULT" type="file">
+			<filePath><![CDATA[$(OUT_PATH)ANNUAL-$(BASIS_DATE).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="944" y="251" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
