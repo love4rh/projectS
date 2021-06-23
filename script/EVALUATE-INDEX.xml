@@ -14,7 +14,7 @@
 			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
 		</macro>
 		<macro name="BASIS_DATE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210528]]></param>
+			<param name="value"><![CDATA[20130227]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
@@ -157,7 +157,7 @@
 				<position x="506" y="243" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<joinMethod>inner</joinMethod>
+			<joinMethod>outer</joinMethod>
 			<addKeyColumn>false</addKeyColumn>
 			<equalKeys>
 				<equalKey source="JUST_ONE_NOW"><![CDATA[P_CODE]]></equalKey>
@@ -234,7 +234,7 @@
 			</ui>
 			<addColumns>
 				<derivedColumn name="시가총액_억"><![CDATA[{시가총액} / 100000000]]></derivedColumn>
-				<derivedColumn name="평균자기자본"><![CDATA[({순자산} + {순자산_P}) / 2]]></derivedColumn>
+				<derivedColumn name="평균자기자본"><![CDATA[({순자산} + NVL({순자산_P}, {순자산})) / 2]]></derivedColumn>
 				<derivedColumn name="EV"><![CDATA[IIF(ISNULL({순부채}), {시가총액_억} + {부채총계} - NVL({현금및현금성자산}, 0), {시가총액_억} + {순부채})]]></derivedColumn>
 				<derivedColumn name="현금흐름"><![CDATA[NVL({영업활동으로인한현금흐름}, 0) + NVL({재무활동으로인한현금흐름}, 0)]]></derivedColumn>
 				<derivedColumn name="PER"><![CDATA[{시가총액_억} / NVL({당기순이익_지배}, 1)]]></derivedColumn>

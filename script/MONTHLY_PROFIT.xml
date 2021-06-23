@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\logicResult\]]></param>
+		</macro>
+		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20140529]]></param>
+		</macro>
+		<macro name="BUY_DAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20130228]]></param>
+		</macro>
+		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20140228]]></param>
+		</macro>
+		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[10000000]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\logicResult\]]></param>
+		</macro>
+		<macro name="TOP_N" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="BUY_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(BUY_DAY)', 1, 4)]]></param>
+		</macro>
+		<macro name="SELL_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(SELL_DAY)', 1, 4)]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="BUY_ITEMS" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\output\logicResult\20140529-RESULT.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="RISK" type="real" />
+				<column name="매수일" type="real" />
+				<column name="매수가" type="real" />
+				<column name="매도일" type="real" />
+				<column name="매도가" type="real" />
+				<column name="매수량" type="real" />
+				<column name="REVENUE" type="real" />
+			</columns>
+			<ui>
+				<position x="101" y="81" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="BUY_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 날짜 "매수일", 종목코드, 종목명, 종가 "매수가", 시장구분, 거래대금
+  FROM PRICE.Y$(BUY_YEAR)
+ WHERE 날짜 = '$(BUY_DAY)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="매수일" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="매수가" type="real" />
+				<column name="시장구분" type="string" />
+				<column name="거래대금" type="real" />
+			</columns>
+			<ui>
+				<position x="110" y="349" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="SELL_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 날짜 "매도일", 종목코드, 종목명, 종가 "매도가"
+  FROM PRICE.Y$(SELL_YEAR)
+ WHERE 날짜 = '$(SELL_DAY)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="매도일" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="매도가" type="real" />
+			</columns>
+			<ui>
+				<position x="105" y="521" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="BASIS_DAYS" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\resource\BASIS-DAYS.txt]]></path>
+			<columns>
+				<column name="YYYYMM" type="string" />
+				<column name="FIRST_DAY" type="string" />
+				<column name="SECOND_DAY" type="string" />
+				<column name="PREV_DAY" type="string" />
+				<column name="LAST_DAY" type="string" />
+				<column name="NEXT_DAY" type="string" />
+			</columns>
+			<ui>
+				<position x="105" y="200" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+</crawlegoProject>

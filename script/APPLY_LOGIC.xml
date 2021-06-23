@@ -8,19 +8,19 @@
 
 	<macros>
 		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20140227]]></param>
+			<param name="value"><![CDATA[20130227]]></param>
 		</macro>
 		<macro name="BUY_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20140228]]></param>
+			<param name="value"><![CDATA[20130228]]></param>
 		</macro>
 		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20150227]]></param>
+			<param name="value"><![CDATA[20140228]]></param>
 		</macro>
 		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[10000000]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\logicResult\]]></param>
 		</macro>
 		<macro name="TOP_N" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[20]]></param>
@@ -106,7 +106,7 @@
 				<column name="지배주주순이익증가율" type="real" />
 			</columns>
 			<ui>
-				<position x="96" y="76" />
+				<position x="91" y="81" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -131,7 +131,7 @@
 				<column name="거래대금" type="real" />
 			</columns>
 			<ui>
-				<position x="101" y="352" />
+				<position x="91" y="361" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -154,7 +154,7 @@
 				<column name="매도가" type="real" />
 			</columns>
 			<ui>
-				<position x="116" y="501" />
+				<position x="86" y="533" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -166,7 +166,7 @@
 			<dataSource alias="A1"><![CDATA[COMP_SIZE_RANK]]></dataSource>
 			<dataGroupName><![CDATA[FILTER_BADS]]></dataGroupName>
 			<ui>
-				<position x="463" y="72" />
+				<position x="385" y="81" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {당기순이익} > 0 AND {부채비율} <= 150 AND {PCR} > 0]]></condition>
@@ -176,7 +176,7 @@
 			<dataSource alias="A1"><![CDATA[NOT_KONEX]]></dataSource>
 			<dataGroupName><![CDATA[COMP_SIZE_RANK]]></dataGroupName>
 			<ui>
-				<position x="349" y="67" />
+				<position x="257" y="81" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<rankColumns><![CDATA[시가총액]]></rankColumns>
@@ -189,7 +189,7 @@
 			<dataSource alias="A1"><![CDATA[FILTER_BADS]]></dataSource>
 			<dataGroupName><![CDATA[RANK_4IDX]]></dataGroupName>
 			<ui>
-				<position x="334" y="211" />
+				<position x="385" y="221" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<rankColumns><![CDATA[시가총액,PBR,PER,PSR,PCR]]></rankColumns>
@@ -202,7 +202,7 @@
 			<dataSource alias="A1"><![CDATA[SCORING]]></dataSource>
 			<dataGroupName><![CDATA[SMALL_SIZE]]></dataGroupName>
 			<ui>
-				<position x="421" y="277" />
+				<position x="259" y="358" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[{RANK_시가총액} < 21]]></condition>
@@ -212,7 +212,7 @@
 			<dataSource alias="A1"><![CDATA[RANK_4IDX]]></dataSource>
 			<dataGroupName><![CDATA[SCORING]]></dataGroupName>
 			<ui>
-				<position x="536" y="186" />
+				<position x="385" y="358" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -232,7 +232,7 @@
 			</dataSources>
 			<dataGroupName><![CDATA[MERGE_PRICE]]></dataGroupName>
 			<ui>
-				<position x="420" y="411" />
+				<position x="258" y="476" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<joinMethod>outer</joinMethod>
@@ -256,7 +256,7 @@
 			</dataSources>
 			<dataGroupName><![CDATA[ADD_MARKET]]></dataGroupName>
 			<ui>
-				<position x="151" y="189" />
+				<position x="91" y="221" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<joinMethod>inner</joinMethod>
@@ -275,7 +275,7 @@
 			<dataSource alias="A1"><![CDATA[ADD_MARKET]]></dataSource>
 			<dataGroupName><![CDATA[NOT_KONEX]]></dataGroupName>
 			<ui>
-				<position x="246" y="108" />
+				<position x="257" y="221" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[{시장구분} <> 'KONEX' AND {매수가} > 2000]]></condition>
@@ -285,10 +285,10 @@
 			<dataSource alias="A1"><![CDATA[DIFF]]></dataSource>
 			<dataGroupName><![CDATA[STAT]]></dataGroupName>
 			<ui>
-				<position x="926" y="244" />
+				<position x="860" y="217" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<groupingColumns><![CDATA[매도일]]></groupingColumns>
+			<groupingColumns><![CDATA[매수일, 매도일]]></groupingColumns>
 			<generate>
 				<column type="sum" delimiter=";" toName="R_SUM"><![CDATA[REVENUE]]></column>
 			</generate>
@@ -298,12 +298,11 @@
 			<dataSource alias="A1"><![CDATA[TOPN]]></dataSource>
 			<dataGroupName><![CDATA[DIFF]]></dataGroupName>
 			<ui>
-				<position x="923" y="383" />
+				<position x="720" y="217" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="매수량"><![CDATA[FLOOR($(CASH) / $(TOP_N) / {매수가})
-]]></derivedColumn>
+				<derivedColumn name="매수량"><![CDATA[FLOOR($(CASH) / $(TOP_N) / {매수가})]]></derivedColumn>
 				<derivedColumn name="REVENUE"><![CDATA[({매도가} - {매수가}) * {매수량}]]></derivedColumn>
 			</addColumns>
 		</processingElem>
@@ -312,7 +311,7 @@
 			<dataSource alias="A1"><![CDATA[MERGE_PRICE]]></dataSource>
 			<dataGroupName><![CDATA[ORDERING]]></dataGroupName>
 			<ui>
-				<position x="634" y="383" />
+				<position x="580" y="477" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
@@ -324,7 +323,7 @@
 			<dataSource alias="A1"><![CDATA[ORDERING]]></dataSource>
 			<dataGroupName><![CDATA[TOPN]]></dataGroupName>
 			<ui>
-				<position x="779" y="381" />
+				<position x="580" y="217" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[@ROWNUM <= $(TOP_N)]]></condition>
@@ -332,9 +331,9 @@
 
 		<processingElem type="orderAndFilter">
 			<dataSource alias="A1"><![CDATA[DIFF]]></dataSource>
-			<dataGroupName><![CDATA[ColumnOperator_1]]></dataGroupName>
+			<dataGroupName><![CDATA[RESULT_COLUMNS]]></dataGroupName>
 			<ui>
-				<position x="978" y="491" />
+				<position x="720" y="358" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -347,27 +346,28 @@
 				<column>매도일</column>
 				<column>매도가</column>
 				<column>매수량</column>
+				<column>REVENUE</column>
 			</orderAndFilter>
 		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
-		<dataLoading name="FileOutput_1" source="STAT" type="file">
+		<dataLoading name="SAVE_STAT" source="STAT" type="file">
 			<filePath><![CDATA[$(OUT_PATH)$(BASIS_DAY)-STAT.txt]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="1052" y="248" />
+				<position x="1000" y="217" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>
 
-		<dataLoading name="FileOutput_2" source="ColumnOperator_1" type="file">
+		<dataLoading name="SAVE_ITEMS" source="RESULT_COLUMNS" type="file">
 			<filePath><![CDATA[$(OUT_PATH)$(BASIS_DAY)-RESULT.txt]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="1111" y="447" />
+				<position x="870" y="358" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

@@ -46,13 +46,16 @@ def end(job):
         print('<<<<<<<', job, 'not defined')
     
         
-def runDashScript(scriptPathName, parameter):
+def runDashScript(scriptPathName, parameter, display=True):
     optionStr = ''
     for key in parameter:
         optionStr += ' "' + key + '=' + parameter[key] + '"'
         
     cmdStr = 'java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName + optionStr
-    print(cmdStr, flush=True)
+
+    if display:
+        print(cmdStr, flush=True)
+
     retCode = os.system(cmdStr)
     
     return retCode
