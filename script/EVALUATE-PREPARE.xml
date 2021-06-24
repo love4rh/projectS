@@ -8,7 +8,7 @@
 
 	<macros>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
@@ -99,6 +99,30 @@
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
+
+		<inputNode name="BUY_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 날짜, 종목코드, 종목명, 종가, 시장구분, 거래대금
+  FROM PRICE.BASIS]]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="종가" type="real" />
+				<column name="시장구분" type="string" />
+				<column name="거래대금" type="real" />
+			</columns>
+			<ui>
+				<position x="109" y="255" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
 	</inputNodes>
 
 
@@ -109,6 +133,16 @@
 			<finFile><![CDATA[]]></finFile>
 			<ui>
 				<position x="268" y="105" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="SAVE2" source="BUY_PRICE" type="file">
+			<filePath><![CDATA[$(OUT_PATH)PRICE_BASIS.pmd]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="278" y="253" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

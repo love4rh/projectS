@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\momentum\]]></param>
+		</macro>
+		<macro name="RES_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\]]></param>
+		</macro>
+		<macro name="BASIS_DATE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20190730]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="BEGIN_DAY" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DATE)', 'yyyyMMdd') - 364, 'yyyyMMdd')]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="PRICE" type="FILE">
+			<path><![CDATA[$(IN_PATH)PRICE_BASIS.pmd]]></path>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="종가" type="real" />
+				<column name="시장구분" type="string" />
+				<column name="거래대금" type="real" />
+			</columns>
+			<ui>
+				<position x="84" y="91" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="BASIS_DAYS" type="FILE">
+			<path><![CDATA[$(RES_PATH)BASIS-DAYS.txt]]></path>
+			<columns>
+				<column name="YYYYMM" type="string" />
+				<column name="FIRST_DAY" type="string" />
+				<column name="SECOND_DAY" type="string" />
+				<column name="PREV_DAY" type="string" />
+				<column name="LAST_DAY" type="string" />
+				<column name="NEXT_DAY" type="string" />
+			</columns>
+			<ui>
+				<position x="84" y="269" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[PRICE]]></dataSource>
+			<dataGroupName><![CDATA[PAST_PRICE]]></dataGroupName>
+			<ui>
+				<position x="249" y="91" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA['$(BEGIN_DAY)' < {날짜} AND {날짜} <= '$(BASIS_DATE)']]></condition>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[PAST_PRICE]]></dataSource>
+				<dataSource alias="A2"><![CDATA[BASIS_DAYS]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[BASE_PRICE]]></dataGroupName>
+			<ui>
+				<position x="249" y="269" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="BASIS_DAYS"><![CDATA[PREV_DAY]]></equalKey>
+				<equalKey source="PAST_PRICE"><![CDATA[날짜]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="BASIS_DAYS"><![CDATA[]]></columns>
+				<columns source="PAST_PRICE"><![CDATA[*]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[BASE_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_PRICE]]></dataGroupName>
+			<ui>
+				<position x="413" y="269" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[날짜]]></columnColumns>
+			<rowColumns><![CDATA[종목코드]]></rowColumns>
+			<valueColumn><![CDATA[종가]]></valueColumn>
+			<recalculateRuntime><![CDATA[true]]></recalculateRuntime>
+			<remake>true for remaking pivot columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="종목코드" type="string" />
+				<column name="20180830" type="real" />
+				<column name="20180927" type="real" />
+				<column name="20181030" type="real" />
+				<column name="20181129" type="real" />
+				<column name="20181227" type="real" />
+				<column name="20190130" type="real" />
+				<column name="20190227" type="real" />
+				<column name="20190328" type="real" />
+				<column name="20190429" type="real" />
+				<column name="20190530" type="real" />
+				<column name="20190627" type="real" />
+				<column name="20190730" type="real" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[PIVOT_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[ADD_UP_DOWN]]></dataGroupName>
+			<ui>
+				<position x="577" y="269" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="M3_PLUS"><![CDATA[IIF(GETVALUE(13) - GETVALUE(12) > 0, 1, 0) + 
+IIF(GETVALUE(12) - GETVALUE(11) > 0, 1, 0) +
+IIF(GETVALUE(11) - GETVALUE(10) > 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="M3_MINUS"><![CDATA[IIF(GETVALUE(13) - GETVALUE(12) < 0, 1, 0) + 
+IIF(GETVALUE(12) - GETVALUE(11) < 0, 1, 0) +
+IIF(GETVALUE(11) - GETVALUE(10) < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="M6_PLUS"><![CDATA[IIF(GETVALUE(13) - GETVALUE(12) > 0, 1, 0) + 
+IIF(GETVALUE(12) - GETVALUE(11) > 0, 1, 0) +
+IIF(GETVALUE(11) - GETVALUE(10) > 0, 1, 0) +
+IIF(GETVALUE(10) - GETVALUE( 9) > 0, 1, 0) +
+IIF(GETVALUE( 9) - GETVALUE( 8) > 0, 1, 0) +
+IIF(GETVALUE( 8) - GETVALUE( 7) > 0, 1, 0) +
+IIF(GETVALUE( 7) - GETVALUE( 6) > 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="M6_MINUS"><![CDATA[IIF(GETVALUE(13) - GETVALUE(12) < 0, 1, 0) + 
+IIF(GETVALUE(12) - GETVALUE(11) < 0, 1, 0) +
+IIF(GETVALUE(11) - GETVALUE(10) < 0, 1, 0) +
+IIF(GETVALUE(10) - GETVALUE( 9) < 0, 1, 0) +
+IIF(GETVALUE( 9) - GETVALUE( 8) < 0, 1, 0) +
+IIF(GETVALUE( 8) - GETVALUE( 7) < 0, 1, 0) +
+IIF(GETVALUE( 7) - GETVALUE( 6) < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="Y1_PLUS"><![CDATA[IIF(GETVALUE(13) - GETVALUE(12) > 0, 1, 0) + 
+IIF(GETVALUE(12) - GETVALUE(11) > 0, 1, 0) +
+IIF(GETVALUE(11) - GETVALUE(10) > 0, 1, 0) +
+IIF(GETVALUE(10) - GETVALUE( 9) > 0, 1, 0) +
+IIF(GETVALUE( 9) - GETVALUE( 8) > 0, 1, 0) +
+IIF(GETVALUE( 8) - GETVALUE( 7) > 0, 1, 0) +
+IIF(GETVALUE( 7) - GETVALUE( 6) > 0, 1, 0) +
+IIF(GETVALUE( 6) - GETVALUE( 5) > 0, 1, 0) +
+IIF(GETVALUE( 5) - GETVALUE( 4) > 0, 1, 0) +
+IIF(GETVALUE( 4) - GETVALUE( 3) > 0, 1, 0) +
+IIF(GETVALUE( 3) - GETVALUE( 2) > 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="Y1_MINUS"><![CDATA[IIF(GETVALUE(13) - GETVALUE(12) < 0, 1, 0) + 
+IIF(GETVALUE(12) - GETVALUE(11) < 0, 1, 0) +
+IIF(GETVALUE(11) - GETVALUE(10) < 0, 1, 0) +
+IIF(GETVALUE(10) - GETVALUE( 9) < 0, 1, 0) +
+IIF(GETVALUE( 9) - GETVALUE( 8) < 0, 1, 0) +
+IIF(GETVALUE( 8) - GETVALUE( 7) < 0, 1, 0) +
+IIF(GETVALUE( 7) - GETVALUE( 6) < 0, 1, 0) +
+IIF(GETVALUE( 6) - GETVALUE( 5) < 0, 1, 0) +
+IIF(GETVALUE( 5) - GETVALUE( 4) < 0, 1, 0) +
+IIF(GETVALUE( 4) - GETVALUE( 3) < 0, 1, 0) +
+IIF(GETVALUE( 3) - GETVALUE( 2) < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="M3_MM"><![CDATA[{M3_PLUS} / ({M3_PLUS} + {M3_MINUS})]]></derivedColumn>
+				<derivedColumn name="M6_MM"><![CDATA[{M6_PLUS} / ({M6_PLUS} + {M6_MINUS})]]></derivedColumn>
+				<derivedColumn name="Y1_MM"><![CDATA[{Y1_PLUS} / ({Y1_PLUS} + {Y1_MINUS})]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ADD_UP_DOWN]]></dataSource>
+			<dataGroupName><![CDATA[RESULT_COLUMN]]></dataGroupName>
+			<ui>
+				<position x="713" y="268" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>종목코드</column>
+				<column>M3_PLUS</column>
+				<column>M3_MINUS</column>
+				<column>M6_PLUS</column>
+				<column>M6_MINUS</column>
+				<column>Y1_PLUS</column>
+				<column>Y1_MINUS</column>
+				<column>M3_MM</column>
+				<column>M6_MM</column>
+				<column>Y1_MM</column>
+			</orderAndFilter>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="RESULT_COLUMN" type="file">
+			<filePath><![CDATA[$(OUT_PATH)MM-$(BASIS_DATE).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="856" y="267" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

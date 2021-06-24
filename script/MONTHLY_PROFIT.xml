@@ -13,29 +13,14 @@
 		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[20140529]]></param>
 		</macro>
-		<macro name="BUY_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20130228]]></param>
-		</macro>
-		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20140228]]></param>
-		</macro>
-		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[10000000]]></param>
-		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[D:\work\jupyter\krx\output\logicResult\]]></param>
-		</macro>
-		<macro name="TOP_N" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
 		</macro>
-		<macro name="BUY_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
-			<param name="expression"><![CDATA[SUBSTR('$(BUY_DAY)', 1, 4)]]></param>
-		</macro>
-		<macro name="SELL_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
-			<param name="expression"><![CDATA[SUBSTR('$(SELL_DAY)', 1, 4)]]></param>
+		<macro name="END_DAY" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DAY)', 'yyyyMMdd') + 365, 'yyyyMMdd')]]></param>
 		</macro>
 	</macros>
 
@@ -49,63 +34,15 @@
 				<column name="종목명" type="string" />
 				<column name="자산총계" type="real" />
 				<column name="RISK" type="real" />
-				<column name="매수일" type="real" />
+				<column name="매수일" type="string" />
 				<column name="매수가" type="real" />
-				<column name="매도일" type="real" />
+				<column name="매도일" type="string" />
 				<column name="매도가" type="real" />
 				<column name="매수량" type="real" />
 				<column name="REVENUE" type="real" />
 			</columns>
 			<ui>
-				<position x="101" y="81" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</inputNode>
-
-		<inputNode name="BUY_PRICE" type="dataOn">
-			<query><![CDATA[SELECT 날짜 "매수일", 종목코드, 종목명, 종가 "매수가", 시장구분, 거래대금
-  FROM PRICE.Y$(BUY_YEAR)
- WHERE 날짜 = '$(BUY_DAY)']]></query>
-			<params>
-				<param name="collection"><![CDATA[PRICE]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<columns>
-				<column name="매수일" type="string" />
-				<column name="종목코드" type="string" />
-				<column name="종목명" type="string" />
-				<column name="매수가" type="real" />
-				<column name="시장구분" type="string" />
-				<column name="거래대금" type="real" />
-			</columns>
-			<ui>
-				<position x="110" y="349" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</inputNode>
-
-		<inputNode name="SELL_PRICE" type="dataOn">
-			<query><![CDATA[SELECT 날짜 "매도일", 종목코드, 종목명, 종가 "매도가"
-  FROM PRICE.Y$(SELL_YEAR)
- WHERE 날짜 = '$(SELL_DAY)']]></query>
-			<params>
-				<param name="collection"><![CDATA[PRICE]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<columns>
-				<column name="매도일" type="string" />
-				<column name="종목코드" type="string" />
-				<column name="종목명" type="string" />
-				<column name="매도가" type="real" />
-			</columns>
-			<ui>
-				<position x="105" y="521" />
+				<position x="107" y="222" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -121,10 +58,242 @@
 				<column name="NEXT_DAY" type="string" />
 			</columns>
 			<ui>
-				<position x="105" y="200" />
+				<position x="107" y="120" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="PRICE" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\output\index\PRICE_BASIS.pmd]]></path>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="종가" type="real" />
+				<column name="시장구분" type="string" />
+				<column name="거래대금" type="real" />
+			</columns>
+			<ui>
+				<position x="107" y="352" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
 	</inputNodes>
 
+
+	<dataProcessing>
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[BASIS_DAYS]]></dataSource>
+			<dataGroupName><![CDATA[SEL_1YEAR]]></dataGroupName>
+			<ui>
+				<position x="281" y="120" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA['$(BASIS_DAY)' <= {LAST_DAY} AND {LAST_DAY} <= '$(END_DAY)']]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[PRICE]]></dataSource>
+			<dataGroupName><![CDATA[SEL_1YEAR_2]]></dataGroupName>
+			<ui>
+				<position x="286" y="353" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA['$(BASIS_DAY)' <= {날짜} AND {날짜} <= '$(END_DAY)']]></condition>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[BUY_ITEMS]]></dataSource>
+				<dataSource alias="A2"><![CDATA[SEL_1YEAR_2]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[대상종목_가격]]></dataGroupName>
+			<ui>
+				<position x="286" y="223" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="BUY_ITEMS"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="SEL_1YEAR_2"><![CDATA[종목코드]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="BUY_ITEMS"><![CDATA[]]></columns>
+				<columns source="SEL_1YEAR_2"><![CDATA[날짜,종목코드,종목명,종가,시장구분,거래대금]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[SEL_1YEAR]]></dataSource>
+				<dataSource alias="A2"><![CDATA[대상종목_가격]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[대상가격]]></dataGroupName>
+			<ui>
+				<position x="466" y="170" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="SEL_1YEAR"><![CDATA[LAST_DAY]]></equalKey>
+				<equalKey source="대상종목_가격"><![CDATA[날짜]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="SEL_1YEAR"><![CDATA[]]></columns>
+				<columns source="대상종목_가격"><![CDATA[*]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[대상가격]]></dataSource>
+			<dataGroupName><![CDATA[Pivoting]]></dataGroupName>
+			<ui>
+				<position x="616" y="169" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[날짜]]></columnColumns>
+			<rowColumns><![CDATA[종목코드]]></rowColumns>
+			<valueColumn><![CDATA[종가]]></valueColumn>
+			<remake>true for remaking pivot columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="종목코드" type="string" />
+				<column name="20140530" type="real" />
+				<column name="20140630" type="real" />
+				<column name="20140731" type="real" />
+				<column name="20140829" type="real" />
+				<column name="20140930" type="real" />
+				<column name="20141031" type="real" />
+				<column name="20141128" type="real" />
+				<column name="20141230" type="real" />
+				<column name="20150130" type="real" />
+				<column name="20150227" type="real" />
+				<column name="20150331" type="real" />
+				<column name="20150430" type="real" />
+				<column name="20150529" type="real" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[Pivoting]]></dataSource>
+			<dataGroupName><![CDATA[MONTHLY_PL]]></dataGroupName>
+			<ui>
+				<position x="769" y="101" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="ONE_GROUP"><![CDATA[1]]></derivedColumn>
+				<derivedColumn name="PL_M01"><![CDATA[GETVALUE( 4) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M02"><![CDATA[GETVALUE( 5) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M03"><![CDATA[GETVALUE( 6) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M04"><![CDATA[GETVALUE( 7) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M05"><![CDATA[GETVALUE( 8) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M06"><![CDATA[GETVALUE( 9) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M07"><![CDATA[GETVALUE(10) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M08"><![CDATA[GETVALUE(11) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M09"><![CDATA[GETVALUE(12) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M11"><![CDATA[GETVALUE(13) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M12"><![CDATA[GETVALUE(14) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="PL_M13"><![CDATA[GETVALUE(15) - GETVALUE(3)]]></derivedColumn>
+				<derivedColumn name="SIGN_M01"><![CDATA[IIF({PL_M01} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M02"><![CDATA[IIF({PL_M02} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M03"><![CDATA[IIF({PL_M03} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M04"><![CDATA[IIF({PL_M04} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M05"><![CDATA[IIF({PL_M05} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M06"><![CDATA[IIF({PL_M06} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M07"><![CDATA[IIF({PL_M07} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M08"><![CDATA[IIF({PL_M08} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M09"><![CDATA[IIF({PL_M09} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M11"><![CDATA[IIF({PL_M11} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M12"><![CDATA[IIF({PL_M12} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M13"><![CDATA[IIF({PL_M13} < 0, 1, 0)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[Pivoting]]></dataSource>
+			<dataGroupName><![CDATA[MONTHLY_PL2]]></dataGroupName>
+			<ui>
+				<position x="769" y="224" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="ONE_GROUP"><![CDATA[1]]></derivedColumn>
+				<derivedColumn name="PL_M01"><![CDATA[GETVALUE( 4) - GETVALUE( 3)]]></derivedColumn>
+				<derivedColumn name="PL_M02"><![CDATA[GETVALUE( 5) - GETVALUE( 4)]]></derivedColumn>
+				<derivedColumn name="PL_M03"><![CDATA[GETVALUE( 6) - GETVALUE( 5)]]></derivedColumn>
+				<derivedColumn name="PL_M04"><![CDATA[GETVALUE( 7) - GETVALUE( 6)]]></derivedColumn>
+				<derivedColumn name="PL_M05"><![CDATA[GETVALUE( 8) - GETVALUE( 7)]]></derivedColumn>
+				<derivedColumn name="PL_M06"><![CDATA[GETVALUE( 9) - GETVALUE( 8)]]></derivedColumn>
+				<derivedColumn name="PL_M07"><![CDATA[GETVALUE(10) - GETVALUE( 9)]]></derivedColumn>
+				<derivedColumn name="PL_M08"><![CDATA[GETVALUE(11) - GETVALUE(10)]]></derivedColumn>
+				<derivedColumn name="PL_M09"><![CDATA[GETVALUE(12) - GETVALUE(11)]]></derivedColumn>
+				<derivedColumn name="PL_M11"><![CDATA[GETVALUE(13) - GETVALUE(12)]]></derivedColumn>
+				<derivedColumn name="PL_M12"><![CDATA[GETVALUE(14) - GETVALUE(13)]]></derivedColumn>
+				<derivedColumn name="PL_M13"><![CDATA[GETVALUE(15) - GETVALUE(14)]]></derivedColumn>
+				<derivedColumn name="SIGN_M01"><![CDATA[IIF({PL_M01} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M02"><![CDATA[IIF({PL_M02} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M03"><![CDATA[IIF({PL_M03} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M04"><![CDATA[IIF({PL_M04} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M05"><![CDATA[IIF({PL_M05} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M06"><![CDATA[IIF({PL_M06} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M07"><![CDATA[IIF({PL_M07} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M08"><![CDATA[IIF({PL_M08} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M09"><![CDATA[IIF({PL_M09} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M11"><![CDATA[IIF({PL_M11} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M12"><![CDATA[IIF({PL_M12} < 0, 1, 0)]]></derivedColumn>
+				<derivedColumn name="SIGN_M13"><![CDATA[IIF({PL_M13} < 0, 1, 0)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[MONTHLY_PL]]></dataSource>
+			<dataGroupName><![CDATA[MINUS_COUNT]]></dataGroupName>
+			<ui>
+				<position x="923" y="99" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[ONE_GROUP]]></groupingColumns>
+			<generate>
+				<column type="sum" delimiter=";" toName="M01"><![CDATA[SIGN_M01]]></column>
+				<column type="sum" delimiter=";" toName="M02"><![CDATA[SIGN_M02]]></column>
+				<column type="sum" delimiter=";" toName="M03"><![CDATA[SIGN_M03]]></column>
+				<column type="sum" delimiter=";" toName="M04"><![CDATA[SIGN_M04]]></column>
+				<column type="sum" delimiter=";" toName="M05"><![CDATA[SIGN_M05]]></column>
+				<column type="sum" delimiter=";" toName="M06"><![CDATA[SIGN_M06]]></column>
+				<column type="sum" delimiter=";" toName="M07"><![CDATA[SIGN_M07]]></column>
+				<column type="sum" delimiter=";" toName="M08"><![CDATA[SIGN_M08]]></column>
+				<column type="sum" delimiter=";" toName="M09"><![CDATA[SIGN_M09]]></column>
+				<column type="sum" delimiter=";" toName="M11"><![CDATA[SIGN_M11]]></column>
+				<column type="sum" delimiter=";" toName="M12"><![CDATA[SIGN_M12]]></column>
+				<column type="sum" delimiter=";" toName="M13"><![CDATA[SIGN_M13]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[MONTHLY_PL2]]></dataSource>
+			<dataGroupName><![CDATA[MINUS_COUNT2]]></dataGroupName>
+			<ui>
+				<position x="930" y="224" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[ONE_GROUP]]></groupingColumns>
+			<generate>
+				<column type="sum" delimiter=";" toName="M01"><![CDATA[SIGN_M01]]></column>
+				<column type="sum" delimiter=";" toName="M02"><![CDATA[SIGN_M02]]></column>
+				<column type="sum" delimiter=";" toName="M03"><![CDATA[SIGN_M03]]></column>
+				<column type="sum" delimiter=";" toName="M04"><![CDATA[SIGN_M04]]></column>
+				<column type="sum" delimiter=";" toName="M05"><![CDATA[SIGN_M05]]></column>
+				<column type="sum" delimiter=";" toName="M06"><![CDATA[SIGN_M06]]></column>
+				<column type="sum" delimiter=";" toName="M07"><![CDATA[SIGN_M07]]></column>
+				<column type="sum" delimiter=";" toName="M08"><![CDATA[SIGN_M08]]></column>
+				<column type="sum" delimiter=";" toName="M09"><![CDATA[SIGN_M09]]></column>
+				<column type="sum" delimiter=";" toName="M11"><![CDATA[SIGN_M11]]></column>
+				<column type="sum" delimiter=";" toName="M12"><![CDATA[SIGN_M12]]></column>
+				<column type="sum" delimiter=";" toName="M13"><![CDATA[SIGN_M13]]></column>
+			</generate>
+		</processingElem>
+	</dataProcessing>
 </crawlegoProject>
