@@ -14,7 +14,7 @@
 			<param name="value"><![CDATA[20130228]]></param>
 		</macro>
 		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20140228]]></param>
+			<param name="value"><![CDATA[20130530]]></param>
 		</macro>
 		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[10000000]]></param>
@@ -33,6 +33,12 @@
 		</macro>
 		<macro name="SELL_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
 			<param name="expression"><![CDATA[SUBSTR('$(SELL_DAY)', 1, 4)]]></param>
+		</macro>
+		<macro name="YYYYMM" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(BASIS_DAY)', 1, 6)]]></param>
+		</macro>
+		<macro name="YYYYPP" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR( STRTODATE('$(BASIS_DAY)', 'yyyyMMdd') - 31, 'yyyyMM' )]]></param>
 		</macro>
 	</macros>
 
@@ -154,7 +160,37 @@
 				<column name="매도가" type="real" />
 			</columns>
 			<ui>
-				<position x="86" y="533" />
+				<position x="92" y="531" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="MOMENT_P" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\output\momentum\MM-201301.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="BASIS_DATE" type="string" />
+				<column name="M3_P" type="real" />
+				<column name="M6_P" type="real" />
+				<column name="Y1_P" type="real" />
+			</columns>
+			<ui>
+				<position x="542" y="50" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="MOMENT_C" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\output\momentum\MM-201302.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="BASIS_DATE" type="string" />
+				<column name="M3_C" type="real" />
+				<column name="M6_C" type="real" />
+				<column name="Y1_C" type="real" />
+			</columns>
+			<ui>
+				<position x="681" y="45" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -169,7 +205,7 @@
 				<position x="385" y="81" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {당기순이익} > 0 AND {부채비율} <= 150 AND {PCR} > 0]]></condition>
+			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {부채비율} <= 150]]></condition>
 		</processingElem>
 
 		<processingElem type="rank">
@@ -205,11 +241,11 @@
 				<position x="259" y="358" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[{RANK_시가총액} < 21]]></condition>
+			<condition><![CDATA[{RANK_시가총액} >= 0]]></condition>
 		</processingElem>
 
 		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[RANK_4IDX]]></dataSource>
+			<dataSource alias="A1"><![CDATA[ADD_MM]]></dataSource>
 			<dataGroupName><![CDATA[SCORING]]></dataGroupName>
 			<ui>
 				<position x="385" y="358" />
@@ -220,7 +256,8 @@
 				<derivedColumn name="S_PER"><![CDATA[INT({RANK_PER})]]></derivedColumn>
 				<derivedColumn name="S_PSR"><![CDATA[INT({RANK_PSR})]]></derivedColumn>
 				<derivedColumn name="S_PCR"><![CDATA[INT({RANK_PCR})]]></derivedColumn>
-				<derivedColumn name="RISK"><![CDATA[{S_PBR} + {S_PER} + {S_PSR} + {S_PCR}]]></derivedColumn>
+				<derivedColumn name="RISK2"><![CDATA[{S_PBR} + {S_PER} + {S_PSR} + {S_PCR}]]></derivedColumn>
+				<derivedColumn name="SCORE"><![CDATA[{MM_SCORE}]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -245,7 +282,7 @@
 			<selectColumns>
 				<columns source="BUY_PRICE"><![CDATA[매수일,종목명,매수가]]></columns>
 				<columns source="SELL_PRICE"><![CDATA[매도일,매도가]]></columns>
-				<columns source="SMALL_SIZE"><![CDATA[P_CODE,TERM,자산총계,시가총액_억,RANK_시가총액,RISK]]></columns>
+				<columns source="SMALL_SIZE"><![CDATA[P_CODE,TERM,자산총계,시가총액_억,RANK_시가총액,SCORE]]></columns>
 			</selectColumns>
 		</processingElem>
 
@@ -285,7 +322,7 @@
 			<dataSource alias="A1"><![CDATA[DIFF]]></dataSource>
 			<dataGroupName><![CDATA[STAT]]></dataGroupName>
 			<ui>
-				<position x="860" y="217" />
+				<position x="1026" y="409" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<groupingColumns><![CDATA[매수일, 매도일]]></groupingColumns>
@@ -298,7 +335,7 @@
 			<dataSource alias="A1"><![CDATA[TOPN]]></dataSource>
 			<dataGroupName><![CDATA[DIFF]]></dataGroupName>
 			<ui>
-				<position x="720" y="217" />
+				<position x="886" y="409" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -315,7 +352,7 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
-				<column order="ascending">RISK</column>
+				<column order="descending">SCORE</column>
 			</sortColumns>
 		</processingElem>
 
@@ -323,7 +360,7 @@
 			<dataSource alias="A1"><![CDATA[ORDERING]]></dataSource>
 			<dataGroupName><![CDATA[TOPN]]></dataGroupName>
 			<ui>
-				<position x="580" y="217" />
+				<position x="746" y="409" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[@ROWNUM <= $(TOP_N)]]></condition>
@@ -333,14 +370,14 @@
 			<dataSource alias="A1"><![CDATA[DIFF]]></dataSource>
 			<dataGroupName><![CDATA[RESULT_COLUMNS]]></dataGroupName>
 			<ui>
-				<position x="720" y="358" />
+				<position x="886" y="550" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
 				<column>P_CODE</column>
 				<column>종목명</column>
 				<column>자산총계</column>
-				<column>RISK</column>
+				<column>SCORE</column>
 				<column>매수일</column>
 				<column>매수가</column>
 				<column>매도일</column>
@@ -348,6 +385,62 @@
 				<column>매수량</column>
 				<column>REVENUE</column>
 			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[MOMENT_P]]></dataSource>
+				<dataSource alias="A2"><![CDATA[MOMENT_C]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ALIGN_MM]]></dataGroupName>
+			<ui>
+				<position x="612" y="172" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="MOMENT_C"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="MOMENT_P"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="MOMENT_C"><![CDATA[M3_C,M6_C,Y1_C]]></columns>
+				<columns source="MOMENT_P"><![CDATA[P_CODE,M3_P,M6_P,Y1_P]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ALIGN_MM]]></dataSource>
+			<dataGroupName><![CDATA[MM_SCORE]]></dataGroupName>
+			<ui>
+				<position x="748" y="215" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="MM_SCORE"><![CDATA[{M3_C} * {M6_C} * {Y1_C}]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[RANK_4IDX]]></dataSource>
+				<dataSource alias="A2"><![CDATA[MM_SCORE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_MM]]></dataGroupName>
+			<ui>
+				<position x="538" y="282" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="MM_SCORE"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="RANK_4IDX"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="MM_SCORE"><![CDATA[MM_SCORE]]></columns>
+				<columns source="RANK_4IDX"><![CDATA[*]]></columns>
+			</selectColumns>
 		</processingElem>
 	</dataProcessing>
 
@@ -357,7 +450,7 @@
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="1000" y="217" />
+				<position x="1166" y="409" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>
@@ -367,7 +460,7 @@
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="870" y="358" />
+				<position x="1036" y="550" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

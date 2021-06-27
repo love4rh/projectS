@@ -8,13 +8,13 @@
 
 	<macros>
 		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
 		</macro>
 		<macro name="BASIS_DATE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20130227]]></param>
+			<param name="value"><![CDATA[20210330]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
@@ -30,6 +30,12 @@
 		</macro>
 		<macro name="P_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
 			<param name="expression"><![CDATA[SUBSTR('$(BASIS_DATE)', 1, 4)]]></param>
+		</macro>
+		<macro name="BASIS_YYMM" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(BASIS_DATE)', 1, 6)]]></param>
+		</macro>
+		<macro name="PERIOD" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[QUARTER]]></param>
 		</macro>
 	</macros>
 
@@ -70,7 +76,7 @@
 		</inputNode>
 
 		<inputNode name="ALL_BCP_DATA" type="FILE">
-			<path><![CDATA[$(IN_PATH)ANNUAL-BSCFPL.pmd]]></path>
+			<path><![CDATA[$(IN_PATH)$(PERIOD)-BSCFPL.pmd]]></path>
 			<columns>
 				<column name="P_CODE" type="string" />
 				<column name="TERM" type="string" />
@@ -229,7 +235,7 @@
 			<dataSource alias="A1"><![CDATA[BS_AND_PRICE]]></dataSource>
 			<dataGroupName><![CDATA[CALC_INDEX]]></dataGroupName>
 			<ui>
-				<position x="702" y="242" />
+				<position x="699" y="243" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -243,7 +249,7 @@
 				<derivedColumn name="PSR"><![CDATA[{시가총액_억} / {매출액}]]></derivedColumn>
 				<derivedColumn name="EV/EBIT"><![CDATA[{EV} / {영업이익}]]></derivedColumn>
 				<derivedColumn name="EV/EBITDA"><![CDATA[{EV} / ({영업이익} + {감가상각비})]]></derivedColumn>
-				<derivedColumn name="GP/A"><![CDATA[IIF(NVL({매출액}, 0) = 0 OR NVL({매출원가}, 0) = 0 OR NVL({자산총계}, 0) = 0, -1, ({매출액} - {매출원가}) / {자산총계})]]></derivedColumn>
+				<derivedColumn name="GP/A"><![CDATA[IIF(NVL({매출액}, 0) = 0 OR NVL({자산총계}, 0) = 0, -1, ({매출액} - {매출원가}) / {자산총계})]]></derivedColumn>
 				<derivedColumn name="부채비율"><![CDATA[{부채총계} / {자본총계} * 100]]></derivedColumn>
 				<derivedColumn name="순부채비율"><![CDATA[{순부채} / {자본총계} * 100]]></derivedColumn>
 				<derivedColumn name="유동비율"><![CDATA[{유동자산} / {유동부채} * 100]]></derivedColumn>
@@ -367,7 +373,7 @@
 
 	<dataLoadings>
 		<dataLoading name="SAVE" source="CLEANUP_RESULT" type="file">
-			<filePath><![CDATA[$(OUT_PATH)ANNUAL-$(BASIS_DATE).txt]]></filePath>
+			<filePath><![CDATA[$(OUT_PATH)$(PERIOD)-$(BASIS_YYMM).txt]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>

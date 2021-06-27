@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="YEAR" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2012]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="COND" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA['20120102','20120103','20120130','20120131','20120201','20120202','20120228','20120229','20120302','20120305','20120329','20120330','20120402','20120403','20120427','20120430','20120502','20120503','20120530','20120531','20120601','20120604','20120628','20120629','20120702','20120703','20120730','20120731','20120801','20120802','20120830','20120831','20120903','20120904','20120927','20120928','20121002','20121004','20121030','20121031','20121101','20121102','20121129','20121130','20121203','20121204','20121227','20121228']]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\temporary\]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="STOCK_PRICE" type="dataOn">
+			<query><![CDATA[SELECT *
+  FROM PRICE.Y$(YEAR)
+ WHERE 날짜 IN ($(COND))]]></query>
+			<params>
+				<param name="collection"><![CDATA[KRX]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="종목명" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="상장주식수" type="real" />
+				<column name="시가총액" type="real" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+				<column name="등락률" type="real" />
+				<column name="거래량" type="real" />
+				<column name="거래대금" type="real" />
+				<column name="외국인소진율" type="real" />
+			</columns>
+			<ui>
+				<position x="100" y="88" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="STOCK_PRICE" type="file">
+			<filePath><![CDATA[$(OUT_PATH)sp-$(YEAR).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="325" y="89" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

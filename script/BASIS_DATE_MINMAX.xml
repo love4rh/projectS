@@ -194,15 +194,25 @@
 			</ui>
 			<condition><![CDATA[{TYPE} = 4]]></condition>
 		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[LAST_RESULT]]></dataSource>
+			<dataGroupName><![CDATA[SelectData_1]]></dataGroupName>
+			<ui>
+				<position x="902" y="222" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{YYYYMM} >= '201201']]></condition>
+		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
-		<dataLoading name="SAVE" source="LAST_RESULT" type="file">
+		<dataLoading name="SAVE" source="SelectData_1" type="file">
 			<filePath><![CDATA[$(OUT_PATH)BASIS-DAYS.txt]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="972" y="144" />
+				<position x="982" y="142" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

@@ -17,13 +17,16 @@
 			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\]]></param>
 		</macro>
 		<macro name="BASIS_DATE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20190730]]></param>
+			<param name="value"><![CDATA[20130130]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
 		</macro>
 		<macro name="BEGIN_DAY" class="com.lge.crawlego.macro.ExpressionValue">
 			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DATE)', 'yyyyMMdd') - 364, 'yyyyMMdd')]]></param>
+		</macro>
+		<macro name="BASIS_YYMM" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(BASIS_DATE)', 1, 6)]]></param>
 		</macro>
 	</macros>
 
@@ -112,18 +115,18 @@
 			<!-- DO NOT EDIT BELOW -->
 			<columns>
 				<column name="종목코드" type="string" />
-				<column name="20180830" type="real" />
-				<column name="20180927" type="real" />
-				<column name="20181030" type="real" />
-				<column name="20181129" type="real" />
-				<column name="20181227" type="real" />
-				<column name="20190130" type="real" />
-				<column name="20190227" type="real" />
-				<column name="20190328" type="real" />
-				<column name="20190429" type="real" />
-				<column name="20190530" type="real" />
-				<column name="20190627" type="real" />
-				<column name="20190730" type="real" />
+				<column name="20120228" type="real" />
+				<column name="20120329" type="real" />
+				<column name="20120427" type="real" />
+				<column name="20120530" type="real" />
+				<column name="20120628" type="real" />
+				<column name="20120730" type="real" />
+				<column name="20120830" type="real" />
+				<column name="20120927" type="real" />
+				<column name="20121030" type="real" />
+				<column name="20121129" type="real" />
+				<column name="20121227" type="real" />
+				<column name="20130130" type="real" />
 			</columns>
 		</processingElem>
 
@@ -135,6 +138,7 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
+				<derivedColumn name="BASIS_DATE"><![CDATA['$(BASIS_YYMM)']]></derivedColumn>
 				<derivedColumn name="M3_PLUS"><![CDATA[IIF(GETVALUE(13) - GETVALUE(12) > 0, 1, 0) + 
 IIF(GETVALUE(12) - GETVALUE(11) > 0, 1, 0) +
 IIF(GETVALUE(11) - GETVALUE(10) > 0, 1, 0)]]></derivedColumn>
@@ -192,6 +196,7 @@ IIF(GETVALUE( 3) - GETVALUE( 2) < 0, 1, 0)]]></derivedColumn>
 			</ui>
 			<orderAndFilter>
 				<column>종목코드</column>
+				<column>BASIS_DATE</column>
 				<column>M3_PLUS</column>
 				<column>M3_MINUS</column>
 				<column>M6_PLUS</column>
@@ -203,15 +208,103 @@ IIF(GETVALUE( 3) - GETVALUE( 2) < 0, 1, 0)]]></derivedColumn>
 				<column>Y1_MM</column>
 			</orderAndFilter>
 		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[BASE_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[CODE_DATE_SORT]]></dataGroupName>
+			<ui>
+				<position x="249" y="397" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">종목코드</column>
+				<column order="ascending">날짜</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[CODE_DATE_SORT]]></dataSource>
+			<dataGroupName><![CDATA[CAL_RATIO]]></dataGroupName>
+			<ui>
+				<position x="388" y="398" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="RATIO"><![CDATA[IIF( @ROWNUM = 1, 1
+   , IIF( {종목코드} <> {종목코드}[-1], 1, {종가} / {종가}[-1] ) )
+  ]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[CAL_RATIO]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_RATIO]]></dataGroupName>
+			<ui>
+				<position x="518" y="398" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[날짜]]></columnColumns>
+			<rowColumns><![CDATA[종목코드]]></rowColumns>
+			<valueColumn><![CDATA[RATIO]]></valueColumn>
+			<recalculateRuntime><![CDATA[true]]></recalculateRuntime>
+			<remake>true for remaking pivot columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="종목코드" type="string" />
+				<column name="20120228" type="real" />
+				<column name="20120329" type="real" />
+				<column name="20120427" type="real" />
+				<column name="20120530" type="real" />
+				<column name="20120628" type="real" />
+				<column name="20120730" type="real" />
+				<column name="20120830" type="real" />
+				<column name="20120927" type="real" />
+				<column name="20121030" type="real" />
+				<column name="20121129" type="real" />
+				<column name="20121227" type="real" />
+				<column name="20130130" type="real" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[PIVOT_RATIO]]></dataSource>
+			<dataGroupName><![CDATA[RATIO_UP_DOWN]]></dataGroupName>
+			<ui>
+				<position x="654" y="399" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="BASIS_DATE"><![CDATA['$(BASIS_YYMM)']]></derivedColumn>
+				<derivedColumn name="M3"><![CDATA[GETVALUE(13) * GETVALUE(12) * GETVALUE(11)]]></derivedColumn>
+				<derivedColumn name="M6"><![CDATA[{M3} * GETVALUE(10) * GETVALUE(9) * GETVALUE(8)]]></derivedColumn>
+				<derivedColumn name="Y1"><![CDATA[{M6} * GETVALUE(7) * GETVALUE(6) * GETVALUE(5) * GETVALUE(4) * GETVALUE(3)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[RATIO_UP_DOWN]]></dataSource>
+			<dataGroupName><![CDATA[RATIO_COLUMN]]></dataGroupName>
+			<ui>
+				<position x="802" y="397" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>종목코드</column>
+				<column>BASIS_DATE</column>
+				<column>M3</column>
+				<column>M6</column>
+				<column>Y1</column>
+			</orderAndFilter>
+		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
-		<dataLoading name="SAVE" source="RESULT_COLUMN" type="file">
-			<filePath><![CDATA[$(OUT_PATH)MM-$(BASIS_DATE).txt]]></filePath>
+		<dataLoading name="SAVE" source="RATIO_COLUMN" type="file">
+			<filePath><![CDATA[$(OUT_PATH)MM-$(BASIS_YYMM).txt]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="856" y="267" />
+				<position x="930" y="295" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

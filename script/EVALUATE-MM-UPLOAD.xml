@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\momentum\]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="MM_RAW" type="FILE">
+			<path><![CDATA[$(IN_PATH)MM-*.txt]]></path>
+			<columns>
+				<column name="종목코드" type="string" />
+				<column name="BASIS_DATE" type="string" />
+				<column name="M3_PLUS" type="real" />
+				<column name="M3_MINUS" type="real" />
+				<column name="M6_PLUS" type="real" />
+				<column name="M6_MINUS" type="real" />
+				<column name="Y1_PLUS" type="real" />
+				<column name="Y1_MINUS" type="real" />
+				<column name="M3_MM" type="real" />
+				<column name="M6_MM" type="real" />
+				<column name="Y1_MM" type="real" />
+			</columns>
+			<ui>
+				<position x="90" y="98" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[MM_RAW]]></dataSource>
+			<dataGroupName><![CDATA[MAKE_INDEX]]></dataGroupName>
+			<ui>
+				<position x="235" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">BASIS_DATE</column>
+				<column order="ascending">종목코드</column>
+			</sortColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="UPLOAD" source="MAKE_INDEX" type="dataOn">
+			<dataGroup>MOMENTUM</dataGroup>
+			<loadType>2</loadType>
+			<useIncubator>false</useIncubator>
+			<remainHistory>false</remainHistory>
+			<params>
+				<param name="collection"><![CDATA[ANAL]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<ui>
+				<position x="383" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
