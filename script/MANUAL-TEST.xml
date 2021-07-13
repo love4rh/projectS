@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20130829]]></param>
+		</macro>
+		<macro name="BUY_DATE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20130830]]></param>
+		</macro>
+		<macro name="SELL_DATE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20131114]]></param>
+		</macro>
+		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[10000000]]></param>
+		</macro>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\logicResult\4PXX-25-10T-10-M2\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\analMM\]]></param>
+		</macro>
+		<macro name="MM_COUNT" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[3]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="B_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(BUY_DATE)', 1, 4)]]></param>
+		</macro>
+		<macro name="S_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(SELL_DATE)', 1, 4)]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="ITEMS" type="FILE">
+			<path><![CDATA[$(IN_PATH)$(BASIS_DAY)-RESULT.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="시가총액_억" type="real" />
+				<column name="매수일" type="string" />
+				<column name="매수가" type="real" />
+				<column name="매도일" type="string" />
+				<column name="매도가" type="real" />
+				<column name="거래량" type="real" />
+				<column name="매수량" type="real" />
+				<column name="RISK" type="real" />
+				<column name="REVENUE" type="real" />
+			</columns>
+			<ui>
+				<position x="100" y="94" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="B_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜 "매수일", 시가, 고가, 저가, 종가 "매수가"
+  FROM PRICE.Y$(B_YEAR)
+ WHERE 날짜 = '$(BUY_DATE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="매수일" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="매수가" type="real" />
+			</columns>
+			<ui>
+				<position x="90" y="194" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="S_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜 "매도일", 시가, 고가, 저가, 종가 "매도가"
+  FROM PRICE.Y$(S_YEAR)
+ WHERE 날짜 = '$(SELL_DATE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="매도일" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="매도가" type="real" />
+			</columns>
+			<ui>
+				<position x="96" y="319" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ADD_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[DIFF]]></dataGroupName>
+			<ui>
+				<position x="381" y="195" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="매수량"><![CDATA[FLOOR($(CASH) / @DATASIZE / {매수가})]]></derivedColumn>
+				<derivedColumn name="REVENUE"><![CDATA[({매도가} - {매수가}) * {매수량}]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[DIFF]]></dataSource>
+			<dataGroupName><![CDATA[STAT]]></dataGroupName>
+			<ui>
+				<position x="530" y="197" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[매수일, 매도일]]></groupingColumns>
+			<generate>
+				<column type="sum" delimiter=";" toName="R_SUM"><![CDATA[REVENUE]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[ITEMS]]></dataSource>
+				<dataSource alias="A2"><![CDATA[B_PRICE]]></dataSource>
+				<dataSource alias="A3"><![CDATA[S_PRICE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_PRICE]]></dataGroupName>
+			<ui>
+				<position x="232" y="194" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="B_PRICE"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="ITEMS"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="S_PRICE"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="B_PRICE"><![CDATA[매수일,매수가]]></columns>
+				<columns source="ITEMS"><![CDATA[P_CODE,종목명,자산총계,시가총액_억,거래량,RISK,REVENUE]]></columns>
+				<columns source="S_PRICE"><![CDATA[매도일,매도가]]></columns>
+			</selectColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+	</dataLoadings>
+</crawlegoProject>

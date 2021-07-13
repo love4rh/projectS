@@ -50,7 +50,7 @@
 				<column name="REVENUE" type="real" />
 			</columns>
 			<ui>
-				<position x="112" y="126" />
+				<position x="112" y="104" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -72,7 +72,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="109" y="305" />
+				<position x="109" y="256" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -87,7 +87,7 @@
 			</dataSources>
 			<dataGroupName><![CDATA[SEL_PRICE_DATA]]></dataGroupName>
 			<ui>
-				<position x="241" y="204" />
+				<position x="241" y="180" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<joinMethod>inner</joinMethod>
@@ -106,7 +106,7 @@
 			<dataSource alias="A1"><![CDATA[SEL_PRICE_DATA]]></dataSource>
 			<dataGroupName><![CDATA[SortColumn_1]]></dataGroupName>
 			<ui>
-				<position x="393" y="205" />
+				<position x="385" y="256" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
@@ -119,7 +119,7 @@
 			<dataSource alias="A1"><![CDATA[SortColumn_1]]></dataSource>
 			<dataGroupName><![CDATA[Derived_1]]></dataGroupName>
 			<ui>
-				<position x="540" y="204" />
+				<position x="531" y="256" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -139,7 +139,7 @@
 			<dataSource alias="A1"><![CDATA[Derived_1]]></dataSource>
 			<dataGroupName><![CDATA[SelectData_1]]></dataGroupName>
 			<ui>
-				<position x="671" y="205" />
+				<position x="677" y="256" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[{D_IDX} % 3 = 0]]></condition>
@@ -149,7 +149,7 @@
 			<dataSource alias="A1"><![CDATA[SelectData_1]]></dataSource>
 			<dataGroupName><![CDATA[Pivoting_3]]></dataGroupName>
 			<ui>
-				<position x="823" y="192" />
+				<position x="823" y="256" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<columnColumns><![CDATA[D_IDX]]></columnColumns>
@@ -175,7 +175,7 @@
 			<dataSource alias="A1"><![CDATA[SEL_PRICE_DATA]]></dataSource>
 			<dataGroupName><![CDATA[SelectData_2]]></dataGroupName>
 			<ui>
-				<position x="372" y="104" />
+				<position x="385" y="104" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[{날짜} = '20140924']]></condition>
@@ -185,7 +185,7 @@
 			<dataSource alias="A1"><![CDATA[SelectData_2]]></dataSource>
 			<dataGroupName><![CDATA[Derived_2]]></dataGroupName>
 			<ui>
-				<position x="536" y="101" />
+				<position x="531" y="104" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -193,7 +193,4 @@
 			</addColumns>
 		</processingElem>
 	</dataProcessing>
-
-	<dataLoadings>
-	</dataLoadings>
 </crawlegoProject>

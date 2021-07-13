@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20130227]]></param>
+		</macro>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\logicResult\4PXX-25-10T-10-M2\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\analMM\]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="START_DATE" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DAY)', 'yyyyMMdd') - 100, 'yyyyMMdd')]]></param>
+		</macro>
+		<macro name="END_DATE" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DAY)', 'yyyyMMdd') + 180, 'yyyyMMdd')]]></param>
+		</macro>
+		<macro name="P_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(START_DATE)', 1, 4)]]></param>
+		</macro>
+		<macro name="N_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[IIF('$(P_YEAR)' = SUBSTR('$(END_DATE)', 1, 4), '2012', SUBSTR('$(END_DATE)', 1, 4))]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="ITEMS" type="FILE">
+			<path><![CDATA[$(IN_PATH)$(BASIS_DAY)-RESULT.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="시가총액_억" type="real" />
+				<column name="매수일" type="string" />
+				<column name="매수가" type="real" />
+				<column name="매도일" type="string" />
+				<column name="매도가" type="real" />
+				<column name="거래량" type="real" />
+				<column name="매수량" type="real" />
+				<column name="RISK" type="real" />
+				<column name="REVENUE" type="real" />
+			</columns>
+			<ui>
+				<position x="69" y="94" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="S_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y$(P_YEAR)
+ WHERE '$(START_DATE)' <= 날짜 AND 날짜 <= '$(END_DATE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="69" y="235" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="N_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y$(N_YEAR)
+ WHERE '$(START_DATE)' <= 날짜 AND 날짜 <= '$(END_DATE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="235" y="375" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[ITEMS]]></dataSource>
+				<dataSource alias="A2"><![CDATA[SN_PRICE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[SELECT_PCODE]]></dataGroupName>
+			<ui>
+				<position x="235" y="93" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="ITEMS"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="SN_PRICE"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="ITEMS"><![CDATA[P_CODE,종목명,매수일,매수가,매수량]]></columns>
+				<columns source="SN_PRICE"><![CDATA[날짜,시가,종가]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[SELECT_PCODE]]></dataSource>
+			<dataGroupName><![CDATA[SORTBYBASE]]></dataGroupName>
+			<ui>
+				<position x="401" y="93" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">P_CODE</column>
+				<column order="ascending">날짜</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="append">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[S_PRICE]]></dataSource>
+				<dataSource alias="A2"><![CDATA[N_PRICE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[SN_PRICE]]></dataGroupName>
+			<ui>
+				<position x="235" y="235" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<appendMethod>first</appendMethod>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_PRICE]]></dataGroupName>
+			<ui>
+				<position x="401" y="251" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[P_CODE]]></columnColumns>
+			<namePrefix><![CDATA[P_]]></namePrefix>
+			<rowColumns><![CDATA[날짜]]></rowColumns>
+			<valueColumns><![CDATA[종가, 매수량]]></valueColumns>
+			<recalculateRuntime><![CDATA[true]]></recalculateRuntime>
+			<remake>true for regenerate columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="P_004090_종가" type="real" />
+				<column name="P_008500_종가" type="real" />
+				<column name="P_012620_종가" type="real" />
+				<column name="P_017370_종가" type="real" />
+				<column name="P_017650_종가" type="real" />
+				<column name="P_023810_종가" type="real" />
+				<column name="P_026940_종가" type="real" />
+				<column name="P_049830_종가" type="real" />
+				<column name="P_093380_종가" type="real" />
+				<column name="P_103230_종가" type="real" />
+				<column name="P_004090_매수량" type="real" />
+				<column name="P_008500_매수량" type="real" />
+				<column name="P_012620_매수량" type="real" />
+				<column name="P_017370_매수량" type="real" />
+				<column name="P_017650_매수량" type="real" />
+				<column name="P_023810_매수량" type="real" />
+				<column name="P_026940_매수량" type="real" />
+				<column name="P_049830_매수량" type="real" />
+				<column name="P_093380_매수량" type="real" />
+				<column name="P_103230_매수량" type="real" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[PIVOT_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[CALC_INDEX]]></dataGroupName>
+			<ui>
+				<position x="536" y="250" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="IDX"><![CDATA[@ROWNUM]]></derivedColumn>
+				<derivedColumn name="SLOPE_X"><![CDATA[@ROWNUM / 100]]></derivedColumn>
+				<derivedColumn name="BUY_AMOUNT"><![CDATA[ROWSUM(12, 21)]]></derivedColumn>
+				<derivedColumn name="AVG_INDEX"><![CDATA[(
+GETVALUE(2) * GETVALUE(12) +
+GETVALUE(3) * GETVALUE(13) +
+GETVALUE(4) * GETVALUE(14) +
+GETVALUE(5) * GETVALUE(15) +
+GETVALUE(6) * GETVALUE(16) +
+GETVALUE(7) * GETVALUE(17) +
+GETVALUE(8) * GETVALUE(18) +
+GETVALUE(9) * GETVALUE(19) +
+GETVALUE(10) * GETVALUE(20) +
+GETVALUE(11) * GETVALUE(21)
+) / {BUY_AMOUNT}]]></derivedColumn>
+				<derivedColumn name="RRI"><![CDATA[IIF(@ROWNUM = 1, 1, GETVALUE(@{AVG_INDEX}) / GETVALUE(@{AVG_INDEX}, - @ROWNUM + 1))]]></derivedColumn>
+				<derivedColumn name="SLOPE"><![CDATA[IIF(@ROWNUM <= 10, 0, LINEARSLOPE(@{SLOPE_X}, @{RRI}, 10) )]]></derivedColumn>
+				<derivedColumn name="YYYYMM"><![CDATA[SUBSTR({날짜}, 1, 6)]]></derivedColumn>
+				<derivedColumn name="BASIS_DATE"><![CDATA['$(BASIS_DAY)']]></derivedColumn>
+				<derivedColumn name="DAYNAME"><![CDATA[GETDAYOFWEEK(STRTODATE({날짜}, 'yyyyMMdd'))]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ONE_IN_MONTH]]></dataSource>
+			<dataGroupName><![CDATA[RESULT_SLOPE]]></dataGroupName>
+			<ui>
+				<position x="811" y="253" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>BASIS_DATE</column>
+				<column>날짜</column>
+				<column>SLOPE</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[NOT_ZERO]]></dataSource>
+			<dataGroupName><![CDATA[ONE_IN_MONTH]]></dataGroupName>
+			<ui>
+				<position x="679" y="252" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[YYYYMM, BASIS_DATE]]></groupingColumns>
+			<selectColumn type="max"><![CDATA[날짜]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[CALC_INDEX]]></dataSource>
+			<dataGroupName><![CDATA[NOT_ZERO]]></dataGroupName>
+			<ui>
+				<position x="611" y="355" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{IDX} > 65]]></condition>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[RESULT_SLOPE]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_SLOPE]]></dataGroupName>
+			<ui>
+				<position x="918" y="344" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[날짜]]></columnColumns>
+			<namePrefix><![CDATA[D_]]></namePrefix>
+			<rowColumns><![CDATA[BASIS_DATE]]></rowColumns>
+			<valueColumns><![CDATA[SLOPE]]></valueColumns>
+			<recalculateRuntime><![CDATA[true]]></recalculateRuntime>
+			<remake>true for regenerate columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="BASIS_DATE" type="string" />
+				<column name="D_20130228_SLOPE" type="real" />
+				<column name="D_20130329_SLOPE" type="real" />
+				<column name="D_20130430_SLOPE" type="real" />
+				<column name="D_20130531_SLOPE" type="real" />
+				<column name="D_20130628_SLOPE" type="real" />
+				<column name="D_20130731_SLOPE" type="real" />
+				<column name="D_20130826_SLOPE" type="real" />
+			</columns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="PIVOT_SLOPE" type="file">
+			<filePath><![CDATA[$(OUT_PATH)FS-$(BASIS_DAY).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="1024" y="257" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

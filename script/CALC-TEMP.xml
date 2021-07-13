@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+
+
+	<inputNodes>
+		<inputNode name="FileInput_1" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\intermediate\slope\SLOPE-*.txt]]></path>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="SLOPE_6M" type="real" />
+				<column name="SLOPE_3M" type="real" />
+			</columns>
+			<ui>
+				<position x="100" y="84" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="FileInput_2" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\intermediate\slope\FS-*.txt]]></path>
+			<columns>
+				<column name="BASIS_DATE" type="string" />
+				<column name="D_20140829_SLOPE" type="real" />
+				<column name="D_20140930_SLOPE" type="real" />
+				<column name="D_20141031_SLOPE" type="real" />
+				<column name="D_20141128_SLOPE" type="real" />
+				<column name="D_20141230_SLOPE" type="real" />
+				<column name="D_20150130_SLOPE" type="real" />
+				<column name="D_20150224_SLOPE" type="real" />
+			</columns>
+			<ui>
+				<position x="95" y="209" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="FileInput_SA" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\intermediate\slope\SA-*.txt]]></path>
+			<columns>
+				<column name="BASIS_DATE" type="string" />
+				<column name="IDX" type="integer" />
+				<column name="날짜" type="string" />
+				<column name="RRI" type="real" />
+			</columns>
+			<ui>
+				<position x="140" y="333" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[FileInput_SA]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_SA]]></dataGroupName>
+			<ui>
+				<position x="297" y="335" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[BASIS_DATE]]></columnColumns>
+			<namePrefix><![CDATA[D_]]></namePrefix>
+			<rowColumns><![CDATA[IDX]]></rowColumns>
+			<valueColumns><![CDATA[RRI]]></valueColumns>
+			<recalculateRuntime><![CDATA[true]]></recalculateRuntime>
+			<remake>true for regenerate columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="IDX" type="integer" />
+				<column name="D_20130227_RRI" type="real" />
+				<column name="D_20130829_RRI" type="real" />
+				<column name="D_20140227_RRI" type="real" />
+				<column name="D_20140828_RRI" type="real" />
+				<column name="D_20150226_RRI" type="real" />
+				<column name="D_20150828_RRI" type="real" />
+				<column name="D_20160226_RRI" type="real" />
+				<column name="D_20160830_RRI" type="real" />
+				<column name="D_20170227_RRI" type="real" />
+				<column name="D_20170830_RRI" type="real" />
+				<column name="D_20180227_RRI" type="real" />
+				<column name="D_20180830_RRI" type="real" />
+				<column name="D_20190227_RRI" type="real" />
+				<column name="D_20190829_RRI" type="real" />
+				<column name="D_20200227_RRI" type="real" />
+				<column name="D_20200828_RRI" type="real" />
+				<column name="D_20210225_RRI" type="real" />
+			</columns>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>

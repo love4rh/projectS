@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+
+
+	<inputNodes>
+		<inputNode name="MM_DATA" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\intermediate\analMM\MM-*.txt]]></path>
+			<columns>
+				<column name="BASIS_DAY" type="string" />
+				<column name="D_IDX" type="string" />
+				<column name="날짜" type="string" />
+				<column name="AVG" type="real" />
+				<column name="SLOPE" type="real" />
+			</columns>
+			<ui>
+				<position x="143" y="243" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[MM_DATA]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_AVG]]></dataGroupName>
+			<ui>
+				<position x="354" y="89" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[BASIS_DAY]]></columnColumns>
+			<rowColumns><![CDATA[D_IDX]]></rowColumns>
+			<valueColumn><![CDATA[AVG]]></valueColumn>
+			<recalculateRuntime><![CDATA[false]]></recalculateRuntime>
+			<remake>true for remaking pivot columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="D_IDX" type="string" />
+				<column name="20130227" type="real" />
+				<column name="20130829" type="real" />
+				<column name="20140227" type="real" />
+				<column name="20140828" type="real" />
+				<column name="20150226" type="real" />
+				<column name="20150828" type="real" />
+				<column name="20160226" type="real" />
+				<column name="20160830" type="real" />
+				<column name="20170227" type="real" />
+				<column name="20170830" type="real" />
+				<column name="20180227" type="real" />
+				<column name="20180830" type="real" />
+				<column name="20190227" type="real" />
+				<column name="20190829" type="real" />
+				<column name="20200227" type="real" />
+				<column name="20200828" type="real" />
+				<column name="20210225" type="real" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[MM_DATA]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_SLOPE]]></dataGroupName>
+			<ui>
+				<position x="358" y="242" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[BASIS_DAY]]></columnColumns>
+			<rowColumns><![CDATA[D_IDX]]></rowColumns>
+			<valueColumn><![CDATA[SLOPE]]></valueColumn>
+			<recalculateRuntime><![CDATA[false]]></recalculateRuntime>
+			<remake>true for remaking pivot columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="D_IDX" type="string" />
+				<column name="20130227" type="real" />
+				<column name="20130829" type="real" />
+				<column name="20140227" type="real" />
+				<column name="20140828" type="real" />
+				<column name="20150226" type="real" />
+				<column name="20150828" type="real" />
+				<column name="20160226" type="real" />
+				<column name="20160830" type="real" />
+				<column name="20170227" type="real" />
+				<column name="20170830" type="real" />
+				<column name="20180227" type="real" />
+				<column name="20180830" type="real" />
+				<column name="20190227" type="real" />
+				<column name="20190829" type="real" />
+				<column name="20200227" type="real" />
+				<column name="20200828" type="real" />
+				<column name="20210225" type="real" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[PIVOT_AVG]]></dataSource>
+			<dataGroupName><![CDATA[AVG_ALL]]></dataGroupName>
+			<ui>
+				<position x="487" y="89" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>D_IDX</column>
+				<column toName="A_20130227">20130227</column>
+				<column toName="A_20130829">20130829</column>
+				<column toName="A_20140227">20140227</column>
+				<column toName="A_20140828">20140828</column>
+				<column toName="A_20150226">20150226</column>
+				<column toName="A_20150828">20150828</column>
+				<column toName="A_20160226">20160226</column>
+				<column toName="A_20160830">20160830</column>
+				<column toName="A_20170227">20170227</column>
+				<column toName="A_20170830">20170830</column>
+				<column toName="A_20180227">20180227</column>
+				<column toName="A_20180830">20180830</column>
+				<column toName="A_20190227">20190227</column>
+				<column toName="A_20190829">20190829</column>
+				<column toName="A_20200227">20200227</column>
+				<column toName="A_20200828">20200828</column>
+				<column toName="A_20210225">20210225</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[PIVOT_SLOPE]]></dataSource>
+			<dataGroupName><![CDATA[SLOPE_ALL]]></dataGroupName>
+			<ui>
+				<position x="487" y="243" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>D_IDX</column>
+				<column toName="S_20130227">20130227</column>
+				<column toName="S_20130829">20130829</column>
+				<column toName="S_20140227">20140227</column>
+				<column toName="S_20140828">20140828</column>
+				<column toName="S_20150226">20150226</column>
+				<column toName="S_20150828">20150828</column>
+				<column toName="S_20160226">20160226</column>
+				<column toName="S_20160830">20160830</column>
+				<column toName="S_20170227">20170227</column>
+				<column toName="S_20170830">20170830</column>
+				<column toName="S_20180227">20180227</column>
+				<column toName="S_20180830">20180830</column>
+				<column toName="S_20190227">20190227</column>
+				<column toName="S_20190829">20190829</column>
+				<column toName="S_20200227">20200227</column>
+				<column toName="S_20200828">20200828</column>
+				<column toName="S_20210225">20210225</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[MM_DATA]]></dataSource>
+			<dataGroupName><![CDATA[PIVOT_DAY]]></dataGroupName>
+			<ui>
+				<position x="349" y="415" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[BASIS_DAY]]></columnColumns>
+			<rowColumns><![CDATA[D_IDX]]></rowColumns>
+			<valueColumn><![CDATA[날짜]]></valueColumn>
+			<recalculateRuntime><![CDATA[true]]></recalculateRuntime>
+			<remake>true for remaking pivot columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="D_IDX" type="string" />
+				<column name="20130227" type="string" />
+				<column name="20130829" type="string" />
+				<column name="20140227" type="string" />
+				<column name="20140828" type="string" />
+				<column name="20150226" type="string" />
+				<column name="20150828" type="string" />
+				<column name="20160226" type="string" />
+				<column name="20160830" type="string" />
+				<column name="20170227" type="string" />
+				<column name="20170830" type="string" />
+				<column name="20180227" type="string" />
+				<column name="20180830" type="string" />
+				<column name="20190227" type="string" />
+				<column name="20190829" type="string" />
+				<column name="20200227" type="string" />
+				<column name="20200828" type="string" />
+				<column name="20210225" type="string" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[SLOPE_ALL]]></dataSource>
+			<dataGroupName><![CDATA[DATE_INDEX]]></dataGroupName>
+			<ui>
+				<position x="553" y="370" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="BUY_FLAG"><![CDATA[IIF(@ROWNUM < 2, 0,
+  IIF(GETVALUE(2) > 0,
+    IIF(GETVALUE(19, 1) >= 0, GETVALUE(19, 1) + 1, 1),
+    IIF(GETVALUE(19, 1) >= 0, -1, GETVALUE(19, 1) - 1)
+  )
+)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE_AVG" source="AVG_ALL" type="file">
+			<filePath><![CDATA[D:\work\jupyter\krx\intermediate\analMM\ALL-AVG.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="632" y="90" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="SAVE_SLOPE" source="SLOPE_ALL" type="file">
+			<filePath><![CDATA[D:\work\jupyter\krx\intermediate\analMM\ALL-SLOPE.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="629" y="244" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
