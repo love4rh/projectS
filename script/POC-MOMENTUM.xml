@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="START_DATE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20180101]]></param>
+		</macro>
+		<macro name="END_DATE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20191231]]></param>
+		</macro>
+		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[079370]]></param>
+		</macro>
+		<macro name="MM_COUNT" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[3]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="P_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[SUBSTR('$(START_DATE)', 1, 4)]]></param>
+		</macro>
+		<macro name="N_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[IIF('$(P_YEAR)' = SUBSTR('$(END_DATE)', 1, 4), '2012', SUBSTR('$(END_DATE)', 1, 4))]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="S_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y$(P_YEAR)
+ WHERE 종목코드 = '$(COMP_CODE)' AND ISBETWEEN(날짜, '$(START_DATE)', '$(END_DATE)')]]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="97" y="75" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="N_PRICE" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y$(N_YEAR)
+ WHERE 종목코드 = '$(COMP_CODE)' AND ISBETWEEN(날짜, '$(START_DATE)', '$(END_DATE)')]]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="97" y="339" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[SN_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[SORTBYBASE]]></dataGroupName>
+			<ui>
+				<position x="263" y="207" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">P_CODE</column>
+				<column order="ascending">날짜</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="append">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[S_PRICE]]></dataSource>
+				<dataSource alias="A2"><![CDATA[N_PRICE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[SN_PRICE]]></dataGroupName>
+			<ui>
+				<position x="97" y="207" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<appendMethod>first</appendMethod>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="379" y="337" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="WEEK_NO"><![CDATA[GETWEEKOFYEAR(STRTODATE({날짜}, 'yyyyMMdd'))]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[FIRST_IN_WEEK]]></dataGroupName>
+			<ui>
+				<position x="502" y="347" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[종목명, WEEK_NO]]></groupingColumns>
+			<selectColumn type="min"><![CDATA[날짜]]></selectColumn>
+		</processingElem>
+	</dataProcessing>
+
+	<extension>
+		<chartNode name="RunChart_1" source="SORTBYBASE" type="runChart">
+			<plotColumns>종가</plotColumns>
+			<groupColumns>종목명</groupColumns>
+			<grouping>false</grouping>
+			<timeVariable>[Data Index]</timeVariable>
+			<ui>
+				<position x="425" y="207" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</chartNode>
+
+		<chartNode name="RunChart_2" source="FIRST_IN_WEEK" type="runChart">
+			<plotColumns>종가</plotColumns>
+			<groupColumns>종목명</groupColumns>
+			<grouping>false</grouping>
+			<timeVariable>[Data Index]</timeVariable>
+			<ui>
+				<position x="623" y="294" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</chartNode>
+
+	</extension>
+</crawlegoProject>
