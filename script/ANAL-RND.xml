@@ -201,19 +201,6 @@
 			<acsending>true</acsending>
 		</processingElem>
 
-		<processingElem type="rank">
-			<dataSource alias="A1"><![CDATA[FILTER_BADS]]></dataSource>
-			<dataGroupName><![CDATA[RANK_4IDX]]></dataGroupName>
-			<ui>
-				<position x="385" y="221" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<rankColumns><![CDATA[시가총액,PBR,PER,PSR,PCR]]></rankColumns>
-			<prefix><![CDATA[RANK_]]></prefix>
-			<usePercentage>true</usePercentage>
-			<acsending>true</acsending>
-		</processingElem>
-
 		<processingElem type="select">
 			<dataSource alias="A1"><![CDATA[SCORING]]></dataSource>
 			<dataGroupName><![CDATA[SMALL_SIZE]]></dataGroupName>
@@ -221,22 +208,18 @@
 				<position x="259" y="358" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[{RANK_시가총액} <= $(TOTAL_AMOUNT) AND {거래량} >= $(VOL_LIMIT)]]></condition>
+			<condition><![CDATA[{RANK_ALL_시가총액} <= $(TOTAL_AMOUNT) AND {거래량} >= $(VOL_LIMIT)]]></condition>
 		</processingElem>
 
 		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[RANK_4IDX]]></dataSource>
+			<dataSource alias="A1"><![CDATA[FILTER_BADS]]></dataSource>
 			<dataGroupName><![CDATA[SCORING]]></dataGroupName>
 			<ui>
 				<position x="385" y="358" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="S_PBR"><![CDATA[INT({RANK_PBR})]]></derivedColumn>
-				<derivedColumn name="S_PER"><![CDATA[INT({RANK_PER})]]></derivedColumn>
-				<derivedColumn name="S_PSR"><![CDATA[INT({RANK_PSR})]]></derivedColumn>
-				<derivedColumn name="S_PCR"><![CDATA[INT({RANK_PCR})]]></derivedColumn>
-				<derivedColumn name="RISK"><![CDATA[{S_PBR} + {S_PER} + {S_PSR} + {S_PCR}]]></derivedColumn>
+				<derivedColumn name="RISK"><![CDATA[RAND()]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -261,7 +244,7 @@
 			<selectColumns>
 				<columns source="BUY_PRICE"><![CDATA[매수일,종목명,매수가]]></columns>
 				<columns source="SELL_PRICE"><![CDATA[매도일,매도가]]></columns>
-				<columns source="SMALL_SIZE"><![CDATA[P_CODE,TERM,자산총계,시가총액_억,RANK_시가총액,RISK,거래량]]></columns>
+				<columns source="SMALL_SIZE"><![CDATA[P_CODE,TERM,자산총계,시가총액_억,거래량,RANK_ALL_시가총액,RISK]]></columns>
 			</selectColumns>
 		</processingElem>
 

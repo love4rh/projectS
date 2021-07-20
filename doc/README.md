@@ -47,3 +47,6 @@ Accept-Language: ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7
 3. Regression --> 기율기 산출
 4. 기울기가 음수인 경우가 N일 지속되면 전량 매도 (?)
 
+
+
+제우스: 079370
