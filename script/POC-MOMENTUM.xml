@@ -118,11 +118,13 @@
 			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
 			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
 			<ui>
-				<position x="379" y="337" />
+				<position x="391" y="290" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
 				<derivedColumn name="WEEK_NO"><![CDATA[GETWEEKOFYEAR(STRTODATE({날짜}, 'yyyyMMdd'))]]></derivedColumn>
+				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.001]]></derivedColumn>
+				<derivedColumn name="SLP_5D"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{종가}, 5))]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -130,33 +132,67 @@
 			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
 			<dataGroupName><![CDATA[FIRST_IN_WEEK]]></dataGroupName>
 			<ui>
-				<position x="502" y="347" />
+				<position x="530" y="368" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<groupingColumns><![CDATA[종목명, WEEK_NO]]></groupingColumns>
 			<selectColumn type="min"><![CDATA[날짜]]></selectColumn>
 		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[FIRST_IN_WEEK]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF2]]></dataGroupName>
+			<ui>
+				<position x="530" y="507" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="SLP_5W"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{종가}, 5))]]></derivedColumn>
+			</addColumns>
+		</processingElem>
 	</dataProcessing>
 
 	<extension>
-		<chartNode name="RunChart_1" source="SORTBYBASE" type="runChart">
+		<chartNode name="TR_PRICE" source="ADD_DF" type="runChart">
 			<plotColumns>종가</plotColumns>
 			<groupColumns>종목명</groupColumns>
 			<grouping>false</grouping>
 			<timeVariable>[Data Index]</timeVariable>
 			<ui>
-				<position x="425" y="207" />
+				<position x="444" y="134" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</chartNode>
 
-		<chartNode name="RunChart_2" source="FIRST_IN_WEEK" type="runChart">
+		<chartNode name="TR_WEEK_PRICE" source="FIRST_IN_WEEK" type="runChart">
 			<plotColumns>종가</plotColumns>
 			<groupColumns>종목명</groupColumns>
 			<grouping>false</grouping>
 			<timeVariable>[Data Index]</timeVariable>
 			<ui>
-				<position x="623" y="294" />
+				<position x="698" y="367" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</chartNode>
+
+		<chartNode name="TR_SLOPE" source="ADD_DF" type="runChart">
+			<plotColumns>SLP_5D</plotColumns>
+			<groupColumns>종목명</groupColumns>
+			<grouping>false</grouping>
+			<timeVariable>[Data Index]</timeVariable>
+			<ui>
+				<position x="576" y="195" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</chartNode>
+
+		<chartNode name="TR_SLOPE_WEEK" source="ADD_DF2" type="runChart">
+			<plotColumns>SLP_5D, SLP_5W</plotColumns>
+			<groupColumns>종목명</groupColumns>
+			<grouping>false</grouping>
+			<timeVariable>[Data Index]</timeVariable>
+			<ui>
+				<position x="705" y="508" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</chartNode>
