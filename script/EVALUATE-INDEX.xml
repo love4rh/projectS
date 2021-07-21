@@ -282,7 +282,7 @@
 			<dataSource alias="A1"><![CDATA[CALC_INDEX]]></dataSource>
 			<dataGroupName><![CDATA[CALC_RATIO]]></dataGroupName>
 			<ui>
-				<position x="684" y="373" />
+				<position x="700" y="370" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -298,7 +298,7 @@
 		</processingElem>
 
 		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[CALC_RATIO]]></dataSource>
+			<dataSource alias="A1"><![CDATA[CALC_YOY]]></dataSource>
 			<dataGroupName><![CDATA[CLEANUP_RESULT]]></dataGroupName>
 			<ui>
 				<position x="850" y="370" />
@@ -367,7 +367,30 @@
 				<column>매출액증가율</column>
 				<column>영업이익증가율</column>
 				<column>지배주주순이익증가율</column>
+				<column>ROE_YOY</column>
+				<column>영업이익률_YOY</column>
+				<column>순이익률_YOY</column>
+				<column>매출액_YOY</column>
+				<column>영업이익_YOY</column>
+				<column>지배순이익_YOY</column>
 			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[CALC_RATIO]]></dataSource>
+			<dataGroupName><![CDATA[CALC_YOY]]></dataGroupName>
+			<ui>
+				<position x="760" y="452" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="ROE_YOY"><![CDATA[{ROE} / {ROE_P} * 100]]></derivedColumn>
+				<derivedColumn name="영업이익률_YOY"><![CDATA[{영업이익률} / {영업이익률_P} * 100]]></derivedColumn>
+				<derivedColumn name="순이익률_YOY"><![CDATA[{순이익률} / {순이익률_P} * 100]]></derivedColumn>
+				<derivedColumn name="매출액_YOY"><![CDATA[{매출액} / {매출액_P} * 100]]></derivedColumn>
+				<derivedColumn name="영업이익_YOY"><![CDATA[{영업이익} / {영업이익_P} * 100]]></derivedColumn>
+				<derivedColumn name="지배순이익_YOY"><![CDATA[{당기순이익_지배} / {당기순이익_지배_P} * 100]]></derivedColumn>
+			</addColumns>
 		</processingElem>
 	</dataProcessing>
 
