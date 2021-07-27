@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="HL_RESULT" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\output\highlow\HILOW-*-STAT.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="R_FLAG" type="integer" />
+				<column name="1.0_DATE" type="integer" />
+				<column name="2.0_DATE" type="integer" />
+				<column name="1.0_APRICE" type="real" />
+				<column name="2.0_APRICE" type="real" />
+				<column name="DURATION" type="integer" />
+				<column name="REVENUE" type="real" />
+				<column name="CAGR" type="real" />
+			</columns>
+			<ui>
+				<position x="159" y="162" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2021" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, "NAME", 시가총액 "C_SIZE", 상장주식수 "S_COUNT"
+  FROM PRICE.Y2021
+ WHERE 날짜 = '20210722']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[13.124.29.70]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="COLUMN3" type="string" />
+				<column name="C_SIZE" type="real" />
+				<column name="S_COUNT" type="real" />
+			</columns>
+			<ui>
+				<position x="146" y="324" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A2"><![CDATA[HL_RESULT]]></dataSource>
+				<dataSource alias="A1"><![CDATA[BIG_SIZE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_SIZE]]></dataGroupName>
+			<ui>
+				<position x="345" y="171" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="BIG_SIZE"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="HL_RESULT"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="BIG_SIZE"><![CDATA[종목명,C_SIZE]]></columns>
+				<columns source="HL_RESULT"><![CDATA[*]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[P_2021]]></dataSource>
+			<dataGroupName><![CDATA[BIG_SIZE]]></dataGroupName>
+			<ui>
+				<position x="286" y="325" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{C_SIZE} > 1.3E11]]></condition>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>

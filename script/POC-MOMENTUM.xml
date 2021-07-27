@@ -7,29 +7,23 @@
 	</settings>
 
 	<macros>
-		<macro name="START_DATE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20180101]]></param>
+		<macro name="L_STEP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[90]]></param>
 		</macro>
-		<macro name="END_DATE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20191231]]></param>
+		<macro name="H_STEP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[120]]></param>
 		</macro>
 		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[002410]]></param>
+			<param name="value"><![CDATA[061250]]></param>
 		</macro>
-		<macro name="MM_COUNT" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[3]]></param>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\momentum\]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
 		</macro>
-		<macro name="P_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
-			<param name="expression"><![CDATA[SUBSTR('$(START_DATE)', 1, 4)]]></param>
-		</macro>
-		<macro name="N_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
-			<param name="expression"><![CDATA[IIF('$(P_YEAR)' = SUBSTR('$(END_DATE)', 1, 4), '2012', SUBSTR('$(END_DATE)', 1, 4))]]></param>
-		</macro>
 		<macro name="BACKUP" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[002410  079370]]></param>
+			<param name="value"><![CDATA[002410  079370  066570]]></param>
 		</macro>
 	</macros>
 
@@ -57,7 +51,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="190" y="69" />
+				<position x="205" y="33" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -83,7 +77,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="129" y="82" />
+				<position x="147" y="54" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -109,7 +103,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="86" y="123" />
+				<position x="95" y="94" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -135,7 +129,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="66" y="186" />
+				<position x="70" y="162" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -161,7 +155,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="65" y="252" />
+				<position x="70" y="232" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -187,7 +181,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="75" y="306" />
+				<position x="80" y="300" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -213,7 +207,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="111" y="354" />
+				<position x="114" y="355" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -265,7 +259,33 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="216" y="405" />
+				<position x="216" y="410" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2021" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2021
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="282" y="448" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -274,15 +294,15 @@
 
 	<dataProcessing>
 		<processingElem type="sort">
-			<dataSource alias="A1"><![CDATA[SN_PRICE]]></dataSource>
+			<dataSource alias="A1"><![CDATA[NAME_HIDING]]></dataSource>
 			<dataGroupName><![CDATA[SORTBYBASE]]></dataGroupName>
 			<ui>
-				<position x="466" y="201" />
+				<position x="351" y="362" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
 				<column order="ascending">P_CODE</column>
-				<column order="ascending">날짜</column>
+				<column order="ascending">DATE</column>
 			</sortColumns>
 		</processingElem>
 
@@ -297,10 +317,11 @@
 				<dataSource alias="A7"><![CDATA[P_2018]]></dataSource>
 				<dataSource alias="A8"><![CDATA[P_2019]]></dataSource>
 				<dataSource alias="A9"><![CDATA[P_2020]]></dataSource>
+				<dataSource alias="A10"><![CDATA[P_2021]]></dataSource>
 			</dataSources>
 			<dataGroupName><![CDATA[SN_PRICE]]></dataGroupName>
 			<ui>
-				<position x="300" y="201" />
+				<position x="290" y="233" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<appendMethod>first</appendMethod>
@@ -310,20 +331,141 @@
 			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
 			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
 			<ui>
-				<position x="615" y="201" />
+				<position x="491" y="363" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="RPRICE"><![CDATA[IIF( @ROWNUM = 1, (A := {종가}) / {종가},
-  IIF( {P_CODE} <> {P_CODE}[-1], (A := {종가}) / {종가}, {종가} / A )
+				<derivedColumn name="APRICE"><![CDATA[({HIGH_P} + {LOW_P}) / 2]]></derivedColumn>
+				<derivedColumn name="RPRICE"><![CDATA[IIF( @ROWNUM = 1, (A := {LAST_P}) / {LAST_P},
+  IIF( {P_CODE} <> {P_CODE}[-1], (A := {LAST_P}) / {LAST_P}, {LAST_P} / A )
 )]]></derivedColumn>
-				<derivedColumn name="WEEK_NO"><![CDATA[SUBSTR({날짜}, 1, 4) + 'W' + STR(GETWEEKOFYEAR(STRTODATE({날짜}, 'yyyyMMdd')), 2)]]></derivedColumn>
+				<derivedColumn name="WEEK_NO"><![CDATA[SUBSTR({DATE}, 1, 4) + 'W' + STR(GETWEEKOFYEAR(STRTODATE({DATE}, 'yyyyMMdd')), 2)]]></derivedColumn>
 				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.01]]></derivedColumn>
 				<derivedColumn name="SLP_5D"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{RPRICE}, 5))]]></derivedColumn>
-				<derivedColumn name="LOW_RATE"><![CDATA[{RPRICE} / MOVINGMIN(@{RPRICE}, 120) * 100 - 100]]></derivedColumn>
-				<derivedColumn name="HIGH_RATE"><![CDATA[{RPRICE} / MOVINGMAX(@{RPRICE}, 120) * 100]]></derivedColumn>
-				<derivedColumn name="REV_HRATE"><![CDATA[100 - {HIGH_RATE}]]></derivedColumn>
+				<derivedColumn name="LOW_RATE"><![CDATA[{RPRICE} / MOVINGMIN(@{RPRICE}, $(L_STEP)) * 100 - 100]]></derivedColumn>
+				<derivedColumn name="HIGH_RATE"><![CDATA[{RPRICE} / MOVINGMAX(@{RPRICE}, $(H_STEP)) * 100]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[ADD_EXT_DF]]></dataGroupName>
+			<ui>
+				<position x="602" y="369" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="L_COUNT"><![CDATA[MOVINGLESSCOUNT(@{LOW_RATE}, 10, 0.011)]]></derivedColumn>
+				<derivedColumn name="H_COUNT"><![CDATA[MOVINGMORECOUNT(@{HIGH_RATE}, 10, 99.5)]]></derivedColumn>
+				<derivedColumn name="R_FLAG"><![CDATA[IIF( @ROWNUM < MAX($(L_STEP), $(H_STEP)),
+  G := 0,
+  IIF( GETVALUE(@THIS, -1) = 0,
+    IIF( {L_COUNT} >= 3 AND {SLP_5D} > 0 AND {SLP_5D}[-1] < 0, G := @ROWNUM, 0 ),
+    IIF( {HIGH_RATE} < 100 AND MOVINGMORECOUNT(@{HIGH_RATE}, 10, 99.5 - INT((@ROWNUM - G) / 90) * 5) >= 3 AND {SLP_5D} < 0.01, 0, G ),
+  )
+)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[RETAIN_ONLY]]></dataSource>
+			<dataGroupName><![CDATA[FL_IN_GROUP]]></dataGroupName>
+			<ui>
+				<position x="734" y="229" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[R_FLAG]]></groupingColumns>
+			<selectColumn type="min/max"><![CDATA[DATE]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[SN_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[NAME_HIDING]]></dataGroupName>
+			<ui>
+				<position x="403" y="235" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column toName="NAME">종목명</column>
+				<column toName="DATE">날짜</column>
+				<column toName="BEGIN_P">시가</column>
+				<column toName="HIGH_P">고가</column>
+				<column toName="LOW_P">저가</column>
+				<column toName="LAST_P">종가</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="groupCount">
+			<dataSource alias="A1"><![CDATA[FL_IN_GROUP]]></dataSource>
+			<dataGroupName><![CDATA[ADD_TYPE]]></dataGroupName>
+			<ui>
+				<position x="722" y="384" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[P_CODE, R_FLAG]]></groupingColumns>
+			<elementIndex><![CDATA[TYPE]]></elementIndex>
+		</processingElem>
+
+		<processingElem type="pivot">
+			<dataSource alias="A1"><![CDATA[ADD_TYPE]]></dataSource>
+			<dataGroupName><![CDATA[ALIGN_ONE_LINE]]></dataGroupName>
+			<ui>
+				<position x="821" y="460" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<columnColumns><![CDATA[TYPE]]></columnColumns>
+			<namePrefix><![CDATA[]]></namePrefix>
+			<rowColumns><![CDATA[P_CODE, R_FLAG]]></rowColumns>
+			<valueColumns><![CDATA[DATE, APRICE]]></valueColumns>
+			<recalculateRuntime><![CDATA[false]]></recalculateRuntime>
+			<remake>true for regenerate columns</remake>
+			<!-- DO NOT EDIT BELOW -->
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="R_FLAG" type="real" />
+				<column name="1.0_DATE" type="string" />
+				<column name="2.0_DATE" type="string" />
+				<column name="1.0_APRICE" type="real" />
+				<column name="2.0_APRICE" type="real" />
+			</columns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_EXT_DF]]></dataSource>
+			<dataGroupName><![CDATA[RETAIN_ONLY]]></dataGroupName>
+			<ui>
+				<position x="611" y="228" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{R_FLAG} > 0]]></condition>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ALIGN_ONE_LINE]]></dataSource>
+			<dataGroupName><![CDATA[CALC_STAT]]></dataGroupName>
+			<ui>
+				<position x="964" y="355" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="DURATION"><![CDATA[DIFFDAY(STRTODATE({2.0_DATE}, 'yyyyMMdd'), STRTODATE({1.0_DATE}, 'yyyyMMdd'))]]></derivedColumn>
+				<derivedColumn name="REVENUE"><![CDATA[{2.0_APRICE} / {1.0_APRICE}]]></derivedColumn>
+				<derivedColumn name="CAGR"><![CDATA[POW({REVENUE}, 1 / ({DURATION} / 356)) - 1.0]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="CALC_STAT" type="file">
+			<filePath><![CDATA[$(OUT_PATH)HILOW-$(COMP_CODE)-STAT.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="896" y="236" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
 </crawlegoProject>

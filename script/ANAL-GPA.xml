@@ -32,10 +32,10 @@
 			<param name="value"><![CDATA[10]]></param>
 		</macro>
 		<macro name="TOTAL_AMOUNT" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[25]]></param>
+			<param name="value"><![CDATA[200]]></param>
 		</macro>
 		<macro name="VOL_LIMIT" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[100000]]></param>
+			<param name="value"><![CDATA[1]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
@@ -185,7 +185,7 @@
 				<position x="385" y="81" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {당기순이익} > 0 AND {부채비율} <= 150 AND {PCR} > 0]]></condition>
+			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {부채비율} <= 150]]></condition>
 		</processingElem>
 
 		<processingElem type="rank">
@@ -202,13 +202,13 @@
 		</processingElem>
 
 		<processingElem type="rank">
-			<dataSource alias="A1"><![CDATA[FILTER_BADS]]></dataSource>
+			<dataSource alias="A1"><![CDATA[ADDITIONALS]]></dataSource>
 			<dataGroupName><![CDATA[RANK_4IDX]]></dataGroupName>
 			<ui>
 				<position x="385" y="221" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<rankColumns><![CDATA[시가총액,PBR,PER,PSR,PCR]]></rankColumns>
+			<rankColumns><![CDATA[시가총액,D_PBR,D_PER,D_PSR,D_PCR]]></rankColumns>
 			<prefix><![CDATA[RANK_]]></prefix>
 			<usePercentage>true</usePercentage>
 			<acsending>true</acsending>
@@ -232,11 +232,7 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="S_PBR"><![CDATA[INT({RANK_PBR})]]></derivedColumn>
-				<derivedColumn name="S_PER"><![CDATA[INT({RANK_PER})]]></derivedColumn>
-				<derivedColumn name="S_PSR"><![CDATA[INT({RANK_PSR})]]></derivedColumn>
-				<derivedColumn name="S_PCR"><![CDATA[INT({RANK_PCR})]]></derivedColumn>
-				<derivedColumn name="RISK"><![CDATA[{S_PBR} + {S_PER} + {S_PSR} + {S_PCR}]]></derivedColumn>
+				<derivedColumn name="SCORE"><![CDATA[{GP/A}]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -261,7 +257,7 @@
 			<selectColumns>
 				<columns source="BUY_PRICE"><![CDATA[매수일,종목명,매수가]]></columns>
 				<columns source="SELL_PRICE"><![CDATA[매도일,매도가]]></columns>
-				<columns source="SMALL_SIZE"><![CDATA[P_CODE,TERM,자산총계,시가총액_억,RANK_시가총액,RISK,거래량]]></columns>
+				<columns source="SMALL_SIZE"><![CDATA[P_CODE,TERM,자산총계,시가총액_억,거래량,RANK_시가총액,SCORE]]></columns>
 			</selectColumns>
 		</processingElem>
 
@@ -331,7 +327,7 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
-				<column order="ascending">RISK</column>
+				<column order="descending">SCORE</column>
 			</sortColumns>
 		</processingElem>
 
@@ -363,9 +359,24 @@
 				<column>매도가</column>
 				<column>거래량</column>
 				<column>매수량</column>
-				<column>RISK</column>
+				<column>SCORE</column>
 				<column>REVENUE</column>
 			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[FILTER_BADS]]></dataSource>
+			<dataGroupName><![CDATA[ADDITIONALS]]></dataGroupName>
+			<ui>
+				<position x="475" y="143" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="D_PBR"><![CDATA[1 / {PBR}]]></derivedColumn>
+				<derivedColumn name="D_PER"><![CDATA[1 / {PER}]]></derivedColumn>
+				<derivedColumn name="D_PSR"><![CDATA[1 / {PSR}]]></derivedColumn>
+				<derivedColumn name="D_PCR"><![CDATA[1 / {PCR}]]></derivedColumn>
+			</addColumns>
 		</processingElem>
 	</dataProcessing>
 
