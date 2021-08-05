@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="L_STEP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[90]]></param>
+		</macro>
+		<macro name="H_STEP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[120]]></param>
+		</macro>
+		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[066570]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\momentum\]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="BACKUP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[002410  079370  066570]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="P_2012" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2012
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="205" y="33" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2013" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2013
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="147" y="54" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2014" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2014
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="95" y="94" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2015" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2015
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="70" y="162" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2016" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2016
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="70" y="232" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2017" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2017
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="80" y="300" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2018" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2018
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="114" y="355" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2019" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2019
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="161" y="385" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2020" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2020
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="216" y="410" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2021" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+  FROM PRICE.Y2021
+ WHERE 종목코드 = '$(COMP_CODE)']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+			</columns>
+			<ui>
+				<position x="282" y="448" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[NAME_HIDING]]></dataSource>
+			<dataGroupName><![CDATA[SORTBYBASE]]></dataGroupName>
+			<ui>
+				<position x="521" y="234" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">P_CODE</column>
+				<column order="ascending">DATE</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="append">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[P_2012]]></dataSource>
+				<dataSource alias="A2"><![CDATA[P_2013]]></dataSource>
+				<dataSource alias="A3"><![CDATA[P_2014]]></dataSource>
+				<dataSource alias="A4"><![CDATA[P_2015]]></dataSource>
+				<dataSource alias="A5"><![CDATA[P_2016]]></dataSource>
+				<dataSource alias="A6"><![CDATA[P_2017]]></dataSource>
+				<dataSource alias="A7"><![CDATA[P_2018]]></dataSource>
+				<dataSource alias="A8"><![CDATA[P_2019]]></dataSource>
+				<dataSource alias="A9"><![CDATA[P_2020]]></dataSource>
+				<dataSource alias="A10"><![CDATA[P_2021]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[SN_PRICE]]></dataGroupName>
+			<ui>
+				<position x="290" y="233" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<appendMethod>first</appendMethod>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="521" y="354" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="RPRICE"><![CDATA[IIF( @ROWNUM = 1, (A := {LAST_P}) / {LAST_P},
+  IIF( {P_CODE} <> {P_CODE}[-1], (A := {LAST_P}) / {LAST_P}, {LAST_P} / A )
+)]]></derivedColumn>
+				<derivedColumn name="WEEK_NO"><![CDATA[SUBSTR({DATE}, 1, 4) + 'W' + STR(GETWEEKOFYEAR(STRTODATE({DATE}, 'yyyyMMdd')), 2)]]></derivedColumn>
+				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.1]]></derivedColumn>
+				<derivedColumn name="MV5"><![CDATA[IIF( @ROWNUM = 1, MOVINGAVG(@{RPRICE}, (M := 1)),
+  IIF( {P_CODE} <> {P_CODE}[-1],
+    MOVINGAVG(@{RPRICE}, (M := @ROWNUM) / @ROWNUM),
+    MOVINGAVG(@{RPRICE}, MIN(5, @ROWNUM - M))
+  )
+)]]></derivedColumn>
+				<derivedColumn name="SLP_MV5"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV5}, 5))
+]]></derivedColumn>
+				<derivedColumn name="CUM_SLP"><![CDATA[IIF( @ROWNUM = 1, {SLP_MV5},
+  IIF( {P_CODE} <> {P_CODE}[-1], {SLP_MV5}, GETVALUE(@THIS, -1) + {SLP_MV5} )
+)
+]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[SN_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[NAME_HIDING]]></dataGroupName>
+			<ui>
+				<position x="403" y="235" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column toName="NAME">종목명</column>
+				<column toName="DATE">날짜</column>
+				<column toName="BEGIN_P">시가</column>
+				<column toName="HIGH_P">고가</column>
+				<column toName="LOW_P">저가</column>
+				<column toName="LAST_P">종가</column>
+			</orderAndFilter>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+	</dataLoadings>
+</crawlegoProject>
