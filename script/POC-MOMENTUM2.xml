@@ -297,7 +297,7 @@
 			<dataSource alias="A1"><![CDATA[NAME_HIDING]]></dataSource>
 			<dataGroupName><![CDATA[SORTBYBASE]]></dataGroupName>
 			<ui>
-				<position x="351" y="362" />
+				<position x="402" y="380" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
@@ -331,7 +331,7 @@
 			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
 			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
 			<ui>
-				<position x="491" y="363" />
+				<position x="522" y="381" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -341,41 +341,20 @@
 )]]></derivedColumn>
 				<derivedColumn name="WEEK_NO"><![CDATA[SUBSTR({DATE}, 1, 4) + 'W' + STR(GETWEEKOFYEAR(STRTODATE({DATE}, 'yyyyMMdd')), 2)]]></derivedColumn>
 				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.01]]></derivedColumn>
-				<derivedColumn name="SLP_5D"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{RPRICE}, 5))]]></derivedColumn>
-				<derivedColumn name="LOW_RATE"><![CDATA[{RPRICE} / MOVINGMIN(@{RPRICE}, $(L_STEP)) * 100 - 100]]></derivedColumn>
-				<derivedColumn name="HIGH_RATE"><![CDATA[{RPRICE} / MOVINGMAX(@{RPRICE}, $(H_STEP)) * 100]]></derivedColumn>
-			</addColumns>
-		</processingElem>
-
-		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
-			<dataGroupName><![CDATA[ADD_EXT_DF]]></dataGroupName>
-			<ui>
-				<position x="602" y="369" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<addColumns>
-				<derivedColumn name="L_COUNT"><![CDATA[MOVINGLESSCOUNT(@{LOW_RATE}, 10, 0.011)]]></derivedColumn>
-				<derivedColumn name="H_COUNT"><![CDATA[MOVINGMORECOUNT(@{HIGH_RATE}, 10, 99.5)]]></derivedColumn>
-				<derivedColumn name="R_FLAG"><![CDATA[IIF( @ROWNUM < MAX($(L_STEP), $(H_STEP)),
-  G := 0,
-  IIF( GETVALUE(@THIS, -1) = 0,
-    IIF( {L_COUNT} >= 3 AND {SLP_5D} > 0 AND {SLP_5D}[-1] < 0, G := @ROWNUM, 0 ),
-    IIF( {HIGH_RATE} < 100 AND MOVINGMORECOUNT(@{HIGH_RATE}, 10, 99.5 - INT((@ROWNUM - G) / 90) * 5) >= 3 AND {SLP_5D} < 0.01, 0, G ),
-  )
+				<derivedColumn name="MV5"><![CDATA[IIF( @ROWNUM = 1, MOVINGAVG(@{RPRICE}, MIN(@ROWNUM - (M := @ROWNUM) + 1, 5)),
+  IIF( {P_CODE} <> {P_CODE}[-1], MOVINGAVG(@{RPRICE}, MIN(@ROWNUM - (M := @ROWNUM) + 1, 5)),
+    MOVINGAVG(@{RPRICE}, MIN(@ROWNUM - M, 5)) )
 )]]></derivedColumn>
+				<derivedColumn name="DMV5"><![CDATA[IIF( @ROWNUM = 1, 0,
+  IIF( {P_CODE} <> {P_CODE}[-1], 0, ({MV5} - {MV5}[-1]) / {MV5}[-1] )
+)]]></derivedColumn>
+				<derivedColumn name="DMV5MV5"><![CDATA[IIF( @ROWNUM = 1, MOVINGAVG(@{DMV5}, MIN(@ROWNUM - (M := @ROWNUM) + 1, 5)),
+  IIF( {P_CODE} <> {P_CODE}[-1], MOVINGAVG(@{DMV5}, MIN(@ROWNUM - (M := @ROWNUM) + 1, 5)),
+    MOVINGAVG(@{DMV5}, MIN(@ROWNUM - M, 5)) )
+)]]></derivedColumn>
+				<derivedColumn name="SLP_MV5"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV5}, 5))]]></derivedColumn>
+				<derivedColumn name="SLP_5D"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{RPRICE}, 5))]]></derivedColumn>
 			</addColumns>
-		</processingElem>
-
-		<processingElem type="groupingSelect">
-			<dataSource alias="A1"><![CDATA[RETAIN_ONLY]]></dataSource>
-			<dataGroupName><![CDATA[FL_IN_GROUP]]></dataGroupName>
-			<ui>
-				<position x="734" y="229" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<groupingColumns><![CDATA[R_FLAG]]></groupingColumns>
-			<selectColumn type="min/max"><![CDATA[DATE]]></selectColumn>
 		</processingElem>
 
 		<processingElem type="orderAndFilter">
@@ -395,77 +374,5 @@
 				<column toName="LAST_P">종가</column>
 			</orderAndFilter>
 		</processingElem>
-
-		<processingElem type="groupCount">
-			<dataSource alias="A1"><![CDATA[FL_IN_GROUP]]></dataSource>
-			<dataGroupName><![CDATA[ADD_TYPE]]></dataGroupName>
-			<ui>
-				<position x="722" y="384" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<groupingColumns><![CDATA[P_CODE, R_FLAG]]></groupingColumns>
-			<elementIndex><![CDATA[TYPE]]></elementIndex>
-		</processingElem>
-
-		<processingElem type="pivot">
-			<dataSource alias="A1"><![CDATA[ADD_TYPE]]></dataSource>
-			<dataGroupName><![CDATA[ALIGN_ONE_LINE]]></dataGroupName>
-			<ui>
-				<position x="821" y="460" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<columnColumns><![CDATA[TYPE]]></columnColumns>
-			<namePrefix><![CDATA[]]></namePrefix>
-			<rowColumns><![CDATA[P_CODE, R_FLAG]]></rowColumns>
-			<valueColumns><![CDATA[DATE, APRICE]]></valueColumns>
-			<recalculateRuntime><![CDATA[false]]></recalculateRuntime>
-			<remake>true for regenerate columns</remake>
-			<!-- DO NOT EDIT BELOW -->
-			<columns>
-				<column name="P_CODE" type="string" />
-				<column name="R_FLAG" type="real" />
-				<column name="1.0_DATE" type="string" />
-				<column name="2.0_DATE" type="string" />
-				<column name="1.0_APRICE" type="real" />
-				<column name="2.0_APRICE" type="real" />
-			</columns>
-		</processingElem>
-
-		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[ADD_EXT_DF]]></dataSource>
-			<dataGroupName><![CDATA[RETAIN_ONLY]]></dataGroupName>
-			<ui>
-				<position x="611" y="228" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<condition><![CDATA[{R_FLAG} > 0]]></condition>
-		</processingElem>
-
-		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[ALIGN_ONE_LINE]]></dataSource>
-			<dataGroupName><![CDATA[CALC_STAT]]></dataGroupName>
-			<ui>
-				<position x="964" y="355" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<addColumns>
-				<derivedColumn name="DURATION"><![CDATA[DIFFDAY(STRTODATE({2.0_DATE}, 'yyyyMMdd'), STRTODATE({1.0_DATE}, 'yyyyMMdd'))]]></derivedColumn>
-				<derivedColumn name="REVENUE"><![CDATA[{2.0_APRICE} / {1.0_APRICE}]]></derivedColumn>
-				<derivedColumn name="CAGR"><![CDATA[POW({REVENUE}, 1 / ({DURATION} / 356)) - 1.0]]></derivedColumn>
-			</addColumns>
-		</processingElem>
 	</dataProcessing>
-
-	<dataLoadings>
-		<dataLoading name="SAVE" source="CALC_STAT" type="file">
-			<filePath><![CDATA[$(OUT_PATH)HILOW-$(COMP_CODE)-STAT.txt]]></filePath>
-			<remainFinFile><![CDATA[false]]></remainFinFile>
-			<finFile><![CDATA[]]></finFile>
-			<ui>
-				<position x="896" y="236" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</dataLoading>
-
-	</dataLoadings>
 </crawlegoProject>
