@@ -328,30 +328,29 @@
 		</processingElem>
 
 		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
+			<dataSource alias="A1"><![CDATA[RANGE]]></dataSource>
 			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
 			<ui>
-				<position x="521" y="354" />
+				<position x="809" y="233" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="RPRICE"><![CDATA[IIF( @ROWNUM = 1, (A := {LAST_P}) / {LAST_P},
+				<derivedColumn name="RPRICE_ORG"><![CDATA[IIF( @ROWNUM = 1, (A := {LAST_P}) / {LAST_P},
   IIF( {P_CODE} <> {P_CODE}[-1], (A := {LAST_P}) / {LAST_P}, {LAST_P} / A )
 )]]></derivedColumn>
+				<derivedColumn name="RPRICE"><![CDATA[{RPRICE_ORG}]]></derivedColumn>
 				<derivedColumn name="WEEK_NO"><![CDATA[SUBSTR({DATE}, 1, 4) + 'W' + STR(GETWEEKOFYEAR(STRTODATE({DATE}, 'yyyyMMdd')), 2)]]></derivedColumn>
 				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.1]]></derivedColumn>
 				<derivedColumn name="MV5"><![CDATA[IIF( @ROWNUM = 1, MOVINGAVG(@{RPRICE}, (M := 1)),
   IIF( {P_CODE} <> {P_CODE}[-1],
     MOVINGAVG(@{RPRICE}, (M := @ROWNUM) / @ROWNUM),
-    MOVINGAVG(@{RPRICE}, MIN(5, @ROWNUM - M))
+    MOVINGAVG(@{RPRICE}, MIN(3, @ROWNUM - M))
   )
 )]]></derivedColumn>
-				<derivedColumn name="SLP_MV5"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV5}, 5))
-]]></derivedColumn>
+				<derivedColumn name="SLP_MV5"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV5}, 5))]]></derivedColumn>
 				<derivedColumn name="CUM_SLP"><![CDATA[IIF( @ROWNUM = 1, {SLP_MV5},
   IIF( {P_CODE} <> {P_CODE}[-1], {SLP_MV5}, GETVALUE(@THIS, -1) + {SLP_MV5} )
-)
-]]></derivedColumn>
+)]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -372,8 +371,46 @@
 				<column toName="LAST_P">종가</column>
 			</orderAndFilter>
 		</processingElem>
-	</dataProcessing>
 
-	<dataLoadings>
-	</dataLoadings>
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
+			<dataGroupName><![CDATA[RANGE]]></dataGroupName>
+			<ui>
+				<position x="659" y="233" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA['20130101' <= {DATE} AND {DATE} <= '20200101']]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[Derived_1]]></dataSource>
+			<dataGroupName><![CDATA[P_COLUMNS]]></dataGroupName>
+			<ui>
+				<position x="941" y="339" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>DATE</column>
+				<column>MV5</column>
+				<column>SLP2</column>
+				<column>CUM2</column>
+				<column>RPRICE</column>
+				<column>SLP_MV5</column>
+				<column>CUM_SLP</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[Derived_1]]></dataGroupName>
+			<ui>
+				<position x="812" y="339" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="SLP2"><![CDATA[IIF( ABS({SLP_MV5}) < 0.05, 0, {SLP_MV5} )]]></derivedColumn>
+				<derivedColumn name="CUM2"><![CDATA[IIF( @ROWNUM = 1, {SLP2}, GETVALUE(@THIS, -1) + {SLP2} )]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+	</dataProcessing>
 </crawlegoProject>
