@@ -328,10 +328,10 @@
 		</processingElem>
 
 		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[RANGE]]></dataSource>
+			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
 			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
 			<ui>
-				<position x="809" y="233" />
+				<position x="521" y="345" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -373,20 +373,20 @@
 		</processingElem>
 
 		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
+			<dataSource alias="A1"><![CDATA[ADD_EXDF]]></dataSource>
 			<dataGroupName><![CDATA[RANGE]]></dataGroupName>
 			<ui>
-				<position x="659" y="233" />
+				<position x="787" y="346" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA['20130101' <= {DATE} AND {DATE} <= '20200101']]></condition>
+			<condition><![CDATA['20180101' <= {DATE} AND {DATE} <= '20200101']]></condition>
 		</processingElem>
 
 		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[Derived_1]]></dataSource>
+			<dataSource alias="A1"><![CDATA[RANGE]]></dataSource>
 			<dataGroupName><![CDATA[P_COLUMNS]]></dataGroupName>
 			<ui>
-				<position x="941" y="339" />
+				<position x="935" y="345" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -395,6 +395,7 @@
 				<column>SLP2</column>
 				<column>CUM2</column>
 				<column>RPRICE</column>
+				<column>VAR_CUM</column>
 				<column>SLP_MV5</column>
 				<column>CUM_SLP</column>
 			</orderAndFilter>
@@ -402,15 +403,48 @@
 
 		<processingElem type="derived">
 			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
-			<dataGroupName><![CDATA[Derived_1]]></dataGroupName>
+			<dataGroupName><![CDATA[ADD_EXDF]]></dataGroupName>
 			<ui>
-				<position x="812" y="339" />
+				<position x="650" y="346" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
 				<derivedColumn name="SLP2"><![CDATA[IIF( ABS({SLP_MV5}) < 0.05, 0, {SLP_MV5} )]]></derivedColumn>
 				<derivedColumn name="CUM2"><![CDATA[IIF( @ROWNUM = 1, {SLP2}, GETVALUE(@THIS, -1) + {SLP2} )]]></derivedColumn>
+				<derivedColumn name="VAR_CUM"><![CDATA[MOVINGVAR(@{CUM2}, 40)]]></derivedColumn>
+				<derivedColumn name="STEADY_COUNT"><![CDATA[MOVINGLESSCOUNT(@{VAR_CUM}, 30, 0.1)]]></derivedColumn>
+				<derivedColumn name="MX"><![CDATA[MOVINGMAX(@{RPRICE}, 200)]]></derivedColumn>
+				<derivedColumn name="MA_RATE"><![CDATA[1 - {RPRICE} / {MX}]]></derivedColumn>
 			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_EXDF]]></dataSource>
+			<dataGroupName><![CDATA[B_POINT]]></dataGroupName>
+			<ui>
+				<position x="718" y="468" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[@ROWNUM > 200 AND {SLP2} > 0 AND {CUM2}[-1] < {CUM2} AND {MA_RATE} > 0.24]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ADD_EXDF]]></dataSource>
+			<dataGroupName><![CDATA[P_COLUMNS_1]]></dataGroupName>
+			<ui>
+				<position x="782" y="248" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>DATE</column>
+				<column>MV5</column>
+				<column>SLP2</column>
+				<column>CUM2</column>
+				<column>RPRICE</column>
+				<column>VAR_CUM</column>
+				<column>SLP_MV5</column>
+				<column>CUM_SLP</column>
+			</orderAndFilter>
 		</processingElem>
 	</dataProcessing>
 </crawlegoProject>
