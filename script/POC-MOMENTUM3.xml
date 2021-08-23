@@ -25,6 +25,9 @@
 		<macro name="BACKUP" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[002410  079370  066570]]></param>
 		</macro>
+		<macro name="SMOOTH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[0.1]]></param>
+		</macro>
 	</macros>
 
 
@@ -347,7 +350,7 @@
     MOVINGAVG(@{RPRICE}, MIN(3, @ROWNUM - M))
   )
 )]]></derivedColumn>
-				<derivedColumn name="SLP_MV5"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV5}, 5))]]></derivedColumn>
+				<derivedColumn name="SLP_MV5"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{RPRICE}, 5))]]></derivedColumn>
 				<derivedColumn name="CUM_SLP"><![CDATA[IIF( @ROWNUM = 1, {SLP_MV5},
   IIF( {P_CODE} <> {P_CODE}[-1], {SLP_MV5}, GETVALUE(@THIS, -1) + {SLP_MV5} )
 )]]></derivedColumn>
@@ -409,7 +412,7 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="SLP2"><![CDATA[IIF( ABS({SLP_MV5}) < 0.05, 0, {SLP_MV5} )]]></derivedColumn>
+				<derivedColumn name="SLP2"><![CDATA[IIF( -0.05 < {SLP_MV5} AND {SLP_MV5} < 0.07, 0, {SLP_MV5} )]]></derivedColumn>
 				<derivedColumn name="CUM2"><![CDATA[IIF( @ROWNUM = 1, {SLP2}, GETVALUE(@THIS, -1) + {SLP2} )]]></derivedColumn>
 				<derivedColumn name="VAR_CUM"><![CDATA[MOVINGVAR(@{CUM2}, 40)]]></derivedColumn>
 				<derivedColumn name="STEADY_COUNT"><![CDATA[MOVINGLESSCOUNT(@{VAR_CUM}, 30, 0.1)]]></derivedColumn>
@@ -432,15 +435,15 @@
 			<dataSource alias="A1"><![CDATA[ADD_EXDF]]></dataSource>
 			<dataGroupName><![CDATA[P_COLUMNS_1]]></dataGroupName>
 			<ui>
-				<position x="782" y="248" />
+				<position x="737" y="224" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
 				<column>DATE</column>
+				<column>RPRICE</column>
 				<column>MV5</column>
 				<column>SLP2</column>
 				<column>CUM2</column>
-				<column>RPRICE</column>
 				<column>VAR_CUM</column>
 				<column>SLP_MV5</column>
 				<column>CUM_SLP</column>
