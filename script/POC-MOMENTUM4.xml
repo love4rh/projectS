@@ -14,7 +14,7 @@
 			<param name="value"><![CDATA[120]]></param>
 		</macro>
 		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[000660]]></param>
+			<param name="value"><![CDATA[066570]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[D:\EclipseData\Andromeda\chartX\data\]]></param>
@@ -304,7 +304,6 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
-				<column order="ascending">P_CODE</column>
 				<column order="ascending">DATE</column>
 			</sortColumns>
 		</processingElem>
@@ -338,28 +337,18 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="RPRICE_ORG"><![CDATA[IIF( @ROWNUM = 1, (A := {LAST_P}) / {LAST_P},
-  IIF( {P_CODE} <> {P_CODE}[-1], (A := {LAST_P}) / {LAST_P}, {LAST_P} / A )
-)]]></derivedColumn>
-				<derivedColumn name="RPRICE"><![CDATA[{RPRICE_ORG}]]></derivedColumn>
-				<derivedColumn name="WEEK_NO"><![CDATA[SUBSTR({DATE}, 1, 4) + 'W' + STR(GETWEEKOFYEAR(STRTODATE({DATE}, 'yyyyMMdd')), 2)]]></derivedColumn>
 				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.1]]></derivedColumn>
-				<derivedColumn name="MV5"><![CDATA[IIF( @ROWNUM = 1, MOVINGAVG(@{RPRICE}, (M := 1)),
-  IIF( {P_CODE} <> {P_CODE}[-1],
-    MOVINGAVG(@{RPRICE}, (M := @ROWNUM) / @ROWNUM),
-    MOVINGAVG(@{RPRICE}, MIN(3, @ROWNUM - M))
-  )
-)]]></derivedColumn>
-				<derivedColumn name="SLP_MV5"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{RPRICE}, 5))]]></derivedColumn>
-				<derivedColumn name="CUM_SLP"><![CDATA[IIF( @ROWNUM = 1, {SLP_MV5},
-  IIF( {P_CODE} <> {P_CODE}[-1], {SLP_MV5}, GETVALUE(@THIS, -1) + {SLP_MV5} )
-)]]></derivedColumn>
-				<derivedColumn name="MV3-REAL"><![CDATA[IIF( @ROWNUM = 1, MOVINGAVG(@{LAST_P}, (M2 := 1)),
-  IIF( {P_CODE} <> {P_CODE}[-1],
-    MOVINGAVG(@{LAST_P}, (M2 := @ROWNUM) / @ROWNUM),
-    MOVINGAVG(@{LAST_P}, MIN(3, @ROWNUM - M2))
-  )
-)]]></derivedColumn>
+				<derivedColumn name="RPRICE"><![CDATA[IIF( @ROWNUM = 1, (A := {LAST_P}) / {LAST_P}, {LAST_P} / A )]]></derivedColumn>
+				<derivedColumn name="MV/RP"><![CDATA[MOVINGAVG(@{RPRICE}, MIN(3, @ROWNUM))]]></derivedColumn>
+				<derivedColumn name="MV/LP"><![CDATA[MOVINGAVG( @{LAST_P}, MIN(3, @ROWNUM) )]]></derivedColumn>
+				<derivedColumn name="SLOPE/MV"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV/RP}, 5))]]></derivedColumn>
+				<derivedColumn name="CLINE"><![CDATA[IIF( @ROWNUM = 1, {SLOPE/MV}, GETVALUE(@THIS, -1) + {SLOPE/MV} )]]></derivedColumn>
+				<derivedColumn name="SMOOTH/FACTOR"><![CDATA[SQRT(MOVINGVAR(@{SLOPE/MV}, 20))]]></derivedColumn>
+				<derivedColumn name="SLOPE/SMOOTH"><![CDATA[IIF( ISBETWEEN({SLOPE/MV}, -{SMOOTH/FACTOR}, {SMOOTH/FACTOR}), 0, {SLOPE/MV} )]]></derivedColumn>
+				<derivedColumn name="CLINE/SMOOTH"><![CDATA[IIF( @ROWNUM = 1, {SLOPE/SMOOTH}, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH} )]]></derivedColumn>
+				<derivedColumn name="SHORT/TERM"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{CLINE/SMOOTH}, 10) )]]></derivedColumn>
+				<derivedColumn name="MID/TERM"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{CLINE/SMOOTH}, 25) )]]></derivedColumn>
+				<derivedColumn name="LONG/TERM"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{CLINE/SMOOTH}, 45) )]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -372,7 +361,6 @@
 			</ui>
 			<orderAndFilter>
 				<column>P_CODE</column>
-				<column toName="NAME">종목명</column>
 				<column toName="DATE">날짜</column>
 				<column toName="BEGIN_P">시가</column>
 				<column toName="HIGH_P">고가</column>
@@ -389,22 +377,13 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="VAR_CUM"><![CDATA[MOVINGVAR(@{SLP_MV5}, 20) * 2]]></derivedColumn>
-				<derivedColumn name="SLP2"><![CDATA[IIF( -{VAR_CUM} < {SLP_MV5} AND {SLP_MV5} < {VAR_CUM}, 0, {SLP_MV5} )]]></derivedColumn>
-				<derivedColumn name="CUM2"><![CDATA[IIF( @ROWNUM = 1, {SLP2}, GETVALUE(@THIS, -1) + {SLP2} )]]></derivedColumn>
-				<derivedColumn name="SHT_VAR"><![CDATA[MOVINGVAR(@{SLP2}, 5)]]></derivedColumn>
-				<derivedColumn name="CONT_P_SLP"><![CDATA[IIF( @ROWNUM < 2, 0,
-  IIF( {SLP2} >= 0, GETVALUE(@THIS, -1) + {SLP2}, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="CONT_M_SLP"><![CDATA[IIF( @ROWNUM < 2, 0,
-  IIF( {SLP2} <= 0, GETVALUE(@THIS, -1) + {SLP2}, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="CONT_SLP"><![CDATA[{CONT_P_SLP} + {CONT_M_SLP}]]></derivedColumn>
-				<derivedColumn name="MIN_IN_YEAR"><![CDATA[MOVINGMIN(@{MV3-REAL}, 250)]]></derivedColumn>
-				<derivedColumn name="MIN_RATIO"><![CDATA[{MV3-REAL} / {MIN_IN_YEAR}]]></derivedColumn>
+				<derivedColumn name="SHT_VAR"><![CDATA[SQRT(MOVINGVAR(@{SLOPE/MV}, 5))]]></derivedColumn>
+				<derivedColumn name="SHTVAR_MV"><![CDATA[MOVINGAVG(@{SHT_VAR}, 5)]]></derivedColumn>
+				<derivedColumn name="MIN_IN_YEAR"><![CDATA[MOVINGMIN(@{MV/LP}, 250)]]></derivedColumn>
+				<derivedColumn name="MIN_RATIO"><![CDATA[{MV/LP} / {MIN_IN_YEAR}]]></derivedColumn>
 				<derivedColumn name="BPOS_FLAG"><![CDATA[IIF( @ROWNUM < 100, 0,
-  IIF( {SLP2} > 0.05
-       AND {SHT_VAR} < 0.05
+  IIF( (MOVINGSUM(@{CLINE/SMOOTH}, 6) - {CLINE/SMOOTH}) / 5 + 0.001 < {CLINE/SMOOTH}
+       AND {SHTVAR_MV}[-1] <= 0.05
        AND MOVINGSUM(@THIS, 30) = 0
        AND {MIN_RATIO} <= 1.2
        , 1, 0 )
@@ -421,13 +400,14 @@
 			</ui>
 			<orderAndFilter>
 				<column>DATE</column>
-				<column toName="PRICE">LAST_P</column>
-				<column toName="MV3">MV3-REAL</column>
-				<column toName="SLOPE">SLP2</column>
-				<column toName="CUMULATED">CUM2</column>
-				<column>VAR_CUM</column>
-				<column>SHT_VAR</column>
 				<column>BPOS_FLAG</column>
+				<column toName="PRICE">LAST_P</column>
+				<column>MV/LP</column>
+				<column toName="SLOPE">SLOPE/SMOOTH</column>
+				<column toName="CLINE">CLINE/SMOOTH</column>
+				<column>SHORT/TERM</column>
+				<column>MID/TERM</column>
+				<column>LONG/TERM</column>
 			</orderAndFilter>
 		</processingElem>
 	</dataProcessing>
