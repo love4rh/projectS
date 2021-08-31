@@ -17,7 +17,7 @@
 			<param name="value"><![CDATA[066570]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\EclipseData\Andromeda\chartX\data\]]></param>
+			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
@@ -388,6 +388,13 @@
        AND {MIN_RATIO} <= 1.2
        , 1, 0 )
 )]]></derivedColumn>
+				<derivedColumn name="CONT_P_SLP"><![CDATA[IIF( @ROWNUM < 2, 0,
+  IIF( {SLOPE/SMOOTH} >= 0, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH}, 0 )
+)]]></derivedColumn>
+				<derivedColumn name="CONT_M_SLP"><![CDATA[IIF( @ROWNUM < 2, 0,
+  IIF( {SLOPE/SMOOTH} <= 0, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH}, 0 )
+)]]></derivedColumn>
+				<derivedColumn name="CONT_SLP"><![CDATA[{CONT_P_SLP} + {CONT_M_SLP}]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -405,7 +412,7 @@
 				<column>MV/LP</column>
 				<column toName="SLOPE">SLOPE/SMOOTH</column>
 				<column toName="CLINE">CLINE/SMOOTH</column>
-				<column>SHORT/TERM</column>
+				<column>CONT_SLP</column>
 				<column>MID/TERM</column>
 				<column>LONG/TERM</column>
 			</orderAndFilter>
