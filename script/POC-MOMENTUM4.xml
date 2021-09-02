@@ -19,6 +19,9 @@
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
 		</macro>
+		<macro name="OUT_PATH_WIN" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\EclipseData\Andromeda\chartX\data\]]></param>
+		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
 		</macro>
@@ -343,12 +346,9 @@
 				<derivedColumn name="MV/LP"><![CDATA[MOVINGAVG( @{LAST_P}, MIN(3, @ROWNUM) )]]></derivedColumn>
 				<derivedColumn name="SLOPE/MV"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV/RP}, 5))]]></derivedColumn>
 				<derivedColumn name="CLINE"><![CDATA[IIF( @ROWNUM = 1, {SLOPE/MV}, GETVALUE(@THIS, -1) + {SLOPE/MV} )]]></derivedColumn>
-				<derivedColumn name="SMOOTH/FACTOR"><![CDATA[SQRT(MOVINGVAR(@{SLOPE/MV}, 20))]]></derivedColumn>
+				<derivedColumn name="SMOOTH/FACTOR"><![CDATA[SQRT(MOVINGVAR(@{SLOPE/MV}, 20)) * 0.9]]></derivedColumn>
 				<derivedColumn name="SLOPE/SMOOTH"><![CDATA[IIF( ISBETWEEN({SLOPE/MV}, -{SMOOTH/FACTOR}, {SMOOTH/FACTOR}), 0, {SLOPE/MV} )]]></derivedColumn>
 				<derivedColumn name="CLINE/SMOOTH"><![CDATA[IIF( @ROWNUM = 1, {SLOPE/SMOOTH}, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH} )]]></derivedColumn>
-				<derivedColumn name="SHORT/TERM"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{CLINE/SMOOTH}, 10) )]]></derivedColumn>
-				<derivedColumn name="MID/TERM"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{CLINE/SMOOTH}, 25) )]]></derivedColumn>
-				<derivedColumn name="LONG/TERM"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{CLINE/SMOOTH}, 45) )]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -379,22 +379,23 @@
 			<addColumns>
 				<derivedColumn name="SHT_VAR"><![CDATA[SQRT(MOVINGVAR(@{SLOPE/MV}, 5))]]></derivedColumn>
 				<derivedColumn name="SHTVAR_MV"><![CDATA[MOVINGAVG(@{SHT_VAR}, 5)]]></derivedColumn>
-				<derivedColumn name="MIN_IN_YEAR"><![CDATA[MOVINGMIN(@{MV/LP}, 250)]]></derivedColumn>
-				<derivedColumn name="MIN_RATIO"><![CDATA[{MV/LP} / {MIN_IN_YEAR}]]></derivedColumn>
-				<derivedColumn name="BPOS_FLAG"><![CDATA[IIF( @ROWNUM < 100, 0,
-  IIF( (MOVINGSUM(@{CLINE/SMOOTH}, 6) - {CLINE/SMOOTH}) / 5 + 0.001 < {CLINE/SMOOTH}
-       AND {SHTVAR_MV}[-1] <= 0.05
-       AND MOVINGSUM(@THIS, 30) = 0
-       AND {MIN_RATIO} <= 1.2
-       , 1, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="CONT_P_SLP"><![CDATA[IIF( @ROWNUM < 2, 0,
-  IIF( {SLOPE/SMOOTH} >= 0, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH}, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="CONT_M_SLP"><![CDATA[IIF( @ROWNUM < 2, 0,
+				<derivedColumn name="MIN/YEAR"><![CDATA[ROUND( MOVINGMIN(@{MV/LP}, 220), 0 )]]></derivedColumn>
+				<derivedColumn name="MAX/YEAR"><![CDATA[ROUND( MOVINGMAX(@{MV/LP}, 220), 0 )]]></derivedColumn>
+				<derivedColumn name="CHAIN/MINUS"><![CDATA[IIF( @ROWNUM < 2, 0,
   IIF( {SLOPE/SMOOTH} <= 0, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH}, 0 )
 )]]></derivedColumn>
-				<derivedColumn name="CONT_SLP"><![CDATA[{CONT_P_SLP} + {CONT_M_SLP}]]></derivedColumn>
+				<derivedColumn name="CHAIN/PLUS"><![CDATA[IIF( @ROWNUM < 2, 0,
+  IIF( {SLOPE/SMOOTH} >= 0, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH}, 0 )
+)]]></derivedColumn>
+				<derivedColumn name="CHAIN/ALL"><![CDATA[{CHAIN/MINUS} + {CHAIN/PLUS}]]></derivedColumn>
+				<derivedColumn name="CHAIN/ZERO"><![CDATA[IIF({CHAIN/MINUS} < 0, 1, 0) * COUNTBETWEEN(@{SLOPE/SMOOTH}, -{SMOOTH/FACTOR} * 2, 0.0000001)]]></derivedColumn>
+				<derivedColumn name="RATIO/MM"><![CDATA[({MV/LP} - {MIN/YEAR}) / ({MAX/YEAR} - {MIN/YEAR})]]></derivedColumn>
+				<derivedColumn name="CHK/TURN"><![CDATA[IIF( MOVINGMAX(@{CHAIN/ZERO}, 3) >= 2, 1, 0 )]]></derivedColumn>
+				<derivedColumn name="CHK/SLOPE"><![CDATA[IIF( {CHAIN/ALL} >= 0.1 OR ({CHAIN/ALL}[-1] > 0 AND {CHAIN/ALL} > 0), 1, 0 )]]></derivedColumn>
+				<derivedColumn name="CHK/VALUE"><![CDATA[IIF( ISBETWEEN({RATIO/MM}, 0.07, 0.41), 1, 0 )]]></derivedColumn>
+				<derivedColumn name="BPOS_FLAG"><![CDATA[IIF( @ROWNUM < 100, 0,
+  IIF( {CHK/TURN} + {CHK/SLOPE} + {CHK/VALUE} >= 3, 1, 0 )
+)]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -412,16 +413,29 @@
 				<column>MV/LP</column>
 				<column toName="SLOPE">SLOPE/SMOOTH</column>
 				<column toName="CLINE">CLINE/SMOOTH</column>
-				<column>CONT_SLP</column>
-				<column>MID/TERM</column>
-				<column>LONG/TERM</column>
+				<column>MIN/YEAR</column>
+				<column>MAX/YEAR</column>
+				<column>RATIO/MM</column>
 			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_EXDF]]></dataSource>
+			<dataGroupName><![CDATA[BUY_ON]]></dataGroupName>
+			<ui>
+				<position x="759" y="417" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[IIF( @ROWNUM < @DATASIZE - 4, 
+  IIF( {BPOS_FLAG} + {BPOS_FLAG}[1] + {BPOS_FLAG}[2] + {BPOS_FLAG}[3] > 0, 1, 0 )
+  , 0
+  )]]></condition>
 		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
 		<dataLoading name="SAVE" source="P_COLUMNS_1" type="file">
-			<filePath><![CDATA[$(OUT_PATH)P$(COMP_CODE).pmd]]></filePath>
+			<filePath><![CDATA[$(OUT_PATH_WIN)P$(COMP_CODE).pmd]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+
+
+	<inputNodes>
+		<inputNode name="COMP_META" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\resource\companyInfo-20210530.txt]]></path>
+			<columns>
+				<column name="회사명" type="string" />
+				<column name="종목코드" type="string" />
+				<column name="업종" type="string" />
+				<column name="주요제품" type="string" />
+				<column name="상장일" type="string" />
+				<column name="결산월" type="string" />
+				<column name="대표자명" type="string" />
+				<column name="홈페이지" type="string" />
+				<column name="지역" type="string" />
+			</columns>
+			<ui>
+				<position x="129" y="124" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="PICK" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\output\logicResult\20210829-RESULT.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="자산총계" type="real" />
+				<column name="시가총액_억" type="real" />
+				<column name="매수일" type="string" />
+				<column name="매수가" type="integer" />
+				<column name="매도일" type="string" />
+				<column name="매도가" type="integer" />
+				<column name="거래량" type="integer" />
+				<column name="매수량" type="integer" />
+				<column name="RISK" type="integer" />
+				<column name="REVENUE" type="integer" />
+			</columns>
+			<ui>
+				<position x="136" y="253" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A2"><![CDATA[COMP_META]]></dataSource>
+				<dataSource alias="A1"><![CDATA[PICK]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[MergeData_1]]></dataGroupName>
+			<ui>
+				<position x="275" y="188" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="COMP_META"><![CDATA[종목코드]]></equalKey>
+				<equalKey source="PICK"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="COMP_META"><![CDATA[*]]></columns>
+				<columns source="PICK"><![CDATA[RISK]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[MergeData_1]]></dataSource>
+			<dataGroupName><![CDATA[SortColumn_1]]></dataGroupName>
+			<ui>
+				<position x="397" y="190" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">RISK</column>
+			</sortColumns>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>
