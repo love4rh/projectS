@@ -14,7 +14,7 @@
 			<param name="value"><![CDATA[120]]></param>
 		</macro>
 		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[006110]]></param>
+			<param name="value"><![CDATA[066570]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
@@ -303,7 +303,7 @@
 			<dataSource alias="A1"><![CDATA[CONCERN]]></dataSource>
 			<dataGroupName><![CDATA[SORTBYBASE]]></dataGroupName>
 			<ui>
-				<position x="521" y="234" />
+				<position x="480" y="237" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<sortColumns>
@@ -336,45 +336,24 @@
 			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
 			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
 			<ui>
-				<position x="521" y="345" />
+				<position x="480" y="335" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
 				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.1]]></derivedColumn>
-				<derivedColumn name="RPRICE"><![CDATA[IIF( @ROWNUM = 1, (A := {LAST_P}) / {LAST_P}, {LAST_P} / A )]]></derivedColumn>
-				<derivedColumn name="MV/RP"><![CDATA[MOVINGAVG(@{RPRICE}, MIN(2, @ROWNUM))]]></derivedColumn>
-				<derivedColumn name="MV/LP"><![CDATA[MOVINGAVG( @{LAST_P}, MIN(2, @ROWNUM) )]]></derivedColumn>
-				<derivedColumn name="SLOPE/MV"><![CDATA[IIF(@ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{MV/RP}, 5))]]></derivedColumn>
-				<derivedColumn name="CLINE"><![CDATA[IIF( @ROWNUM = 1, {SLOPE/MV}, GETVALUE(@THIS, -1) + {SLOPE/MV} )]]></derivedColumn>
-				<derivedColumn name="SMOOTH/FACTOR"><![CDATA[SQRT(MOVINGVAR(@{SLOPE/MV}, 20)) * 0.8]]></derivedColumn>
-				<derivedColumn name="SLOPE/SMOOTH"><![CDATA[IIF( ISBETWEEN({SLOPE/MV}, -{SMOOTH/FACTOR}, {SMOOTH/FACTOR}), 0, {SLOPE/MV} )]]></derivedColumn>
-				<derivedColumn name="CLINE/SMOOTH"><![CDATA[IIF( @ROWNUM = 1, {SLOPE/SMOOTH}, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH} )]]></derivedColumn>
-				<derivedColumn name="DIST/LESS"><![CDATA[IIF( @ROWNUM < 20, 21,
-   IIF( ABS({CLINE/SMOOTH}[-1] - {CLINE/SMOOTH}) < 0.0000001
-      , GETVALUE(@THIS, -1)
-      , DISTANCELESS(@{CLINE/SMOOTH}, 20, -{SMOOTH/FACTOR})
-   )
+				<derivedColumn name="MV/20"><![CDATA[MOVINGAVG(@{LAST_P}, 20)]]></derivedColumn>
+				<derivedColumn name="MV/60"><![CDATA[MOVINGAVG(@{LAST_P}, 60)]]></derivedColumn>
+				<derivedColumn name="MV/120"><![CDATA[MOVINGAVG(@{LAST_P}, 120)]]></derivedColumn>
+				<derivedColumn name="RMV/20"><![CDATA[IIF( @ROWNUM = 1, (A := {MV/20}) / {MV/20}, {MV/20} / A )]]></derivedColumn>
+				<derivedColumn name="SLOPE/MV20"><![CDATA[IIF( @ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{RMV/20}, 5) )]]></derivedColumn>
+				<derivedColumn name="RATIO/MV120"><![CDATA[{LAST_P} / {MV/120}]]></derivedColumn>
+				<derivedColumn name="SUGGEST/BUY"><![CDATA[IIF( @ROWNUM < 50, 0,
+  IIF( {RATIO/MV120} < 1.05
+      AND {SLOPE/MV20} >= 0.02
+      AND {MV/20} / {MV/20}[-1] >= 1.002
+    , IIF( MOVINGSUM(@THIS, 40) = 0, 1, 0)
+    , 0 )
 )]]></derivedColumn>
-				<derivedColumn name="DIST/MORE"><![CDATA[IIF( @ROWNUM < 20, 21,
-   IIF( ABS({CLINE/SMOOTH}[-1] - {CLINE/SMOOTH}) < 0.0000001
-      , GETVALUE(@THIS, -1)
-      , DISTANCEMORE(@{CLINE/SMOOTH}, 20, {SMOOTH/FACTOR})
-   )
-)]]></derivedColumn>
-				<derivedColumn name="LESS/TRAIL"><![CDATA[IIF( @ROWNUM < 2, 21,
-   IIF( {DIST/LESS} = 0, GETVALUE(@THIS, -1), {DIST/LESS})
-)]]></derivedColumn>
-				<derivedColumn name="VALLEY"><![CDATA[IIF( {DIST/MORE} > 0, {CLINE/SMOOTH} - MOVINGMIN(@{CLINE/SMOOTH}, {DIST/MORE}), 0 )]]></derivedColumn>
-				<derivedColumn name="DEPTH"><![CDATA[IIF({DIST/MORE} > 0, {VALLEY} / {DIST/MORE}, 0)]]></derivedColumn>
-				<derivedColumn name="CHAIN/PLUS"><![CDATA[IIF( @ROWNUM < 2, 0,
-  IIF( {SLOPE/SMOOTH} >= 0, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH}, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="CHAIN/MINUS"><![CDATA[IIF( @ROWNUM < 2, 0,
-  IIF( {SLOPE/SMOOTH} <= 0, GETVALUE(@THIS, -1) + {SLOPE/SMOOTH}, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="CHAIN/VAL"><![CDATA[{CHAIN/PLUS} + {CHAIN/MINUS}]]></derivedColumn>
-				<derivedColumn name="PRICE/MAX"><![CDATA[MOVINGMAX(@{MV/LP}, 220)]]></derivedColumn>
-				<derivedColumn name="RATIO/MAX"><![CDATA[{MV/LP} / {PRICE/MAX}]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -382,7 +361,7 @@
 			<dataSource alias="A1"><![CDATA[SN_PRICE]]></dataSource>
 			<dataGroupName><![CDATA[NAME_HIDING]]></dataGroupName>
 			<ui>
-				<position x="403" y="235" />
+				<position x="393" y="233" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -395,43 +374,8 @@
 			</orderAndFilter>
 		</processingElem>
 
-		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
-			<dataGroupName><![CDATA[ADD_EXDF]]></dataGroupName>
-			<ui>
-				<position x="658" y="345" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<addColumns>
-				<derivedColumn name="CHK/SLOPE"><![CDATA[IIF( MOVINGMORECOUNT(@{SLOPE/MV}, 3, 0) >= 3 OR {CHAIN/PLUS} > 0.29, 1, 0 )]]></derivedColumn>
-				<derivedColumn name="CHK/TURN"><![CDATA[IIF( {DIST/MORE} >= 10 OR {DEPTH} > 0.05, 1, 0 )]]></derivedColumn>
-				<derivedColumn name="CHK/PREV"><![CDATA[IIF( MOVINGMORECOUNT(@{DIST/LESS}, 15, 20) > 2, 1, 0 )]]></derivedColumn>
-				<derivedColumn name="CHK/VALUE"><![CDATA[IIF( ISBETWEEN({RATIO/MAX}, 0, 0.75), 1, 0 )]]></derivedColumn>
-				<derivedColumn name="RATIO/MV120"><![CDATA[{LAST_P} / MOVINGAVG(@{LAST_P}, 120)]]></derivedColumn>
-				<derivedColumn name="BPOS_FLAG"><![CDATA[IIF( @ROWNUM < 100 OR @ROWNUM = @DATASIZE, 0,
-  IIF( {CHK/TURN} = 1
-      AND {CHK/SLOPE} = 1
-      AND {CHK/PREV} = 1
-
-      AND MOVINGMORECOUNT(@{DIST/MORE}, 4, 7) >= 2
-      AND MOVINGSUM(@THIS, 20) = 0
-    , 1, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="MV/20"><![CDATA[MOVINGAVG(@{LAST_P}, 20)]]></derivedColumn>
-				<derivedColumn name="MV/60"><![CDATA[MOVINGAVG(@{LAST_P}, 60)]]></derivedColumn>
-				<derivedColumn name="MV/RATIO"><![CDATA[IIF(@ROWNUM = 1, 1, {MV/20} / {MV/20}[-1])]]></derivedColumn>
-				<derivedColumn name="POINT/BUY"><![CDATA[IIF( @ROWNUM = 1, 0,
-  IIF( {RATIO/MV120} < 1.05
-      AND {CHAIN/PLUS} > 0.1
-      AND {MV/20} / {MV/20}[-1] >= 1.002
-      AND {MV/60} < {MV/20}
-    , 1, 0 )
-)]]></derivedColumn>
-			</addColumns>
-		</processingElem>
-
 		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[ADD_EXDF]]></dataSource>
+			<dataSource alias="A1"><![CDATA[ADD_EX]]></dataSource>
 			<dataGroupName><![CDATA[P_COLUMNS_1]]></dataGroupName>
 			<ui>
 				<position x="726" y="216" />
@@ -439,72 +383,155 @@
 			</ui>
 			<orderAndFilter>
 				<column>DATE</column>
-				<column>POINT/BUY</column>
+				<column>SUGGEST/BUY</column>
 				<column toName="PRICE">LAST_P</column>
-				<column>MV/LP</column>
-				<column toName="SLOPE">SLOPE/SMOOTH</column>
-				<column toName="CLINE">CLINE/SMOOTH</column>
-				<column>RATIO/MV120</column>
-				<column>MV/RATIO</column>
 				<column>MV/20</column>
 				<column>MV/60</column>
+				<column>RATIO/MV120</column>
+				<column>SLOPE/MV20</column>
 			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[ADD_EXDF]]></dataSource>
-			<dataGroupName><![CDATA[BUY_ON]]></dataGroupName>
-			<ui>
-				<position x="773" y="448" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<condition><![CDATA[IIF( @ROWNUM < @DATASIZE - 4, 
-  IIF( {BPOS_FLAG} + {BPOS_FLAG}[1] + {BPOS_FLAG}[2] + {BPOS_FLAG}[3] > 0, 1, 0 )
-  , 0
-  )]]></condition>
 		</processingElem>
 
 		<processingElem type="select">
 			<dataSource alias="A1"><![CDATA[NAME_HIDING]]></dataSource>
 			<dataGroupName><![CDATA[CONCERN]]></dataGroupName>
 			<ui>
-				<position x="472" y="151" />
+				<position x="439" y="130" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[1]]></condition>
 		</processingElem>
 
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[BUY_ON]]></dataSource>
-			<dataGroupName><![CDATA[BUY_CHECK]]></dataGroupName>
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_EX]]></dataSource>
+			<dataGroupName><![CDATA[RETAIN_ONLY]]></dataGroupName>
 			<ui>
-				<position x="913" y="449" />
+				<position x="559" y="419" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{RETAIN/FLAG} > 0 AND {RETAIN/FLAG} < 10]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[RETAIN_ONLY]]></dataSource>
+			<dataGroupName><![CDATA[RETAIN_COLUMNS]]></dataGroupName>
+			<ui>
+				<position x="641" y="491" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>RETAIN/FLAG</column>
 				<column>DATE</column>
-				<column>BPOS_FLAG</column>
+				<column>BEGIN_P</column>
+				<column>HIGH_P</column>
+				<column>LOW_P</column>
 				<column>LAST_P</column>
-				<column>MV/LP</column>
-				<column>SLOPE/MV</column>
-				<column>CLINE</column>
-				<column>SMOOTH/FACTOR</column>
-				<column>SLOPE/SMOOTH</column>
-				<column>CLINE/SMOOTH</column>
-				<column>DIST/LESS</column>
-				<column>DIST/MORE</column>
-				<column>LESS/TRAIL</column>
-				<column>VALLEY</column>
-				<column>DEPTH</column>
-				<column>CHAIN/PLUS</column>
-				<column>CHAIN/MINUS</column>
-				<column>CHAIN/VAL</column>
-				<column>PRICE/MAX</column>
-				<column>RATIO/MAX</column>
-				<column>CHK/SLOPE</column>
-				<column>CHK/TURN</column>
-				<column>CHK/PREV</column>
 			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[RETAIN_COLUMNS]]></dataSource>
+			<dataGroupName><![CDATA[RETAIN_FIRST]]></dataGroupName>
+			<ui>
+				<position x="766" y="458" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[RETAIN/FLAG]]></groupingColumns>
+			<selectColumn type="min"><![CDATA[DATE]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="groupingSelect">
+			<dataSource alias="A1"><![CDATA[RETAIN_COLUMNS]]></dataSource>
+			<dataGroupName><![CDATA[RETAIN_LAST]]></dataGroupName>
+			<ui>
+				<position x="742" y="627" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[RETAIN/FLAG]]></groupingColumns>
+			<selectColumn type="max"><![CDATA[DATE]]></selectColumn>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[RETAIN_LAST]]></dataSource>
+			<dataGroupName><![CDATA[RETAIN_COLOUMN2]]></dataGroupName>
+			<ui>
+				<position x="878" y="571" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>RETAIN/FLAG</column>
+				<column toName="SELL_DATE">DATE</column>
+				<column>BEGIN_P</column>
+				<column>HIGH_P</column>
+				<column>LOW_P</column>
+				<column>LAST_P</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[RETAIN_FIRST]]></dataSource>
+				<dataSource alias="A2"><![CDATA[RETAIN_COLOUMN2]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_RESULT]]></dataGroupName>
+			<ui>
+				<position x="923" y="481" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>true</addKeyColumn>
+			<equalKeys>
+				<equalKey source="RETAIN_COLOUMN2"><![CDATA[P_CODE,RETAIN/FLAG]]></equalKey>
+				<equalKey source="RETAIN_FIRST"><![CDATA[P_CODE,RETAIN/FLAG]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="RETAIN_COLOUMN2"><![CDATA[SELL_DATE,LAST_P]]></columns>
+				<columns source="RETAIN_FIRST"><![CDATA[DATE,BEGIN_P]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ADD_RESULT]]></dataSource>
+			<dataGroupName><![CDATA[DF_REVENUE]]></dataGroupName>
+			<ui>
+				<position x="1053" y="478" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="DURATION"><![CDATA[DIFFDAY(STRTODATE({SELL_DATE}, 'yyyyMMdd'), STRTODATE({DATE}, 'yyyyMMdd'))]]></derivedColumn>
+				<derivedColumn name="REVENUE"><![CDATA[{LAST_P} - {BEGIN_P}]]></derivedColumn>
+				<derivedColumn name="PROFIT"><![CDATA[{REVENUE} / {BEGIN_P} * 100]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[ADD_EX]]></dataGroupName>
+			<ui>
+				<position x="591" y="311" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="GROUP/BUY"><![CDATA[IIF( @ROWNUM = 1, G := 0,
+  IIF( {SUGGEST/BUY}[-1] = 1, G := G + 1, G )
+)]]></derivedColumn>
+				<derivedColumn name="BASIS/PR"><![CDATA[IIF( @ROWNUM = 1, L := 0,
+  IIF( {SUGGEST/BUY}[-1] = 1, G := {MV/20}[-1], G )
+)]]></derivedColumn>
+				<derivedColumn name="BASIS/SELL"><![CDATA[IIF( {GROUP/BUY} = 0, 0, {MV/20} / {BASIS/PR} )]]></derivedColumn>
+				<derivedColumn name="GROUP/START"><![CDATA[IIF( @ROWNUM = 1, L := 0,
+  IIF( {SUGGEST/BUY}[-1] = 1, L := @ROWNUM, L )
+)]]></derivedColumn>
+				<derivedColumn name="RETAIN/FLAG"><![CDATA[IIF( @ROWNUM = 1, N := 0,
+   IIF( {GROUP/BUY}[-1] <> {GROUP/BUY}, N := {GROUP/BUY},
+      IIF( GETVALUE(@THIS, -1) = 0 OR {BASIS/SELL} >= 1.11, 0,
+         IIF( @ROWNUM - {GROUP/START} > 60, 0, N )
+      )
+   )
+)]]></derivedColumn>
+			</addColumns>
 		</processingElem>
 	</dataProcessing>
 
