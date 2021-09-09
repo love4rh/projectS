@@ -326,7 +326,7 @@
 			</dataSources>
 			<dataGroupName><![CDATA[SN_PRICE]]></dataGroupName>
 			<ui>
-				<position x="173" y="132" />
+				<position x="56" y="312" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<appendMethod>first</appendMethod>
@@ -341,9 +341,9 @@
 			</ui>
 			<addColumns>
 				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.1]]></derivedColumn>
-				<derivedColumn name="MV/20"><![CDATA[MOVINGAVG(@{LAST_P}, 20)]]></derivedColumn>
-				<derivedColumn name="MV/60"><![CDATA[MOVINGAVG(@{LAST_P}, 60)]]></derivedColumn>
-				<derivedColumn name="MV/120"><![CDATA[MOVINGAVG(@{LAST_P}, 120)]]></derivedColumn>
+				<derivedColumn name="MV/20"><![CDATA[ROUND(MOVINGAVG(@{LAST_P}, 20), 0)]]></derivedColumn>
+				<derivedColumn name="MV/60"><![CDATA[ROUND(MOVINGAVG(@{LAST_P}, 60), 0)]]></derivedColumn>
+				<derivedColumn name="MV/120"><![CDATA[ROUND(MOVINGAVG(@{LAST_P}, 120), 0)]]></derivedColumn>
 				<derivedColumn name="RMV/20"><![CDATA[IIF( @ROWNUM = 1, (A := {MV/20}) / {MV/20}, {MV/20} / A )]]></derivedColumn>
 				<derivedColumn name="RMV/60"><![CDATA[IIF( @ROWNUM = 1, (S := {MV/60}) / {MV/60}, {MV/60} / S )]]></derivedColumn>
 				<derivedColumn name="SLOPE/MV20"><![CDATA[IIF( @ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{RMV/20}, 5) )]]></derivedColumn>
@@ -363,7 +363,7 @@
 			<dataSource alias="A1"><![CDATA[SN_PRICE]]></dataSource>
 			<dataGroupName><![CDATA[NAME_HIDING]]></dataGroupName>
 			<ui>
-				<position x="174" y="251" />
+				<position x="161" y="313" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -399,7 +399,7 @@
 			<dataSource alias="A1"><![CDATA[NAME_HIDING]]></dataSource>
 			<dataGroupName><![CDATA[CONCERN]]></dataGroupName>
 			<ui>
-				<position x="281" y="251" />
+				<position x="160" y="132" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[1]]></condition>
@@ -540,7 +540,7 @@
 
 	<dataLoadings>
 		<dataLoading name="SAVE" source="P_COLUMNS_1" type="file">
-			<filePath><![CDATA[$(OUT_PATH)P$(COMP_CODE).pmd]]></filePath>
+			<filePath><![CDATA[$(OUT_PATH_WIN)P$(COMP_CODE).pmd]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>

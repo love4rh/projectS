@@ -8,13 +8,13 @@
 
 	<macros>
 		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210829]]></param>
+			<param name="value"><![CDATA[20210907]]></param>
 		</macro>
 		<macro name="BUY_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210830]]></param>
+			<param name="value"><![CDATA[20210908]]></param>
 		</macro>
 		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210831]]></param>
+			<param name="value"><![CDATA[20210908]]></param>
 		</macro>
 		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[10000000]]></param>
