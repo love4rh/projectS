@@ -83,7 +83,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="71" />
+				<position x="56" y="72" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -109,7 +109,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="89" />
+				<position x="56" y="91" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -135,7 +135,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="107" />
+				<position x="56" y="110" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -161,7 +161,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="125" />
+				<position x="56" y="129" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -187,7 +187,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="143" />
+				<position x="56" y="148" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -213,7 +213,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="179" />
+				<position x="56" y="167" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -239,7 +239,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="161" />
+				<position x="56" y="186" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -265,7 +265,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="197" />
+				<position x="56" y="205" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -291,7 +291,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="215" />
+				<position x="56" y="224" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -334,7 +334,7 @@
 
 		<processingElem type="derived">
 			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
-			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<dataGroupName><![CDATA[GUESS_BUY]]></dataGroupName>
 			<ui>
 				<position x="418" y="132" />
 				<description><![CDATA[]]></description>
@@ -377,8 +377,8 @@
 		</processingElem>
 
 		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[ADD_EX]]></dataSource>
-			<dataGroupName><![CDATA[P_COLUMNS_1]]></dataGroupName>
+			<dataSource alias="A1"><![CDATA[GUESS_SELL]]></dataSource>
+			<dataGroupName><![CDATA[DISPLAY_COLUMNS]]></dataGroupName>
 			<ui>
 				<position x="690" y="132" />
 				<description><![CDATA[]]></description>
@@ -406,7 +406,7 @@
 		</processingElem>
 
 		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[ADD_EX]]></dataSource>
+			<dataSource alias="A1"><![CDATA[GUESS_SELL]]></dataSource>
 			<dataGroupName><![CDATA[RETAIN_ONLY]]></dataGroupName>
 			<ui>
 				<position x="554" y="251" />
@@ -510,8 +510,8 @@
 		</processingElem>
 
 		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
-			<dataGroupName><![CDATA[ADD_EX]]></dataGroupName>
+			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
+			<dataGroupName><![CDATA[GUESS_SELL]]></dataGroupName>
 			<ui>
 				<position x="554" y="132" />
 				<description><![CDATA[]]></description>
@@ -539,8 +539,8 @@
 	</dataProcessing>
 
 	<dataLoadings>
-		<dataLoading name="SAVE" source="P_COLUMNS_1" type="file">
-			<filePath><![CDATA[$(OUT_PATH_WIN)P$(COMP_CODE).pmd]]></filePath>
+		<dataLoading name="SAVE" source="DISPLAY_COLUMNS" type="file">
+			<filePath><![CDATA[$(OUT_PATH)P$(COMP_CODE).pmd]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
