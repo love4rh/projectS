@@ -28,8 +28,8 @@
 		<macro name="BACKUP" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[002410  079370  066570 000660]]></param>
 		</macro>
-		<macro name="SMOOTH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[0.1]]></param>
+		<macro name="FLATLIMIT" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2.0]]></param>
 		</macro>
 	</macros>
 
@@ -346,22 +346,18 @@
 				<derivedColumn name="MV/20"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 20), 0 )]]></derivedColumn>
 				<derivedColumn name="MV/60"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 60), 0 )]]></derivedColumn>
 				<derivedColumn name="MV/120"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 120), 0 )]]></derivedColumn>
-				<derivedColumn name="SLOPE/20"><![CDATA[IIF( @ROWNUM < 5, 0, LINEARSLOPE(@{DX}, @{SMV/20}, 5) )]]></derivedColumn>
+				<derivedColumn name="SLOPE/20"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{SMV/20}, 4) )]]></derivedColumn>
 				<derivedColumn name="RATIO/120"><![CDATA[{LAST_P} / {MV/120}]]></derivedColumn>
 				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 30, 0, SQRT(MOVINGVAR(@{SMV/20} , 5)) * 1000 )]]></derivedColumn>
-				<derivedColumn name="FLAT/20"><![CDATA[IIF( @ROWNUM < 30, 1,
-   IIF( {STD/20} < 2.0, 1, 0 )
+				<derivedColumn name="UP/DOWN"><![CDATA[IIF( @ROWNUM < 30, 0.5,
+   IIF( {STD/20} < $(FLATLIMIT), 0.5,
+      IIF( {SLOPE/20} > 0, 1, 0 )
+   )
 )]]></derivedColumn>
-				<derivedColumn name="UP/DOWN"><![CDATA[IIF( {FLAT/20} = 1, 0.5,
-   IIF( {SLOPE/20} > 0, 1, 0 )
-)]]></derivedColumn>
-				<derivedColumn name="SUGGEST/BUY"><![CDATA[IIF( @ROWNUM < 50, 0,
-  IIF( {RATIO/120} < 1.05
-      AND MOVINGSUM(@{FLAT/20}, 5) >= 2
-      AND {SLOPE/20} > 0.0001
-      AND {SMV/20} / {SMV/20}[-1] > 1.0015
-    , IIF( MOVINGSUM(@THIS, 25) = 0, 1, 0)
-    , 0 )
+				<derivedColumn name="SUGGEST/BUY"><![CDATA[IIF( @ROWNUM < 120, 0,
+  IIF( {UP/DOWN}[-1] = 0 AND {UP/DOWN} >= 0.5
+     , 1, 0
+  )
 )]]></derivedColumn>
 			</addColumns>
 		</processingElem>
@@ -396,7 +392,6 @@
 				<column toName="PRICE">LAST_P</column>
 				<column>MV/20</column>
 				<column>MV/60</column>
-				<column toName="RP">S_VALUE</column>
 				<column>SMV/20</column>
 				<column>UP/DOWN</column>
 			</orderAndFilter>
@@ -419,7 +414,7 @@
 				<position x="426" y="169" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[{GROUP/INDEX} > 0 AND {RETAIN/FLAG} = 1]]></condition>
+			<condition><![CDATA[{G/IDX} > 0 AND {RETAIN/FLAG} = 1]]></condition>
 		</processingElem>
 
 		<processingElem type="orderAndFilter">
@@ -431,7 +426,7 @@
 			</ui>
 			<orderAndFilter>
 				<column>P_CODE</column>
-				<column>GROUP/INDEX</column>
+				<column>G/IDX</column>
 				<column>DATE</column>
 				<column>BEGIN_P</column>
 				<column>HIGH_P</column>
@@ -447,7 +442,7 @@
 				<position x="562" y="216" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<groupingColumns><![CDATA[GROUP/INDEX]]></groupingColumns>
+			<groupingColumns><![CDATA[G/IDX]]></groupingColumns>
 			<selectColumn type="min"><![CDATA[DATE]]></selectColumn>
 		</processingElem>
 
@@ -458,7 +453,7 @@
 				<position x="562" y="352" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<groupingColumns><![CDATA[GROUP/INDEX]]></groupingColumns>
+			<groupingColumns><![CDATA[G/IDX]]></groupingColumns>
 			<selectColumn type="max"><![CDATA[DATE]]></selectColumn>
 		</processingElem>
 
@@ -471,7 +466,7 @@
 			</ui>
 			<orderAndFilter>
 				<column>P_CODE</column>
-				<column>GROUP/INDEX</column>
+				<column>G/IDX</column>
 				<column toName="SELL_DATE">DATE</column>
 				<column>BEGIN_P</column>
 				<column>HIGH_P</column>
@@ -493,8 +488,8 @@
 			<joinMethod>inner</joinMethod>
 			<addKeyColumn>true</addKeyColumn>
 			<equalKeys>
-				<equalKey source="RETAIN_COLOUMN2"><![CDATA[P_CODE,GROUP/INDEX]]></equalKey>
-				<equalKey source="RETAIN_FIRST"><![CDATA[P_CODE,GROUP/INDEX]]></equalKey>
+				<equalKey source="RETAIN_COLOUMN2"><![CDATA[P_CODE,G/IDX]]></equalKey>
+				<equalKey source="RETAIN_FIRST"><![CDATA[P_CODE,G/IDX]]></equalKey>
 			</equalKeys>
 			<selectColumns>
 				<columns source="RETAIN_COLOUMN2"><![CDATA[SELL_DATE,LAST_P]]></columns>
@@ -524,29 +519,28 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="GROUP/INDEX"><![CDATA[IIF( @ROWNUM = 1, G := 0,
+				<derivedColumn name="G/IDX"><![CDATA[IIF( @ROWNUM = 1, G := 0,
   IIF( {SUGGEST/BUY}[-1] = 1, G := G + 1, G )
 )]]></derivedColumn>
-				<derivedColumn name="TMP/BP"><![CDATA[IIF( @ROWNUM = 1, 0,
-  IIF( {SUGGEST/BUY}[-1] = 1, {S_VALUE}[-1], GETVALUE(@THIS, -1) )
+				<derivedColumn name="T/BP"><![CDATA[IIF( @ROWNUM = 1, 0,
+  IIF( {SUGGEST/BUY}[-1] = 1, {LAST_P}[-1], GETVALUE(@THIS, -1) )
 )]]></derivedColumn>
-				<derivedColumn name="TMP/MV20"><![CDATA[IIF( @ROWNUM = 1, 0,
-  IIF( {SUGGEST/BUY}[-1] = 1, {SMV/20}[-1], GETVALUE(@THIS, -1) )
+				<derivedColumn name="T/MV20"><![CDATA[IIF( @ROWNUM = 1, 0,
+  IIF( {SUGGEST/BUY}[-1] = 1, {MV/20}[-1], GETVALUE(@THIS, -1) )
 )]]></derivedColumn>
-				<derivedColumn name="TMP/RATIO"><![CDATA[IIF( {TMP/BP} = 0, 0, {S_VALUE} / {TMP/BP} )]]></derivedColumn>
-				<derivedColumn name="TMP/INDEX"><![CDATA[IIF( @ROWNUM = 1, 0,
+				<derivedColumn name="T/RATIO"><![CDATA[IIF( {T/BP} = 0, 0, {LAST_P} / {T/BP} )]]></derivedColumn>
+				<derivedColumn name="T/IDX"><![CDATA[IIF( @ROWNUM = 1, 0,
   IIF( {SUGGEST/BUY}[-1] = 1, @ROWNUM - 1, GETVALUE(@THIS, -1) )
 )]]></derivedColumn>
-				<derivedColumn name="ELEM/INDEX"><![CDATA[@ROWNUM - {TMP/INDEX}]]></derivedColumn>
-				<derivedColumn name="TMP/SELL01"><![CDATA[IIF( @ROWNUM = 1, 0,
+				<derivedColumn name="E/IDX"><![CDATA[IIF( {SUGGEST/BUY} = 1, 0, @ROWNUM - {T/IDX} )]]></derivedColumn>
+				<derivedColumn name="GUESS/SELL"><![CDATA[IIF( @ROWNUM = 1, 0,
    CASE( GETVALUE(@THIS, -1)
-      , {ELEM/INDEX}[-1] >= {ELEM/INDEX}, 0
-      , MOVINGLESSCOUNT(@{SLOPE/20}, 5, 0.0001) >= 3, 1
-      , MOVINGLESSCOUNT(@{SMV/20}, {ELEM/INDEX}, {TMP/MV20}) >= 5, 1
-      , {ELEM/INDEX} > 65, 1
+      , {E/IDX}[-1] >= {E/IDX}, 0
+      , MOVINGLESSCOUNT(@{SLOPE/20}, MIN(5, {E/IDX}), 0) >= 3, 1
+      , {E/IDX} > 65, 1
    )
 )]]></derivedColumn>
-				<derivedColumn name="RETAIN/FLAG"><![CDATA[IIF( {GROUP/INDEX} > 0 AND {TMP/SELL01} = 0 OR {TMP/SELL01}[-1] = 0, 1 , 0 )]]></derivedColumn>
+				<derivedColumn name="RETAIN/FLAG"><![CDATA[IIF( {G/IDX} > 0 AND {GUESS/SELL} = 0 OR {GUESS/SELL}[-1] = 0, 1 , 0 )]]></derivedColumn>
 				<derivedColumn name="SUGGEST"><![CDATA[IIF( @ROWNUM = @DATASIZE OR @ROWNUM <= 152, 0,
    CASE( 0
        , {SUGGEST/BUY} > 0, 1
@@ -554,6 +548,20 @@
    )
 )]]></derivedColumn>
 			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
+			<dataGroupName><![CDATA[CHECKER]]></dataGroupName>
+			<ui>
+				<position x="290" y="226" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[IIF( @ROWNUM > @DATASIZE - 15, 0,
+   IIF( MOVINGSUM(@{SUGGEST/BUY}, 15) > 0, 1,
+      IIF( {SUGGEST/BUY}[1] + {SUGGEST/BUY}[2] + {SUGGEST/BUY}[3] + {SUGGEST/BUY}[4] + {SUGGEST/BUY}[5] + {SUGGEST/BUY}[6] > 0, 1, 0 )
+   )
+)]]></condition>
 		</processingElem>
 	</dataProcessing>
 
