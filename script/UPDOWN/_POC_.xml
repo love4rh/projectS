@@ -349,6 +349,7 @@
 				<derivedColumn name="SLOPE/20"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{SMV/20}, 4) )]]></derivedColumn>
 				<derivedColumn name="RATIO/120"><![CDATA[{LAST_P} / {MV/120}]]></derivedColumn>
 				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 30, 0, SQRT(MOVINGVAR(@{SMV/20} , 5)) * 1000 )]]></derivedColumn>
+				<derivedColumn name="AVG/60"><![CDATA[IIF( @ROWNUM < 12, {MV/60}, (MOVINGSUM(@{MV/60}, 11) - {MV/60}) / 10 )]]></derivedColumn>
 				<derivedColumn name="UP/DOWN"><![CDATA[IIF( @ROWNUM < 30, 0.5,
    IIF( {STD/20} < $(FLATLIMIT), 0.5,
       IIF( {SLOPE/20} > 0, 1, 0 )
@@ -356,6 +357,9 @@
 )]]></derivedColumn>
 				<derivedColumn name="SUGGEST/BUY"><![CDATA[IIF( @ROWNUM < 120, 0,
   IIF( {UP/DOWN}[-1] = 0 AND {UP/DOWN} >= 0.5
+       AND {AVG/60} >= {MV/60}
+       AND {MV/60} / {MV/20} > 0.98
+       AND MOVINGSUM(@{UP/DOWN}, 11) <= IIF({UP/DOWN} = 1, 1, 0.5)
      , 1, 0
   )
 )]]></derivedColumn>
@@ -533,13 +537,7 @@
   IIF( {SUGGEST/BUY}[-1] = 1, @ROWNUM - 1, GETVALUE(@THIS, -1) )
 )]]></derivedColumn>
 				<derivedColumn name="E/IDX"><![CDATA[IIF( {SUGGEST/BUY} = 1, 0, @ROWNUM - {T/IDX} )]]></derivedColumn>
-				<derivedColumn name="GUESS/SELL"><![CDATA[IIF( @ROWNUM = 1, 0,
-   CASE( GETVALUE(@THIS, -1)
-      , {E/IDX}[-1] >= {E/IDX}, 0
-      , MOVINGLESSCOUNT(@{SLOPE/20}, MIN(5, {E/IDX}), 0) >= 3, 1
-      , {E/IDX} > 65, 1
-   )
-)]]></derivedColumn>
+				<derivedColumn name="GUESS/SELL"><![CDATA[0]]></derivedColumn>
 				<derivedColumn name="RETAIN/FLAG"><![CDATA[IIF( {G/IDX} > 0 AND {GUESS/SELL} = 0 OR {GUESS/SELL}[-1] = 0, 1 , 0 )]]></derivedColumn>
 				<derivedColumn name="SUGGEST"><![CDATA[IIF( @ROWNUM = @DATASIZE OR @ROWNUM <= 152, 0,
    CASE( 0
@@ -567,7 +565,7 @@
 
 	<dataLoadings>
 		<dataLoading name="SAVE" source="DISPLAY_COLUMNS" type="file">
-			<filePath><![CDATA[$(OUT_PATH_WIN)P$(COMP_CODE).pmd]]></filePath>
+			<filePath><![CDATA[$(OUT_PATH)P$(COMP_CODE).pmd]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>

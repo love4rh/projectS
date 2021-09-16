@@ -9,7 +9,7 @@ doingAllJob = False
 # 만료 기간이 지나면 네이버에서 확인 후 수정해야 함.
 encParamKey = 'dllGejUrZmdPRkVOSjFiSjVIOXZDUT09'
 
-runServerType = 1 # 1: window, 2: mac, 3: linux
+runServerType = 2 # 1: window, 2: mac, 3: linux
 
 print('running on', ['Windows', 'OS X', 'Linux'][runServerType - 1])
 
