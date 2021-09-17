@@ -16,6 +16,9 @@
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
 		</macro>
+		<macro name="OUT_PATH2" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\EclipseData\Andromeda\chartX\data\]]></param>
+		</macro>
 		<macro name="OUT_PATH_WIN" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[D:\EclipseData\Andromeda\chartX\data\]]></param>
 		</macro>
@@ -63,7 +66,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="57" />
+				<position x="56" y="49" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -89,7 +92,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="138" />
+				<position x="56" y="137" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -115,7 +118,7 @@
 				<column name="종가" type="real" />
 			</columns>
 			<ui>
-				<position x="56" y="213" />
+				<position x="56" y="225" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
@@ -143,7 +146,7 @@
 			</dataSources>
 			<dataGroupName><![CDATA[SN_PRICE]]></dataGroupName>
 			<ui>
-				<position x="56" y="312" />
+				<position x="56" y="313" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<appendMethod>first</appendMethod>
@@ -153,7 +156,7 @@
 			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
 			<dataGroupName><![CDATA[GUESS_BUY]]></dataGroupName>
 			<ui>
-				<position x="291" y="50" />
+				<position x="291" y="49" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
@@ -187,7 +190,7 @@
 			<dataSource alias="A1"><![CDATA[SN_PRICE]]></dataSource>
 			<dataGroupName><![CDATA[NAME_HIDING]]></dataGroupName>
 			<ui>
-				<position x="163" y="311" />
+				<position x="163" y="313" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -204,7 +207,7 @@
 			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
 			<dataGroupName><![CDATA[DISPLAY_COLUMNS]]></dataGroupName>
 			<ui>
-				<position x="451" y="50" />
+				<position x="447" y="49" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -222,7 +225,7 @@
 			<dataSource alias="A1"><![CDATA[NAME_HIDING]]></dataSource>
 			<dataGroupName><![CDATA[CONCERN]]></dataGroupName>
 			<ui>
-				<position x="163" y="180" />
+				<position x="163" y="181" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[{DATE} >= '$(BEGIN)']]></condition>
@@ -232,10 +235,28 @@
 			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
 			<dataGroupName><![CDATA[SETTED]]></dataGroupName>
 			<ui>
-				<position x="452" y="184" />
+				<position x="291" y="181" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<condition><![CDATA[{SUGGEST/BUY}]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[SETTED]]></dataSource>
+			<dataGroupName><![CDATA[CLEAN_COLUMNS]]></dataGroupName>
+			<ui>
+				<position x="449" y="181" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>DATE</column>
+				<column toName="PRICE">LAST_P</column>
+				<column toName="SPRICE">S_VALUE</column>
+				<column toName="SLOPE">SLOPE/20</column>
+				<column toName="UPDOWN">UP/DOWN</column>
+				<column toName="SUGGEST">SUGGEST/BUY</column>
+			</orderAndFilter>
 		</processingElem>
 	</dataProcessing>
 
@@ -245,17 +266,17 @@
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="603" y="51" />
+				<position x="606" y="49" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>
 
-		<dataLoading name="SAVE_SELECTED" source="SETTED" type="file">
-			<filePath><![CDATA[$(OUT_PATH)S$(COMP_CODE).txt]]></filePath>
+		<dataLoading name="SAVE_SELECTED" source="CLEAN_COLUMNS" type="file">
+			<filePath><![CDATA[$(OUT_PATH2)S$(COMP_CODE).txt]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="604" y="184" />
+				<position x="607" y="181" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>
