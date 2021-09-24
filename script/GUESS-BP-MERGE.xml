@@ -10,6 +10,9 @@
 		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[D:\work\jupyter\krx\output\buyPoint\]]></param>
 		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\buyPoint\]]></param>
+		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
 		</macro>
@@ -22,11 +25,33 @@
 			<path><![CDATA[$(IN_PATH)S*.txt]]></path>
 			<columns>
 				<column name="P_CODE" type="string" />
-				<column name="DATE" type="string" />
-				<column name="PRICE" type="integer" />
-				<column name="SPRICE" type="real" />
-				<column name="SLOPE" type="real" />
-				<column name="UPDOWN" type="real" />
+				<column name="DATE" type="integer" />
+				<column name="BEGIN_P" type="integer" />
+				<column name="LAST_P" type="integer" />
+				<column name="AMT(K)" type="integer" />
+				<column name="S_VALUE" type="real" />
+				<column name="SV/20" type="real" />
+				<column name="SV/60" type="real" />
+				<column name="SV/120" type="real" />
+				<column name="MV/20" type="integer" />
+				<column name="MV/60" type="integer" />
+				<column name="MV/120" type="integer" />
+				<column name="AVG/20" type="real" />
+				<column name="AVG/60" type="real" />
+				<column name="AVG/120" type="real" />
+				<column name="STD/20" type="real" />
+				<column name="STD/60" type="real" />
+				<column name="STD/120" type="real" />
+				<column name="SLOPE/20" type="real" />
+				<column name="SLOPE/60" type="real" />
+				<column name="RATIO/120" type="real" />
+				<column name="RATIO/MIN" type="real" />
+				<column name="RATIO/MAX" type="real" />
+				<column name="HL/20" type="real" />
+				<column name="HL/A2" type="real" />
+				<column name="HL/60" type="real" />
+				<column name="HL/120" type="real" />
+				<column name="UP/DOWN" type="real" />
 				<column name="SUGGEST" type="integer" />
 			</columns>
 			<ui>
@@ -42,60 +67,42 @@
 			<dataSource alias="A1"><![CDATA[BP-GUESS]]></dataSource>
 			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
 			<ui>
-				<position x="241" y="95" />
+				<position x="229" y="95" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="BP_DATE"><![CDATA[STRTODATE({DATE}, 'yyyyMMdd')]]></derivedColumn>
+				<derivedColumn name="BP_DATE"><![CDATA[STRTODATE(STR({DATE}), 'yyyyMMdd')]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
-		<processingElem type="orderAndFilter">
+		<processingElem type="select">
 			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
-			<dataGroupName><![CDATA[COLUMN_ORDER]]></dataGroupName>
+			<dataGroupName><![CDATA[BP]]></dataGroupName>
 			<ui>
-				<position x="359" y="95" />
+				<position x="360" y="95" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>BP_DATE</column>
-				<column>PRICE</column>
-				<column>SPRICE</column>
-				<column>SLOPE</column>
-				<column>UPDOWN</column>
-			</orderAndFilter>
+			<condition><![CDATA[IIF( {SUGGEST} = 1 AND {BP_DATE} > NOW() - 90, 1, 0 )]]></condition>
 		</processingElem>
 
-		<processingElem type="sort">
-			<dataSource alias="A1"><![CDATA[COLUMN_ORDER]]></dataSource>
-			<dataGroupName><![CDATA[MAKE_INDEX]]></dataGroupName>
+		<processingElem type="distinct">
+			<dataSource alias="A1"><![CDATA[BP]]></dataSource>
+			<dataGroupName><![CDATA[DistinctData_1]]></dataGroupName>
 			<ui>
-				<position x="486" y="96" />
+				<position x="489" y="97" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<sortColumns>
-				<column order="ascending">BP_DATE</column>
-				<column order="ascending">P_CODE</column>
-			</sortColumns>
+			<columns><![CDATA[P_CODE]]></columns>
 		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
-		<dataLoading name="UPLOADING" source="MAKE_INDEX" type="dataOn">
-			<dataGroup>GUESS_BP</dataGroup>
-			<loadType>2</loadType>
-			<useIncubator>false</useIncubator>
-			<remainHistory>false</remainHistory>
-			<params>
-				<param name="collection"><![CDATA[ANAL]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
+		<dataLoading name="FileOutput_1" source="DistinctData_1" type="file">
+			<filePath><![CDATA[$(OUT_PATH)_BP_WEEK.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="640" y="95" />
+				<position x="611" y="99" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

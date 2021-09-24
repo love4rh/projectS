@@ -7,14 +7,8 @@
 	</settings>
 
 	<macros>
-		<macro name="L_STEP" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[90]]></param>
-		</macro>
-		<macro name="H_STEP" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[120]]></param>
-		</macro>
 		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[066570]]></param>
+			<param name="value"><![CDATA[017890]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
@@ -37,7 +31,7 @@
 
 	<inputNodes>
 		<inputNode name="P_2012" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2012
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -55,6 +49,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="53" />
@@ -63,7 +58,7 @@
 		</inputNode>
 
 		<inputNode name="P_2013" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2013
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -81,6 +76,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="72" />
@@ -89,7 +85,7 @@
 		</inputNode>
 
 		<inputNode name="P_2014" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2014
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -107,6 +103,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="91" />
@@ -115,7 +112,7 @@
 		</inputNode>
 
 		<inputNode name="P_2015" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2015
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -133,6 +130,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="110" />
@@ -141,7 +139,7 @@
 		</inputNode>
 
 		<inputNode name="P_2016" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2016
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -159,6 +157,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="129" />
@@ -167,7 +166,7 @@
 		</inputNode>
 
 		<inputNode name="P_2017" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2017
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -185,6 +184,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="148" />
@@ -193,7 +193,7 @@
 		</inputNode>
 
 		<inputNode name="P_2018" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2018
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -211,6 +211,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="167" />
@@ -219,7 +220,7 @@
 		</inputNode>
 
 		<inputNode name="P_2019" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2019
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -237,6 +238,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="186" />
@@ -245,7 +247,7 @@
 		</inputNode>
 
 		<inputNode name="P_2020" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2020
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -263,6 +265,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="205" />
@@ -271,7 +274,7 @@
 		</inputNode>
 
 		<inputNode name="P_2021" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2021
  WHERE 종목코드 = '$(COMP_CODE)']]></query>
 			<params>
@@ -289,6 +292,7 @@
 				<column name="고가" type="real" />
 				<column name="저가" type="real" />
 				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
 			</columns>
 			<ui>
 				<position x="56" y="224" />
@@ -334,34 +338,59 @@
 
 		<processingElem type="derived">
 			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
-			<dataGroupName><![CDATA[GUESS_BUY]]></dataGroupName>
+			<dataGroupName><![CDATA[ADD_FEATURES]]></dataGroupName>
 			<ui>
 				<position x="291" y="50" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
 				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.1]]></derivedColumn>
+				<derivedColumn name="AMT(K)"><![CDATA[ROUND({AMOUNT} / 1000, 0)]]></derivedColumn>
 				<derivedColumn name="S_VALUE"><![CDATA[({LAST_P} - GETSTATISTICS(@{LAST_P}, "min")) / GETSTATISTICS(@{LAST_P}, "range")]]></derivedColumn>
-				<derivedColumn name="SMV/20"><![CDATA[MOVINGAVG(@{S_VALUE}, 20)]]></derivedColumn>
+				<derivedColumn name="SV/20"><![CDATA[MOVINGAVG(@{S_VALUE}, 20)]]></derivedColumn>
+				<derivedColumn name="SV/60"><![CDATA[MOVINGAVG(@{S_VALUE}, 60)]]></derivedColumn>
+				<derivedColumn name="SV/120"><![CDATA[MOVINGAVG(@{S_VALUE}, 120)]]></derivedColumn>
 				<derivedColumn name="MV/20"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 20), 0 )]]></derivedColumn>
 				<derivedColumn name="MV/60"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 60), 0 )]]></derivedColumn>
 				<derivedColumn name="MV/120"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 120), 0 )]]></derivedColumn>
-				<derivedColumn name="SLOPE/20"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{SMV/20}, 4) )]]></derivedColumn>
-				<derivedColumn name="RATIO/120"><![CDATA[{LAST_P} / {MV/120}]]></derivedColumn>
-				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 30, 0, SQRT(MOVINGVAR(@{SMV/20} , 5)) * 1000 )]]></derivedColumn>
+				<derivedColumn name="AVG/20"><![CDATA[IIF( @ROWNUM < 12, 1, (MOVINGSUM(@{MV/20}, 11) - {MV/20}) / 10 )]]></derivedColumn>
 				<derivedColumn name="AVG/60"><![CDATA[IIF( @ROWNUM < 12, {MV/60}, (MOVINGSUM(@{MV/60}, 11) - {MV/60}) / 10 )]]></derivedColumn>
+				<derivedColumn name="AVG/120"><![CDATA[IIF( @ROWNUM < 140, {MV/120}, (MOVINGSUM(@{MV/120}, 21) - {MV/120}) / 20 )]]></derivedColumn>
+				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 30, 0, SQRT(MOVINGVAR(@{SV/20} , 5)) * 1000 )]]></derivedColumn>
+				<derivedColumn name="STD/60"><![CDATA[IIF( @ROWNUM < 70, 0, SQRT(MOVINGVAR(@{SV/60} , 5)) * 1000 )]]></derivedColumn>
+				<derivedColumn name="STD/120"><![CDATA[IIF( @ROWNUM < 130, 0, SQRT(MOVINGVAR(@{SV/120} , 5)) * 1000 )]]></derivedColumn>
+				<derivedColumn name="SLOPE/20"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{SV/20}, 4) )]]></derivedColumn>
+				<derivedColumn name="SLOPE/60"><![CDATA[IIF( @ROWNUM < 60, 0, LINEARSLOPE(@{DX}, @{SV/60}, 4) )]]></derivedColumn>
+				<derivedColumn name="RATIO/120"><![CDATA[{LAST_P} / {MV/120}]]></derivedColumn>
+				<derivedColumn name="RATIO/MIN"><![CDATA[{MV/20} / MOVINGMIN(@{MV/20}, 200)]]></derivedColumn>
+				<derivedColumn name="RATIO/MAX"><![CDATA[{MV/20} / MOVINGMAX(@{MV/20}, 260)]]></derivedColumn>
+				<derivedColumn name="HL/20"><![CDATA[IIF( @ROWNUM < 21, 1, {MV/20} / {AVG/20} )]]></derivedColumn>
+				<derivedColumn name="HL/A2"><![CDATA[IIF( @ROWNUM = 1, 0, ({HL/20}[-1] + {HL/20}) / 2 )]]></derivedColumn>
+				<derivedColumn name="HL/60"><![CDATA[IIF( @ROWNUM < 70, 1, {MV/60} / {AVG/60} )]]></derivedColumn>
+				<derivedColumn name="HL/120"><![CDATA[IIF( @ROWNUM < 140, 1, {MV/120} / {AVG/120} )]]></derivedColumn>
 				<derivedColumn name="UP/DOWN"><![CDATA[IIF( @ROWNUM < 30, 0.5,
    IIF( {STD/20} < $(FLATLIMIT), 0.5,
       IIF( {SLOPE/20} > 0, 1, 0 )
    )
 )]]></derivedColumn>
-				<derivedColumn name="SUGGEST/BUY"><![CDATA[IIF( @ROWNUM < 120, 0,
-  IIF( {UP/DOWN}[-1] = 0 AND {UP/DOWN} >= 0.5
-       AND {AVG/60} >= {MV/60}
-       AND {MV/60} / {MV/20} > 0.98
-       AND MOVINGSUM(@{UP/DOWN}, 11) <= IIF({UP/DOWN} = 1, 1, 0.5)
-     , 1, 0
-  )
+				<derivedColumn name="AVG/S20"><![CDATA[IIF( @ROWNUM < 10, 0, (MOVINGSUM(@{STD/20}, 6) - {STD/20}) / 5 )]]></derivedColumn>
+				<derivedColumn name="PT/20"><![CDATA[IIF( @ROWNUM < 130, 0,
+   IIF( MOVINGSUM(@THIS, 25) = 0 AND {STD/20} < 1.125,
+      CASE( 0
+         , {HL/A2} <= 0.991 AND {MV/20} < {MV/120} AND {HL/20} <= 0.985, 4
+         , MOVINGMORECOUNT(@{HL/A2}, 4, 1.00899999) > 0 AND {MV/20} > {MV/120}, 3
+      ),
+      CASE( 0
+         , MOVINGMORECOUNT(@THIS, 45, 4) = 0 AND {STD/20} > 8 AND {HL/20} > 1
+           AND {MV/20} > {MV/60} AND {MV/20} > {MV/120}, 5
+      )
+   )
+)]]></derivedColumn>
+				<derivedColumn name="PT2/20"><![CDATA[IIF( @ROWNUM < 130, 0,
+   CASE( 0
+      , {MV/20}[-1] >= {MV/60}[-1] AND {MV/20} <= {MV/60} AND {MV/20}[-1] > {MV/20}, 6
+      , {MV/20}[-1] <= {MV/60}[-1] AND {MV/20} >= {MV/60} AND {MV/20}[-1] < {MV/20}, 7
+   )
 )]]></derivedColumn>
 			</addColumns>
 		</processingElem>
@@ -380,14 +409,15 @@
 				<column toName="HIGH_P">고가</column>
 				<column toName="LOW_P">저가</column>
 				<column toName="LAST_P">종가</column>
+				<column toName="AMOUNT">거래량</column>
 			</orderAndFilter>
 		</processingElem>
 
 		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[GUESS_SELL]]></dataSource>
+			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
 			<dataGroupName><![CDATA[DISPLAY_COLUMNS]]></dataGroupName>
 			<ui>
-				<position x="562" y="50" />
+				<position x="454" y="186" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -396,8 +426,9 @@
 				<column toName="PRICE">LAST_P</column>
 				<column>MV/20</column>
 				<column>MV/60</column>
-				<column>SMV/20</column>
-				<column>UP/DOWN</column>
+				<column>MV/120</column>
+				<column>HL/60</column>
+				<column>HL/120</column>
 			</orderAndFilter>
 		</processingElem>
 
@@ -411,139 +442,44 @@
 			<condition><![CDATA[1]]></condition>
 		</processingElem>
 
-		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[GUESS_SELL]]></dataSource>
-			<dataGroupName><![CDATA[RETAIN_ONLY]]></dataGroupName>
-			<ui>
-				<position x="426" y="169" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<condition><![CDATA[{G/IDX} > 0 AND {RETAIN/FLAG} = 1]]></condition>
-		</processingElem>
-
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[RETAIN_ONLY]]></dataSource>
-			<dataGroupName><![CDATA[RETAIN_COLUMNS]]></dataGroupName>
-			<ui>
-				<position x="426" y="287" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>G/IDX</column>
-				<column>DATE</column>
-				<column>BEGIN_P</column>
-				<column>HIGH_P</column>
-				<column>LOW_P</column>
-				<column>LAST_P</column>
-			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="groupingSelect">
-			<dataSource alias="A1"><![CDATA[RETAIN_COLUMNS]]></dataSource>
-			<dataGroupName><![CDATA[RETAIN_FIRST]]></dataGroupName>
-			<ui>
-				<position x="562" y="216" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<groupingColumns><![CDATA[G/IDX]]></groupingColumns>
-			<selectColumn type="min"><![CDATA[DATE]]></selectColumn>
-		</processingElem>
-
-		<processingElem type="groupingSelect">
-			<dataSource alias="A1"><![CDATA[RETAIN_COLUMNS]]></dataSource>
-			<dataGroupName><![CDATA[RETAIN_LAST]]></dataGroupName>
-			<ui>
-				<position x="562" y="352" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<groupingColumns><![CDATA[G/IDX]]></groupingColumns>
-			<selectColumn type="max"><![CDATA[DATE]]></selectColumn>
-		</processingElem>
-
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[RETAIN_LAST]]></dataSource>
-			<dataGroupName><![CDATA[RETAIN_COLOUMN2]]></dataGroupName>
-			<ui>
-				<position x="698" y="352" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>G/IDX</column>
-				<column toName="SELL_DATE">DATE</column>
-				<column>BEGIN_P</column>
-				<column>HIGH_P</column>
-				<column>LOW_P</column>
-				<column>LAST_P</column>
-			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="merge">
-			<dataSources>
-				<dataSource alias="A1"><![CDATA[RETAIN_FIRST]]></dataSource>
-				<dataSource alias="A2"><![CDATA[RETAIN_COLOUMN2]]></dataSource>
-			</dataSources>
-			<dataGroupName><![CDATA[ADD_RESULT]]></dataGroupName>
-			<ui>
-				<position x="698" y="216" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<joinMethod>inner</joinMethod>
-			<addKeyColumn>true</addKeyColumn>
-			<equalKeys>
-				<equalKey source="RETAIN_COLOUMN2"><![CDATA[P_CODE,G/IDX]]></equalKey>
-				<equalKey source="RETAIN_FIRST"><![CDATA[P_CODE,G/IDX]]></equalKey>
-			</equalKeys>
-			<selectColumns>
-				<columns source="RETAIN_COLOUMN2"><![CDATA[SELL_DATE,LAST_P]]></columns>
-				<columns source="RETAIN_FIRST"><![CDATA[DATE,BEGIN_P]]></columns>
-			</selectColumns>
-		</processingElem>
-
 		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[ADD_RESULT]]></dataSource>
-			<dataGroupName><![CDATA[DF_REVENUE]]></dataGroupName>
+			<dataSource alias="A1"><![CDATA[ADD_FEATURES]]></dataSource>
+			<dataGroupName><![CDATA[GUESS_BUY]]></dataGroupName>
 			<ui>
-				<position x="824" y="215" />
+				<position x="292" y="185" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="DURATION"><![CDATA[DIFFDAY(STRTODATE({SELL_DATE}, 'yyyyMMdd'), STRTODATE({DATE}, 'yyyyMMdd'))]]></derivedColumn>
-				<derivedColumn name="REVENUE"><![CDATA[{LAST_P} - {BEGIN_P}]]></derivedColumn>
-				<derivedColumn name="PROFIT"><![CDATA[{REVENUE} / {BEGIN_P} * 100]]></derivedColumn>
-			</addColumns>
-		</processingElem>
-
-		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
-			<dataGroupName><![CDATA[GUESS_SELL]]></dataGroupName>
-			<ui>
-				<position x="426" y="50" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<addColumns>
-				<derivedColumn name="G/IDX"><![CDATA[IIF( @ROWNUM = 1, G := 0,
-  IIF( {SUGGEST/BUY}[-1] = 1, G := G + 1, G )
+				<derivedColumn name="C/MM"><![CDATA[IIF(
+      {RATIO/MAX} <= 0.77
+  AND ISBETWEEN({RATIO/MIN}, 1.0001, 1.14)
+, 1, 0)]]></derivedColumn>
+				<derivedColumn name="C/MIX"><![CDATA[IIF(
+  {MV/20} / {MV/60} > 0.9
+, 1, 0 )]]></derivedColumn>
+				<derivedColumn name="C/20"><![CDATA[IIF(
+   {SLOPE/20} >= -0.0001
+, 1, 0 )]]></derivedColumn>
+				<derivedColumn name="C/60"><![CDATA[IIF(
+   {STD/60} < 4 OR {AVG/60} <= {MV/60}
+, 1, 0 )]]></derivedColumn>
+				<derivedColumn name="C/120"><![CDATA[IIF(
+   {STD/120} < 2 OR {AVG/120} <= {MV/120}
+, 1, 0 )]]></derivedColumn>
+				<derivedColumn name="C/UD"><![CDATA[CASE( 0
+   , {UP/DOWN}[-1] = 0 AND {UP/DOWN} >= 0.5 AND MOVINGSUM(@{UP/DOWN}, 11) <= IIF({UP/DOWN} = 1, 1, 0.5), 1
+   , {UP/DOWN}[-1] <= 0.5 AND {UP/DOWN} >= 1 AND MOVINGSUM(@{UP/DOWN}, 11) <= 6, 2
 )]]></derivedColumn>
-				<derivedColumn name="T/BP"><![CDATA[IIF( @ROWNUM = 1, 0,
-  IIF( {SUGGEST/BUY}[-1] = 1, {LAST_P}[-1], GETVALUE(@THIS, -1) )
-)]]></derivedColumn>
-				<derivedColumn name="T/MV20"><![CDATA[IIF( @ROWNUM = 1, 0,
-  IIF( {SUGGEST/BUY}[-1] = 1, {MV/20}[-1], GETVALUE(@THIS, -1) )
-)]]></derivedColumn>
-				<derivedColumn name="T/RATIO"><![CDATA[IIF( {T/BP} = 0, 0, {LAST_P} / {T/BP} )]]></derivedColumn>
-				<derivedColumn name="T/IDX"><![CDATA[IIF( @ROWNUM = 1, 0,
-  IIF( {SUGGEST/BUY}[-1] = 1, @ROWNUM - 1, GETVALUE(@THIS, -1) )
-)]]></derivedColumn>
-				<derivedColumn name="E/IDX"><![CDATA[IIF( {SUGGEST/BUY} = 1, 0, @ROWNUM - {T/IDX} )]]></derivedColumn>
-				<derivedColumn name="GUESS/SELL"><![CDATA[0]]></derivedColumn>
-				<derivedColumn name="RETAIN/FLAG"><![CDATA[IIF( {G/IDX} > 0 AND {GUESS/SELL} = 0 OR {GUESS/SELL}[-1] = 0, 1 , 0 )]]></derivedColumn>
-				<derivedColumn name="SUGGEST"><![CDATA[IIF( @ROWNUM = @DATASIZE OR @ROWNUM <= 152, 0,
+				<derivedColumn name="C/STEEP"><![CDATA[IIF( @ROWNUM < 1, 0, IIF( {LAST_P} / {LAST_P}[-1] >= 1.14, 1, 0 ) )]]></derivedColumn>
+				<derivedColumn name="SUGGEST/BUY"><![CDATA[IIF( @ROWNUM < 120, 0,
    CASE( 0
-       , {SUGGEST/BUY} > 0, 1
-       , {RETAIN/FLAG} = 1 AND {RETAIN/FLAG}[1] = 0, 2
+       , {PT/20} = 4 AND ISBETWEEN({HL/120}, 0.961, 0.9981), 1
    )
+)]]></derivedColumn>
+				<derivedColumn name="SUGGEST"><![CDATA[CASE( 0
+    , {SUGGEST/BUY} > 0, 1
+    , {PT/20} = 5, 5
+    , {PT2/20} = 7, 7
 )]]></derivedColumn>
 			</addColumns>
 		</processingElem>
@@ -552,24 +488,20 @@
 			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
 			<dataGroupName><![CDATA[CHECKER]]></dataGroupName>
 			<ui>
-				<position x="290" y="226" />
+				<position x="291" y="329" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[IIF( @ROWNUM > @DATASIZE - 15, 0,
-   IIF( MOVINGSUM(@{SUGGEST/BUY}, 15) > 0, 1,
-      IIF( {SUGGEST/BUY}[1] + {SUGGEST/BUY}[2] + {SUGGEST/BUY}[3] + {SUGGEST/BUY}[4] + {SUGGEST/BUY}[5] + {SUGGEST/BUY}[6] > 0, 1, 0 )
-   )
-)]]></condition>
+			<condition><![CDATA[IIF( {SUGGEST} > 0, 1, 0 )]]></condition>
 		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
 		<dataLoading name="SAVE" source="DISPLAY_COLUMNS" type="file">
-			<filePath><![CDATA[$(OUT_PATH)P$(COMP_CODE).pmd]]></filePath>
+			<filePath><![CDATA[$(OUT_PATH_WIN)P$(COMP_CODE).pmd]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="698" y="50" />
+				<position x="610" y="186" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+
+
+	<inputNodes>
+		<inputNode name="STAT" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\output\stat\ST-*.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="G/IDX" type="integer" />
+				<column name="DATE" type="string" />
+				<column name="BEGIN_P" type="integer" />
+				<column name="SELL_DATE" type="string" />
+				<column name="LAST_P" type="real" />
+				<column name="DURATION" type="real" />
+				<column name="REVENUE" type="real" />
+				<column name="PROFIT" type="real" />
+			</columns>
+			<ui>
+				<position x="129" y="92" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[Derived_1]]></dataSource>
+			<dataGroupName><![CDATA[GroupingValue_1]]></dataGroupName>
+			<ui>
+				<position x="386" y="126" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[P_CODE]]></groupingColumns>
+			<generate>
+				<column type="sum" delimiter=";" toName="RV_SUM"><![CDATA[REVENUE]]></column>
+				<column type="sum" delimiter=";" toName="M_CNT"><![CDATA[M_COUNT]]></column>
+				<column type="sum" delimiter=";" toName="P_CNT"><![CDATA[P_COUNT]]></column>
+				<column type="count" delimiter=";" toName="T_CNT"><![CDATA[P_CODE]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[STAT]]></dataSource>
+			<dataGroupName><![CDATA[Derived_1]]></dataGroupName>
+			<ui>
+				<position x="239" y="131" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="M_COUNT"><![CDATA[IIF( {REVENUE} < 0, 1, 0 )]]></derivedColumn>
+				<derivedColumn name="P_COUNT"><![CDATA[IIF( {REVENUE} > 0, 1, 0 )]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[GroupingValue_1]]></dataSource>
+			<dataGroupName><![CDATA[Derived_2]]></dataGroupName>
+			<ui>
+				<position x="516" y="126" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="WIN"><![CDATA[{P_CNT} / {T_CNT} * 100]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>

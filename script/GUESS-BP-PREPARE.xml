@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="RES_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="FileInput_1" type="FILE">
+			<path><![CDATA[$(RES_PATH)companyCodes.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="표준코드" type="string" />
+				<column name="한글 종목명" type="string" />
+				<column name="한글 종목약명" type="string" />
+				<column name="영문 종목명" type="string" />
+				<column name="상장일" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="증권구분" type="string" />
+				<column name="소속부" type="string" />
+				<column name="주식종류" type="string" />
+				<column name="액면가" type="string" />
+				<column name="상장주식수" type="string" />
+				<column name="업종" type="string" />
+			</columns>
+			<ui>
+				<position x="96" y="66" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[FileInput_1]]></dataSource>
+			<dataGroupName><![CDATA[SelectData_1]]></dataGroupName>
+			<ui>
+				<position x="241" y="66" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{주식종류} = '보통주' AND {시장구분} <> 'KONEX' AND FIND(NVL({소속부}, 'aa'), '소속부없음') = 0]]></condition>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="FileOutput_1" source="SelectData_1" type="file">
+			<filePath><![CDATA[$(RES_PATH)guessBPItem.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="394" y="65" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
