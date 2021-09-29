@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="RES_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="COMP_INFO" type="FILE">
+			<path><![CDATA[$(RES_PATH)companyCodes.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="표준코드" type="string" />
+				<column name="한글 종목명" type="string" />
+				<column name="한글 종목약명" type="string" />
+				<column name="영문 종목명" type="string" />
+				<column name="상장일" type="string" />
+				<column name="시장구분" type="string" />
+				<column name="증권구분" type="string" />
+				<column name="소속부" type="string" />
+				<column name="주식종류" type="string" />
+				<column name="액면가" type="string" />
+				<column name="상장주식수" type="string" />
+				<column name="업종" type="string" />
+			</columns>
+			<ui>
+				<position x="84" y="104" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="P_2021" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 종가, 거래량
+  FROM PRICE.Y2021
+ WHERE 날짜 = '20210924']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
+			</columns>
+			<ui>
+				<position x="85" y="271" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[COMP_INFO]]></dataSource>
+				<dataSource alias="A2"><![CDATA[P_2021]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_PRICE]]></dataGroupName>
+			<ui>
+				<position x="211" y="193" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="COMP_INFO"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="P_2021"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="COMP_INFO"><![CDATA[*]]></columns>
+				<columns source="P_2021"><![CDATA[종가,거래량]]></columns>
+			</selectColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ADD_PRICE]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="325" y="192" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="STOCK"><![CDATA[REAL(REPLACE({상장주식수}, ',', ''), 0)]]></derivedColumn>
+				<derivedColumn name="SIZE(M)"><![CDATA[ROUND({STOCK} * {종가} / 1000000, 0)]]></derivedColumn>
+				<derivedColumn name="IPO_DATE"><![CDATA[STRTODATE({상장일}, 'yyyy/MM/dd')]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[SORT_BY_SIZE]]></dataSource>
+			<dataGroupName><![CDATA[KOSPI]]></dataGroupName>
+			<ui>
+				<position x="543" y="134" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{시장구분} = 'KOSPI']]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[SORT_BY_SIZE]]></dataSource>
+			<dataGroupName><![CDATA[KOSDAQ]]></dataGroupName>
+			<ui>
+				<position x="536" y="281" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{시장구분} = 'KOSDAQ']]></condition>
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[FILTER_1]]></dataSource>
+			<dataGroupName><![CDATA[SORT_BY_SIZE]]></dataGroupName>
+			<ui>
+				<position x="443" y="193" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="descending">SIZE(M)</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[KOSPI]]></dataSource>
+			<dataGroupName><![CDATA[TOP200]]></dataGroupName>
+			<ui>
+				<position x="671" y="134" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[@ROWNUM <= 200]]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[KOSDAQ]]></dataSource>
+			<dataGroupName><![CDATA[TOP100]]></dataGroupName>
+			<ui>
+				<position x="683" y="279" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[@ROWNUM <= 100]]></condition>
+		</processingElem>
+
+		<processingElem type="append">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[TOP200]]></dataSource>
+				<dataSource alias="A2"><![CDATA[TOP100]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[SUMALL]]></dataGroupName>
+			<ui>
+				<position x="794" y="196" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<appendMethod>union</appendMethod>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[SUMALL]]></dataSource>
+			<dataGroupName><![CDATA[CLEANUP_COLUMN]]></dataGroupName>
+			<ui>
+				<position x="833" y="329" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column toName="회사명">한글 종목약명</column>
+				<column>상장일</column>
+				<column>업종</column>
+				<column>시장구분</column>
+				<column toName="상장주식수">STOCK</column>
+				<column toName="시가총액">SIZE(M)</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[FILTER_1]]></dataGroupName>
+			<ui>
+				<position x="364" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{IPO_DATE} < NOW() - 365 * 3]]></condition>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="CLEANUP_COLUMN" type="file">
+			<filePath><![CDATA[$(RES_PATH)guessBPItem.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="942" y="224" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

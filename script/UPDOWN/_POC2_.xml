@@ -8,7 +8,7 @@
 
 	<macros>
 		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[030200]]></param>
+			<param name="value"><![CDATA[005930]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
@@ -355,8 +355,8 @@
 				<derivedColumn name="MV/120"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 120), 0 )]]></derivedColumn>
 				<derivedColumn name="AVG/20"><![CDATA[IIF( @ROWNUM < 12, 1, (MOVINGSUM(@{MV/20}, 11) - {MV/20}) / 10 )]]></derivedColumn>
 				<derivedColumn name="AVG/60"><![CDATA[IIF( @ROWNUM < 12, {MV/60}, (MOVINGSUM(@{MV/60}, 11) - {MV/60}) / 10 )]]></derivedColumn>
-				<derivedColumn name="AVG/120"><![CDATA[IIF( @ROWNUM < 130, {MV/120}, (MOVINGSUM(@{MV/120}, 11) - {MV/120}) / 10 )]]></derivedColumn>
-				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 30, 0, SQRT(MOVINGVAR(@{SV/20} , 5)) * 1000 )]]></derivedColumn>
+				<derivedColumn name="AVG/120"><![CDATA[IIF( @ROWNUM < 140, {MV/120}, (MOVINGSUM(@{MV/120}, 21) - {MV/120}) / 20 )]]></derivedColumn>
+				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 30, 0, SQRT(MOVINGVAR(@{SV/20} , 3)) * 1000 )]]></derivedColumn>
 				<derivedColumn name="STD/60"><![CDATA[IIF( @ROWNUM < 70, 0, SQRT(MOVINGVAR(@{SV/60} , 5)) * 1000 )]]></derivedColumn>
 				<derivedColumn name="STD/120"><![CDATA[IIF( @ROWNUM < 130, 0, SQRT(MOVINGVAR(@{SV/120} , 5)) * 1000 )]]></derivedColumn>
 				<derivedColumn name="SLOPE/20"><![CDATA[IIF( @ROWNUM < 20, 0, LINEARSLOPE(@{DX}, @{SV/20}, 4) )]]></derivedColumn>
@@ -374,11 +374,11 @@
    )
 )]]></derivedColumn>
 				<derivedColumn name="AVG/S20"><![CDATA[IIF( @ROWNUM < 10, 0, (MOVINGSUM(@{STD/20}, 6) - {STD/20}) / 5 )]]></derivedColumn>
-				<derivedColumn name="PT/20"><![CDATA[IIF( @ROWNUM < 130, 0,
-   IIF( {MV/20} >= {MV/60} AND {MV/20} >= {MV/120}
-        AND {HL/20} > 1.0 AND {STD/20} > 1.5
-        AND {HL/120} > {HL/120}[-1] AND {HL/60} > {HL/60}[-1]
-       , 3, 0
+				<derivedColumn name="PT/20"><![CDATA[IIF( @ROWNUM < 30, 0,
+   CASE( 0
+      , {STD/20} < 2 AND {SLOPE/20} > 0, 3
+      , {STD/20} < 2 AND {SLOPE/20} <= 0, 4
+      , {STD/20} >= 2 AND {AVG/20} > 1.0, 1
    )
 )]]></derivedColumn>
 				<derivedColumn name="PT2/20"><![CDATA[IIF( @ROWNUM < 130, 0,
@@ -412,7 +412,7 @@
 			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
 			<dataGroupName><![CDATA[DISPLAY_COLUMNS]]></dataGroupName>
 			<ui>
-				<position x="454" y="186" />
+				<position x="590" y="184" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<orderAndFilter>
@@ -422,8 +422,7 @@
 				<column>MV/20</column>
 				<column>MV/60</column>
 				<column>MV/120</column>
-				<column>HL/60</column>
-				<column>HL/120</column>
+				<column>STD/20</column>
 			</orderAndFilter>
 		</processingElem>
 
@@ -434,7 +433,21 @@
 				<position x="163" y="180" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[1]]></condition>
+			<condition><![CDATA[{DATE} < '20200101']]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
+			<dataGroupName><![CDATA[CHECKER]]></dataGroupName>
+			<ui>
+				<position x="256" y="356" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[IIF( @ROWNUM > @DATASIZE - 15, 0,
+   IIF( MOVINGSUM(@{SUGGEST/BUY}, 15) > 0, 1,
+      IIF( {SUGGEST/BUY}[1] + {SUGGEST/BUY}[2] + {SUGGEST/BUY}[3] + {SUGGEST/BUY}[4] + {SUGGEST/BUY}[5] + {SUGGEST/BUY}[6] > 0, 1, 0 )
+   )
+)]]></condition>
 		</processingElem>
 
 		<processingElem type="derived">
@@ -445,44 +458,41 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="C/MM"><![CDATA[IIF(
-      {RATIO/MAX} <= 0.77
-  AND ISBETWEEN({RATIO/MIN}, 1.0001, 1.14)
-, 1, 0)]]></derivedColumn>
-				<derivedColumn name="C/MIX"><![CDATA[IIF(
-  {MV/20} / {MV/60} > 0.9
-, 1, 0 )]]></derivedColumn>
-				<derivedColumn name="C/20"><![CDATA[IIF(
-   {SLOPE/20} >= -0.0001
-, 1, 0 )]]></derivedColumn>
-				<derivedColumn name="C/60"><![CDATA[IIF(
-   {STD/60} < 4 OR {AVG/60} <= {MV/60}
-, 1, 0 )]]></derivedColumn>
-				<derivedColumn name="C/120"><![CDATA[IIF(
-   {STD/120} < 2 OR {AVG/120} <= {MV/120}
-, 1, 0 )]]></derivedColumn>
-				<derivedColumn name="C/UD"><![CDATA[CASE( 0
-   , {UP/DOWN}[-1] = 0 AND {UP/DOWN} >= 0.5 AND MOVINGSUM(@{UP/DOWN}, 11) <= IIF({UP/DOWN} = 1, 1, 0.5), 1
-   , {UP/DOWN}[-1] <= 0.5 AND {UP/DOWN} >= 1 AND MOVINGSUM(@{UP/DOWN}, 11) <= 6, 2
-)]]></derivedColumn>
-				<derivedColumn name="C/STEEP"><![CDATA[IIF( @ROWNUM < 1, 0, IIF( {LAST_P} / {LAST_P}[-1] >= 1.14, 1, 0 ) )]]></derivedColumn>
 				<derivedColumn name="SUGGEST/BUY"><![CDATA[IIF( @ROWNUM < 120, 0,
    CASE( 0
        , {PT/20} = 4 AND ISBETWEEN({HL/120}, 0.961, 0.9981), 1
    )
 )]]></derivedColumn>
-				<derivedColumn name="SUGGEST"><![CDATA[{PT/20}]]></derivedColumn>
+				<derivedColumn name="SUGGEST"><![CDATA[IIF( {PT/20} = 1, 1, 0 )]]></derivedColumn>
 			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ADD_FEATURES]]></dataSource>
+			<dataGroupName><![CDATA[FLAT_CHECK]]></dataGroupName>
+			<ui>
+				<position x="453" y="50" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>DATE</column>
+				<column>SV/20</column>
+				<column>MV/20</column>
+				<column>AVG/20</column>
+				<column>STD/20</column>
+				<column>SLOPE/20</column>
+				<column>PT/20</column>
+			</orderAndFilter>
 		</processingElem>
 
 		<processingElem type="select">
 			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
-			<dataGroupName><![CDATA[CHECKER]]></dataGroupName>
+			<dataGroupName><![CDATA[BUY_CHECK]]></dataGroupName>
 			<ui>
-				<position x="291" y="329" />
+				<position x="349" y="354" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[IIF( {SUGGEST} > 0, 1, 0 )]]></condition>
+			<condition><![CDATA[IIF( {PT/20} = 4, 1, 0 )]]></condition>
 		</processingElem>
 	</dataProcessing>
 
@@ -492,7 +502,7 @@
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="610" y="186" />
+				<position x="726" y="184" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>
