@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[005930]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
+		</macro>
+		<macro name="OUT_PATH_WIN" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\EclipseData\Andromeda\chartX\data\]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="BACKUP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[002410  079370  066570 000660]]></param>
+		</macro>
+		<macro name="FLATLIMIT" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2.0]]></param>
+		</macro>
+		<macro name="TODAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20210930]]></param>
+		</macro>
+		<macro name="YESTERDAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20210929]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="P_2021" type="dataOn">
+			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
+  FROM PRICE.Y2021
+ WHERE ISIN(날짜, '$(YESTERDAY)', '$(TODAY)')]]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="날짜" type="string" />
+				<column name="시가" type="real" />
+				<column name="고가" type="real" />
+				<column name="저가" type="real" />
+				<column name="종가" type="real" />
+				<column name="거래량" type="real" />
+			</columns>
+			<ui>
+				<position x="97" y="121" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[P_2021]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="248" y="120" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="RATIO"><![CDATA[({종가} / {시가} - 1) * 100]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[YESTERDAY_HIGH]]></dataGroupName>
+			<ui>
+				<position x="388" y="74" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[IIF( {날짜} = '$(YESTERDAY)' AND {RATIO} > 10, 1, 0 )]]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[TODAY_HIGH]]></dataGroupName>
+			<ui>
+				<position x="386" y="188" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[IIF( {날짜} = '$(TODAY)' AND {RATIO} > 10, 1, 0 )]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[TODAY_HIGH]]></dataSource>
+			<dataGroupName><![CDATA[TODAY_COLUMN]]></dataGroupName>
+			<ui>
+				<position x="522" y="187" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column toName="종목명2">종목명</column>
+				<column toName="오늘">날짜</column>
+				<column>시가</column>
+				<column>고가</column>
+				<column>저가</column>
+				<column toName="오늘가격">종가</column>
+				<column>거래량</column>
+				<column toName="오늘상승률">RATIO</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[YESTERDAY_HIGH]]></dataSource>
+				<dataSource alias="A2"><![CDATA[TODAY_COLUMN]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[MERGE_ALL]]></dataGroupName>
+			<ui>
+				<position x="528" y="73" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>fullOuter</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="TODAY_COLUMN"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="YESTERDAY_HIGH"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="TODAY_COLUMN"><![CDATA[종목명2,오늘,오늘가격,오늘상승률]]></columns>
+				<columns source="YESTERDAY_HIGH"><![CDATA[P_CODE,종목명,날짜,종가,RATIO]]></columns>
+			</selectColumns>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+	</dataLoadings>
+</crawlegoProject>

@@ -8,7 +8,7 @@
 
 	<macros>
 		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[214320]]></param>
+			<param name="value"><![CDATA[084650]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
@@ -33,114 +33,6 @@
 
 
 	<inputNodes>
-		<inputNode name="P_2012" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
-  FROM PRICE.Y2012
- WHERE 종목코드 = '$(COMP_CODE)']]></query>
-			<params>
-				<param name="collection"><![CDATA[PRICE]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<columns>
-				<column name="P_CODE" type="string" />
-				<column name="종목명" type="string" />
-				<column name="날짜" type="string" />
-				<column name="시가" type="real" />
-				<column name="고가" type="real" />
-				<column name="저가" type="real" />
-				<column name="종가" type="real" />
-				<column name="거래량" type="real" />
-			</columns>
-			<ui>
-				<position x="56" y="53" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</inputNode>
-
-		<inputNode name="P_2013" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
-  FROM PRICE.Y2013
- WHERE 종목코드 = '$(COMP_CODE)']]></query>
-			<params>
-				<param name="collection"><![CDATA[PRICE]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<columns>
-				<column name="P_CODE" type="string" />
-				<column name="종목명" type="string" />
-				<column name="날짜" type="string" />
-				<column name="시가" type="real" />
-				<column name="고가" type="real" />
-				<column name="저가" type="real" />
-				<column name="종가" type="real" />
-				<column name="거래량" type="real" />
-			</columns>
-			<ui>
-				<position x="56" y="72" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</inputNode>
-
-		<inputNode name="P_2014" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
-  FROM PRICE.Y2014
- WHERE 종목코드 = '$(COMP_CODE)']]></query>
-			<params>
-				<param name="collection"><![CDATA[PRICE]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<columns>
-				<column name="P_CODE" type="string" />
-				<column name="종목명" type="string" />
-				<column name="날짜" type="string" />
-				<column name="시가" type="real" />
-				<column name="고가" type="real" />
-				<column name="저가" type="real" />
-				<column name="종가" type="real" />
-				<column name="거래량" type="real" />
-			</columns>
-			<ui>
-				<position x="56" y="91" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</inputNode>
-
-		<inputNode name="P_2015" type="dataOn">
-			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
-  FROM PRICE.Y2015
- WHERE 종목코드 = '$(COMP_CODE)']]></query>
-			<params>
-				<param name="collection"><![CDATA[PRICE]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<columns>
-				<column name="P_CODE" type="string" />
-				<column name="종목명" type="string" />
-				<column name="날짜" type="string" />
-				<column name="시가" type="real" />
-				<column name="고가" type="real" />
-				<column name="저가" type="real" />
-				<column name="종가" type="real" />
-				<column name="거래량" type="real" />
-			</columns>
-			<ui>
-				<position x="56" y="110" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</inputNode>
-
 		<inputNode name="P_2016" type="dataOn">
 			<query><![CDATA[SELECT 종목코드 "P_CODE", 종목명, 날짜, 시가, 고가, 저가, 종가, 거래량
   FROM PRICE.Y2016
@@ -320,10 +212,6 @@
 
 		<processingElem type="append">
 			<dataSources>
-				<dataSource alias="A1"><![CDATA[P_2012]]></dataSource>
-				<dataSource alias="A2"><![CDATA[P_2013]]></dataSource>
-				<dataSource alias="A3"><![CDATA[P_2014]]></dataSource>
-				<dataSource alias="A4"><![CDATA[P_2015]]></dataSource>
 				<dataSource alias="A5"><![CDATA[P_2016]]></dataSource>
 				<dataSource alias="A6"><![CDATA[P_2017]]></dataSource>
 				<dataSource alias="A7"><![CDATA[P_2018]]></dataSource>
@@ -375,7 +263,7 @@
    CASE( 0
       , {SLOPE/20}[-1] <= 0 AND {SLOPE/20} > 0
         AND {SLOPE/40} < 0 AND {HL/40} > {AVG/40}[-1]
-        AND {SLOPE/80} < -0.5, 4
+        AND {SLOPE/80} < 0, 4
    )
 )]]></derivedColumn>
 				<derivedColumn name="PT2/20"><![CDATA[IIF( @ROWNUM < 31, 0,
@@ -431,21 +319,7 @@ CASE( 0
 				<position x="163" y="180" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[{DATE} < '20220101']]></condition>
-		</processingElem>
-
-		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
-			<dataGroupName><![CDATA[CHECKER]]></dataGroupName>
-			<ui>
-				<position x="274" y="341" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<condition><![CDATA[IIF( @ROWNUM > @DATASIZE - 15, 0,
-   IIF( MOVINGSUM(@{SUGGEST/BUY}, 15) > 0, 1,
-      IIF( {SUGGEST/BUY}[1] + {SUGGEST/BUY}[2] + {SUGGEST/BUY}[3] + {SUGGEST/BUY}[4] + {SUGGEST/BUY}[5] + {SUGGEST/BUY}[6] > 0, 1, 0 )
-   )
-)]]></condition>
+			<condition><![CDATA[{DATE} > DATETOSTR(NOW() - 450 - 150, 'yyyyMMdd')]]></condition>
 		</processingElem>
 
 		<processingElem type="derived">
@@ -460,21 +334,11 @@ CASE( 0
 				<derivedColumn name="SUGGEST"><![CDATA[{PT2/20}]]></derivedColumn>
 			</addColumns>
 		</processingElem>
-
-		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
-			<dataGroupName><![CDATA[BUY_CHECK]]></dataGroupName>
-			<ui>
-				<position x="412" y="338" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<condition><![CDATA[IIF( {PT/20} = 4, 1, 0 )]]></condition>
-		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
 		<dataLoading name="SAVE" source="DISPLAY_COLUMNS" type="file">
-			<filePath><![CDATA[$(OUT_PATH_WIN)P$(COMP_CODE).pmd]]></filePath>
+			<filePath><![CDATA[$(OUT_PATH)P$(COMP_CODE).pmd]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
