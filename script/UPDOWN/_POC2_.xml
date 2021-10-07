@@ -8,7 +8,7 @@
 
 	<macros>
 		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[214320]]></param>
+			<param name="value"><![CDATA[005930]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
@@ -373,6 +373,8 @@
 				<derivedColumn name="HL/80"><![CDATA[IIF( @ROWNUM < 92, 1, {SLOPE/80} / IIF( {AVG/80}[-1] = 0, 1, {AVG/80}[-1] ) )]]></derivedColumn>
 				<derivedColumn name="PT/20"><![CDATA[IIF( @ROWNUM < 91 OR {HL/40} = 0, 0,
    CASE( 0
+      , {SLOPE/20}[-1] < {SLOPE/40}[-1] AND {SLOPE/20} >= {SLOPE/40}
+        AND {SLOPE/40} < -1.0 AND {AVG/40} - 0.5 <= {SLOPE/40}, 3
       , {SLOPE/20}[-1] <= 0 AND {SLOPE/20} > 0
         AND {SLOPE/40} < 0 AND {HL/40} > {AVG/40}[-1]
         AND {SLOPE/80} < -0.5, 4
@@ -380,6 +382,8 @@
 )]]></derivedColumn>
 				<derivedColumn name="PT2/20"><![CDATA[IIF( @ROWNUM < 31, 0,
 CASE( 0
+    , ({PT/20}[-2] = 3 OR {PT/20}[-1] = 3 OR {PT/20} = 3)
+      AND {SLOPE/20} >= {SLOPE/40} + 0.5, 3
     , {PT/20} = 4 AND {SLOPE/20} > 0.9, 1
     , {PT/20}[-1] = 4 AND {SLOPE/20}[-1] < {SLOPE/20}, 1
 ))]]></derivedColumn>
