@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="STAT" type="FILE">
+			<path><![CDATA[$(IN_PATH)STAT-ALL.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="GROUP_ID" type="integer" />
+				<column name="BUY_DT" type="string" />
+				<column name="BUY_PRICE" type="real" />
+				<column name="SELL_DT" type="string" />
+				<column name="SELL_PRICE" type="real" />
+				<column name="PROFIT" type="real" />
+				<column name="DURATION" type="real" />
+				<column name="ESTIMATE" type="real" />
+			</columns>
+			<ui>
+				<position x="128" y="112" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[STAT]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="243" y="111" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="OK"><![CDATA[IIF( {PROFIT} >= 4, 1, 0 )]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[CALC_BY_GROUP]]></dataGroupName>
+			<ui>
+				<position x="384" y="111" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[P_CODE]]></groupingColumns>
+			<generate>
+				<column type="mean" delimiter=";" toName="OK_RATE"><![CDATA[OK]]></column>
+				<column type="count" delimiter=";" toName="TOTAL"><![CDATA[P_CODE]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[CALC_BY_GROUP]]></dataSource>
+			<dataGroupName><![CDATA[HIGH_FREQ]]></dataGroupName>
+			<ui>
+				<position x="448" y="218" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{TOTAL} > 7]]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[HIGH_FREQ]]></dataSource>
+			<dataGroupName><![CDATA[GOOD]]></dataGroupName>
+			<ui>
+				<position x="565" y="146" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{OK_RATE} > 0.7]]></condition>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[HIGH_FREQ]]></dataSource>
+			<dataGroupName><![CDATA[BAD]]></dataGroupName>
+			<ui>
+				<position x="582" y="269" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{OK_RATE} < 0.4]]></condition>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+	</dataLoadings>
+</crawlegoProject>

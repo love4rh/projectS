@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\stat\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="STAT" type="FILE">
+			<path><![CDATA[$(IN_PATH)ST-*.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+				<column name="GROUP_ID" type="integer" />
+				<column name="BUY_DT" type="string" />
+				<column name="BUY_PRICE" type="real" />
+				<column name="SELL_DT" type="string" />
+				<column name="SELL_PRICE" type="real" />
+				<column name="PROFIT" type="real" />
+				<column name="DURATION" type="real" />
+				<column name="ESTIMATE" type="real" />
+			</columns>
+			<ui>
+				<position x="128" y="112" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataLoadings>
+		<dataLoading name="FileOutput_1" source="STAT" type="file">
+			<filePath><![CDATA[$(OUT_PATH)STAT-ALL.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="291" y="111" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

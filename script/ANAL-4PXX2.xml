@@ -38,7 +38,7 @@
 			<param name="value"><![CDATA[100000]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[13.124.29.70]]></param>
+			<param name="value"><![CDATA[52.78.231.221]]></param>
 		</macro>
 		<macro name="BUY_YEAR" class="com.lge.crawlego.macro.ExpressionValue">
 			<param name="expression"><![CDATA[SUBSTR('$(BUY_DAY)', 1, 4)]]></param>

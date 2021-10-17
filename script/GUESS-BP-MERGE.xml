@@ -8,10 +8,10 @@
 
 	<macros>
 		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\buyPoint\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\stat\]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\buyPoint\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
@@ -22,37 +22,43 @@
 
 	<inputNodes>
 		<inputNode name="BP-GUESS" type="FILE">
-			<path><![CDATA[$(IN_PATH)S*.txt]]></path>
+			<path><![CDATA[$(IN_PATH)GS-*.txt]]></path>
 			<columns>
 				<column name="P_CODE" type="string" />
-				<column name="DATE" type="integer" />
-				<column name="BEGIN_P" type="integer" />
-				<column name="LAST_P" type="integer" />
-				<column name="AMT(K)" type="integer" />
+				<column name="DATE" type="string" />
+				<column name="B_PR" type="real" />
+				<column name="HI_PR" type="real" />
+				<column name="LO_PR" type="real" />
+				<column name="LAST_P" type="real" />
+				<column name="TRD" type="real" />
+				<column name="DX" type="real" />
+				<column name="MV/10" type="real" />
+				<column name="MV/40" type="real" />
+				<column name="MV/80" type="real" />
 				<column name="S_VALUE" type="real" />
-				<column name="SV/20" type="real" />
-				<column name="SV/60" type="real" />
-				<column name="SV/120" type="real" />
-				<column name="MV/20" type="integer" />
-				<column name="MV/60" type="integer" />
-				<column name="MV/120" type="integer" />
-				<column name="AVG/20" type="real" />
-				<column name="AVG/60" type="real" />
-				<column name="AVG/120" type="real" />
-				<column name="STD/20" type="real" />
-				<column name="STD/60" type="real" />
-				<column name="STD/120" type="real" />
+				<column name="SV/10" type="real" />
+				<column name="SLOPE/T20" type="real" />
 				<column name="SLOPE/20" type="real" />
+				<column name="SV/40" type="real" />
+				<column name="SLOPE/40" type="real" />
+				<column name="AVG/40" type="real" />
+				<column name="HL/40" type="real" />
+				<column name="T1/40" type="real" />
+				<column name="UD/40" type="real" />
+				<column name="SV/60" type="real" />
 				<column name="SLOPE/60" type="real" />
-				<column name="RATIO/120" type="real" />
-				<column name="RATIO/MIN" type="real" />
-				<column name="RATIO/MAX" type="real" />
-				<column name="HL/20" type="real" />
-				<column name="HL/A2" type="real" />
+				<column name="AVG/60" type="real" />
 				<column name="HL/60" type="real" />
-				<column name="HL/120" type="real" />
-				<column name="UP/DOWN" type="real" />
-				<column name="SUGGEST" type="integer" />
+				<column name="T1/60" type="real" />
+				<column name="UD/60" type="real" />
+				<column name="SV/80" type="real" />
+				<column name="SLOPE/80" type="real" />
+				<column name="AVG/80" type="real" />
+				<column name="HL/80" type="real" />
+				<column name="T1/80" type="real" />
+				<column name="UD/80" type="real" />
+				<column name="PT/20" type="real" />
+				<column name="SUGGEST" type="real" />
 			</columns>
 			<ui>
 				<position x="106" y="96" />
@@ -63,33 +69,11 @@
 
 
 	<dataProcessing>
-		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[BP-GUESS]]></dataSource>
-			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
-			<ui>
-				<position x="229" y="95" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<addColumns>
-				<derivedColumn name="BP_DATE"><![CDATA[STRTODATE(STR({DATE}), 'yyyyMMdd')]]></derivedColumn>
-			</addColumns>
-		</processingElem>
-
-		<processingElem type="select">
-			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
-			<dataGroupName><![CDATA[BP]]></dataGroupName>
-			<ui>
-				<position x="360" y="95" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<condition><![CDATA[IIF( {SUGGEST} = 1 AND {BP_DATE} > NOW() - 90, 1, 0 )]]></condition>
-		</processingElem>
-
 		<processingElem type="distinct">
-			<dataSource alias="A1"><![CDATA[BP]]></dataSource>
+			<dataSource alias="A1"><![CDATA[BP-GUESS]]></dataSource>
 			<dataGroupName><![CDATA[DistinctData_1]]></dataGroupName>
 			<ui>
-				<position x="489" y="97" />
+				<position x="237" y="95" />
 				<description><![CDATA[]]></description>
 			</ui>
 			<columns><![CDATA[P_CODE]]></columns>
@@ -97,12 +81,12 @@
 	</dataProcessing>
 
 	<dataLoadings>
-		<dataLoading name="FileOutput_1" source="DistinctData_1" type="file">
+		<dataLoading name="SAVE_GUESS" source="DistinctData_1" type="file">
 			<filePath><![CDATA[$(OUT_PATH)_BP_WEEK.txt]]></filePath>
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="611" y="99" />
+				<position x="381" y="95" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

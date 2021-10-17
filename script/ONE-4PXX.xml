@@ -11,13 +11,13 @@
 			<param name="value"><![CDATA[4PXX]]></param>
 		</macro>
 		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210225]]></param>
+			<param name="value"><![CDATA[20210830]]></param>
 		</macro>
 		<macro name="BUY_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210226]]></param>
+			<param name="value"><![CDATA[20210830]]></param>
 		</macro>
 		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210826]]></param>
+			<param name="value"><![CDATA[20211015]]></param>
 		</macro>
 		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[10000000]]></param>
@@ -26,7 +26,7 @@
 			<param name="value"><![CDATA[ANNUAL]]></param>
 		</macro>
 		<macro name="TOP_N" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[10]]></param>
+			<param name="value"><![CDATA[20]]></param>
 		</macro>
 		<macro name="TOTAL_AMOUNT" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[25]]></param>
@@ -41,7 +41,7 @@
 			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\logic\]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[13.124.29.70]]></param>
+			<param name="value"><![CDATA[52.78.231.221]]></param>
 		</macro>
 		<macro name="BS_COND3" class="com.lge.crawlego.macro.ExpressionValue">
 			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DAY)', 'yyyyMMdd') - 50, 'yyyy/MM')]]></param>
