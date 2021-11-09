@@ -32,7 +32,7 @@
 			<param name="value"><![CDATA[D:\work\jupyter\krx\output\stat\]]></param>
 		</macro>
 		<macro name="ST_DATE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20120101]]></param>
+			<param name="value"><![CDATA[20110101]]></param>
 		</macro>
 		<macro name="ED_DATE" class="com.lge.crawlego.macro.ExpressionValue">
 			<param name="expression"><![CDATA[DATETOSTR(NOW(), 'yyyyMMdd')]]></param>
@@ -164,11 +164,11 @@
 				<column>DATE</column>
 				<column>SUGGEST</column>
 				<column toName="PRICE">LAST_P</column>
-				<column>UD/80</column>
 				<column>SLOPE/20</column>
 				<column>SLOPE/40</column>
 				<column>SLOPE/60</column>
 				<column>SLOPE/80</column>
+				<column>UD/REF</column>
 			</orderAndFilter>
 		</processingElem>
 
@@ -180,7 +180,7 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<addColumns>
-				<derivedColumn name="SUGGEST"><![CDATA[{PT/20}]]></derivedColumn>
+				<derivedColumn name="SUGGEST"><![CDATA[{PT/ADJ}]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -200,59 +200,35 @@
 				<derivedColumn name="SV/10"><![CDATA[MOVINGAVG(@{S_VALUE}, 10)]]></derivedColumn>
 				<derivedColumn name="SLOPE/T20"><![CDATA[IIF( @ROWNUM < 20, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 20) * 100, 4) )]]></derivedColumn>
 				<derivedColumn name="SLOPE/20"><![CDATA[IIF( {SLOPE/T20} > 0 AND {SLOPE/T20} < 0.05, 0, {SLOPE/T20} )]]></derivedColumn>
+				<derivedColumn name="AVG/20"><![CDATA[IIF( @ROWNUM < 31, 1, MOVINGAVG(@{SLOPE/20}, 5) )]]></derivedColumn>
+				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 31, 1, SQRT(MOVINGVAR(@{SLOPE/20}, 5)) )]]></derivedColumn>
 				<derivedColumn name="SV/40"><![CDATA[MOVINGAVG(@{S_VALUE}, 40)]]></derivedColumn>
 				<derivedColumn name="SLOPE/40"><![CDATA[IIF( @ROWNUM < 40, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 40) * 100, 4) )]]></derivedColumn>
 				<derivedColumn name="AVG/40"><![CDATA[IIF( @ROWNUM < 51, 1, MOVINGAVG(@{SLOPE/40}, 5) )]]></derivedColumn>
-				<derivedColumn name="HL/40"><![CDATA[IIF( @ROWNUM < 51, 1, {SLOPE/40} / IIF( {AVG/40}[-1] = 0, 1, {AVG/40}[-1] ) )]]></derivedColumn>
-				<derivedColumn name="T1/40"><![CDATA[IIF( @ROWNUM < 91, 0, LINEARSLOPE(@{DX}, @{SLOPE/40}, 5) )]]></derivedColumn>
-				<derivedColumn name="UD/40"><![CDATA[IIF( @ROWNUM < 91, 0,
-
-CASE( GETVALUE(@THIS, -1)
-    , {T1/40} > 0.08, 0.5
-    , {T1/40} < 0.02, 0
-)
-
-)]]></derivedColumn>
 				<derivedColumn name="SV/60"><![CDATA[MOVINGAVG(@{S_VALUE}, 60)]]></derivedColumn>
 				<derivedColumn name="SLOPE/60"><![CDATA[IIF( @ROWNUM < 60, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 60) * 100, 4) )]]></derivedColumn>
 				<derivedColumn name="AVG/60"><![CDATA[IIF( @ROWNUM < 61, 1, MOVINGAVG(@{SLOPE/60}, 5) )]]></derivedColumn>
-				<derivedColumn name="HL/60"><![CDATA[IIF( @ROWNUM < 61, 1, {SLOPE/40} / IIF( {AVG/40}[-1] = 0, 1, {AVG/40}[-1] ) )]]></derivedColumn>
-				<derivedColumn name="T1/60"><![CDATA[IIF( @ROWNUM < 71, 0, LINEARSLOPE(@{DX}, @{SLOPE/60}, 5) )]]></derivedColumn>
-				<derivedColumn name="UD/60"><![CDATA[IIF( @ROWNUM < 71, 0,
-
-CASE( GETVALUE(@THIS, -1)
-    , {T1/60} > 0.08, 1.0
-    , {T1/60} < 0.02, 0
-)
-
-)]]></derivedColumn>
 				<derivedColumn name="SV/80"><![CDATA[MOVINGAVG(@{S_VALUE}, 80)]]></derivedColumn>
 				<derivedColumn name="SLOPE/80"><![CDATA[IIF( @ROWNUM < 81, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 80) * 100, 4) )]]></derivedColumn>
 				<derivedColumn name="AVG/80"><![CDATA[IIF( @ROWNUM < 91, 1, MOVINGAVG(@{SLOPE/80}, 5) )]]></derivedColumn>
-				<derivedColumn name="HL/80"><![CDATA[IIF( @ROWNUM < 92, 1, {SLOPE/80} / IIF( {AVG/80}[-1] = 0, 1, {AVG/80}[-1] ) )]]></derivedColumn>
-				<derivedColumn name="T1/80"><![CDATA[IIF( @ROWNUM < 91, 0, LINEARSLOPE(@{DX}, @{SLOPE/80}, 7) )]]></derivedColumn>
-				<derivedColumn name="UD/80"><![CDATA[IIF( @ROWNUM < 91, 0,
-
-CASE( GETVALUE(@THIS, -1)
-    , {T1/80} > 0.06, 2
-    , {T1/80} < 0.02, 0
-)
-
+				<derivedColumn name="UD/REF"><![CDATA[IIF( @ROWNUM < 91, 0,
+  CASE( -1
+    , {AVG/80}[-1] < 0 AND {AVG/80}[-1] * 1.05 < {SLOPE/80}, 1
+    , {AVG/80}[-1] >= 0 AND {AVG/80}[-1] * 0.95 < {SLOPE/80}, 1
+  )
 )]]></derivedColumn>
 				<derivedColumn name="PT/20"><![CDATA[IIF( @ROWNUM < 91, 0,
    CASE( 0
-      , {UD/80}[-1] = 0 AND {UD/80} = 2
-        AND MOVINGSUM(@{UD/80}, 11) = 2, 6
-        
       , {SLOPE/20}[-3] >= {SLOPE/20}[-2] AND {SLOPE/20}[-2] >= {SLOPE/20}[-1]
         AND {SLOPE/20}[-1] <= {SLOPE/20}
         AND {SLOPE/20} < 5, 3
         
       , {SLOPE/20}[-3] <= {SLOPE/20}[-2] AND {SLOPE/20}[-2] <= {SLOPE/20}[-1]
         AND {SLOPE/20}[-1] >= {SLOPE/20}
-        AND {SLOPE/20} > 0, 5
+        AND {SLOPE/20} > 0, 4
    )
 )]]></derivedColumn>
+				<derivedColumn name="PT/ADJ"><![CDATA[IIF( {PT/20} = 3 AND {UD/REF} > 0 AND {SLOPE/20} < 2, 1, {PT/20} )]]></derivedColumn>
 			</addColumns>
 		</processingElem>
 
@@ -263,7 +239,12 @@ CASE( GETVALUE(@THIS, -1)
 				<position x="495" y="360" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[IIF( @ROWNUM > @DATASIZE - 10 AND {SUGGEST} = 6 AND {B_PR} > 0, 1, 0 )]]></condition>
+			<condition><![CDATA[IIF( @ROWNUM < @DATASIZE - 5, 0,
+  CASE(0
+    , {SUGGEST} = 1 AND {B_PR} > 0, 1
+    , {PT/20} = 3 AND {B_PR} > 0, 1
+    )
+)]]></condition>
 		</processingElem>
 	</dataProcessing>
 
@@ -283,7 +264,7 @@ CASE( GETVALUE(@THIS, -1)
 			<remainFinFile><![CDATA[false]]></remainFinFile>
 			<finFile><![CDATA[]]></finFile>
 			<ui>
-				<position x="631" y="360" />
+				<position x="631" y="364" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>

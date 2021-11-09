@@ -16,6 +16,9 @@
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[13.124.29.70]]></param>
 		</macro>
+		<macro name="yyyymmdd" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(NOW(), 'yyyyMMdd')]]></param>
+		</macro>
 	</macros>
 
 
@@ -65,6 +68,17 @@
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
+
+		<inputNode name="PREVIOUS" type="FILE">
+			<path><![CDATA[$(OUT_PATH)_BP_WEEK.txt]]></path>
+			<columns>
+				<column name="P_CODE" type="string" />
+			</columns>
+			<ui>
+				<position x="110" y="222" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
 	</inputNodes>
 
 
@@ -78,6 +92,28 @@
 			</ui>
 			<columns><![CDATA[P_CODE]]></columns>
 		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[DistinctData_1]]></dataSource>
+				<dataSource alias="A2"><![CDATA[PREVIOUS]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[MergeData_1]]></dataGroupName>
+			<ui>
+				<position x="240" y="223" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>anti</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<equalKeys>
+				<equalKey source="DistinctData_1"><![CDATA[P_CODE]]></equalKey>
+				<equalKey source="PREVIOUS"><![CDATA[P_CODE]]></equalKey>
+			</equalKeys>
+			<selectColumns>
+				<columns source="DistinctData_1"><![CDATA[P_CODE]]></columns>
+				<columns source="PREVIOUS"><![CDATA[]]></columns>
+			</selectColumns>
+		</processingElem>
 	</dataProcessing>
 
 	<dataLoadings>
@@ -87,6 +123,26 @@
 			<finFile><![CDATA[]]></finFile>
 			<ui>
 				<position x="381" y="95" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="SAVE_NEWS" source="MergeData_1" type="file">
+			<filePath><![CDATA[$(OUT_PATH)_BP_DIFF.txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="384" y="223" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="SAVE_NEWS_2" source="MergeData_1" type="file">
+			<filePath><![CDATA[$(OUT_PATH)_BP_DIFF_$(yyyymmdd).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="382" y="322" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</dataLoading>
