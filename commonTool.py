@@ -31,6 +31,7 @@ def yyyymm():
     now = dt.datetime.now()
     return now.strftime('%Y%m')
 
+
 def mkdir(dirPath):
     if( not os.path.exists(dirPath) ):
         os.mkdir(dirPath)

@@ -3,15 +3,17 @@
 # config.py
 
 # True이며, 기업 코드 및 업종별 크롤링 데이터 정리까지 모든 작업을 수행함.
-doingAllJob = False
+doingAllJob = True # False
 
 # 네이버 API를 호출하기 위한 암호화 파라미터
 # 만료 기간이 지나면 네이버에서 확인 후 수정해야 함.
-encParamKey = 'dllGejUrZmdPRkVOSjFiSjVIOXZDUT09'
+encParamKey = 'aXE2cWNHMUZkbGl2dE13UWErOXVadz09'
 
-runServerType = 1 # 1: window, 2: mac, 3: linux
+runServerType = 3 # 1: window, 2: mac, 3: linux
 
 print('running on', ['Windows', 'OS X', 'Linux'][runServerType - 1])
+
+dataOnServerIP = '127.0.0.1'
 
 
 # 기본 폴더 위치
@@ -35,7 +37,7 @@ crawlegoScriptPath = dirBase + 'script\\'
 
 
 if runServerType == 3:
-    dirBase = '/home/ec2-user/krx/'
+    dirBase = '/home/ec3-user/krx/'
     resourceDir = dirBase + 'resource/'
     outputRawPath = dirBase + 'output/'
     temporaryPath = dirBase + 'intermediate/'

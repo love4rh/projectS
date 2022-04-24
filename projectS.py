@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # coding: utf-8
 
 # In[ ]:
@@ -6,7 +6,7 @@
 
 #-*- coding:utf-8 -*-
 from commonTool import *
-from config import *
+
 
 # Parameter 설정
 set_enc_param(encParamKey)
@@ -17,18 +17,6 @@ print('codeFile', codePathFile)
 outputDirPath = outputRawPath + today() + os.path.sep
 
 print('outputFolder', outputDirPath, flush=True)
-
-
-def runDashScript(scriptPathName, parameter):
-    optionStr = ''
-    for key in parameter:
-        optionStr += ' ' + key + '=' + parameter[key]
-        
-    cmdStr = 'java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName + optionStr
-    print(cmdStr, flush=True)
-    retCode = os.system(cmdStr)
-    
-    return retCode
 
 
 # 데이터명 분석을 위한 데이터 페치
@@ -193,8 +181,11 @@ end(jobName)
 # 0-2. 회사 정보 DB 로딩
 jobName = 'upload company info to db'
 begin(jobName)
-parameter = { 'DATAPATH': codePathFile, 'DO_SERVER': '13.124.29.70' }
+
+scriptPathName = crawlegoScriptPath + 'COMPANY.xml'
+parameter = { 'DATAPATH': codePathFile, 'DO_SERVER': dataOnServerIP }
 retCode = runDashScript(scriptPathName, parameter)
+
 end(jobName)
 
 
@@ -516,19 +507,9 @@ scriptPathName = crawlegoScriptPath + 'BS-CF-PL.xml'
 for rType in ['annual', 'quarter']:
     jobName = 'upload ' + rType + ' to db'
     begin(jobName)
-    parameter = { 'IN_PATH': outputDirPath, 'PERIOD': rType, 'DO_SERVER': '13.124.29.70' }
+    parameter = { 'IN_PATH': outputDirPath, 'PERIOD': rType, 'DO_SERVER': dataOnServerIP }
     retCode = runDashScript(scriptPathName, parameter)
     end(jobName)
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
 
 
 
