@@ -8,13 +8,13 @@
 
 	<macros>
 		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210905]]></param>
+			<param name="value"><![CDATA[20220421]]></param>
 		</macro>
 		<macro name="BUY_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210906]]></param>
+			<param name="value"><![CDATA[20220421]]></param>
 		</macro>
 		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20211014]]></param>
+			<param name="value"><![CDATA[20220422]]></param>
 		</macro>
 		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[10000000]]></param>
@@ -23,10 +23,10 @@
 			<param name="value"><![CDATA[ANNUAL]]></param>
 		</macro>
 		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
+			<param name="value"><![CDATA[C:\Workspace\krx\output\index\]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\logicResult\]]></param>
+			<param name="value"><![CDATA[C:\Workspace\krx\output\]]></param>
 		</macro>
 		<macro name="TOP_N" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[20]]></param>
@@ -185,7 +185,7 @@
 				<position x="385" y="81" />
 				<description><![CDATA[]]></description>
 			</ui>
-			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {당기순이익} > 0 AND {부채비율} <= 150 AND {PCR} > 0]]></condition>
+			<condition><![CDATA[0.02 < {PBR} AND {PBR} < 4 AND {당기순이익_지배} > 0 AND {부채비율} <= 150 AND {PCR} > 0]]></condition>
 		</processingElem>
 
 		<processingElem type="rank">

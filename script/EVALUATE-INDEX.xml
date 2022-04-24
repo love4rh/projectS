@@ -8,16 +8,16 @@
 
 	<macros>
 		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\]]></param>
+			<param name="value"><![CDATA[C:\Workspace\krx\output\]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
+			<param name="value"><![CDATA[C:\Workspace\krx\output\index\]]></param>
 		</macro>
 		<macro name="BASIS_DATE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20210330]]></param>
+			<param name="value"><![CDATA[20220422]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[13.124.29.70]]></param>
+			<param name="value"><![CDATA[52.78.231.221]]></param>
 		</macro>
 		<macro name="BS_COND3" class="com.lge.crawlego.macro.ExpressionValue">
 			<param name="expression"><![CDATA[DATETOSTR(STRTODATE('$(BASIS_DATE)', 'yyyyMMdd') - 50, 'yyyy/MM')]]></param>
@@ -35,7 +35,7 @@
 			<param name="expression"><![CDATA[SUBSTR('$(BASIS_DATE)', 1, 6)]]></param>
 		</macro>
 		<macro name="PERIOD" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[QUARTER]]></param>
+			<param name="value"><![CDATA[ANNUAL]]></param>
 		</macro>
 	</macros>
 
