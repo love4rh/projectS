@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="DATA_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\variance\result\]]></param>
+		</macro>
+		<macro name="TARGET_DAY" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2022-11-10]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="STAT" type="FILE">
+			<path><![CDATA[$(DATA_PATH)varianceStat.pmd]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
+			<columns>
+				<column name="PCODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="최근가" type="real" />
+				<column name="AMOUNT" type="real" />
+				<column name="PROFIT" type="real" />
+			</columns>
+			<ui>
+				<position x="130" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="RESULT" type="FILE">
+			<path><![CDATA[$(DATA_PATH)varianceResult.pmd]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
+			<columns>
+				<column name="PCODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="최근가" type="real" />
+				<column name="날짜" type="string" />
+				<column name="BOX_IDX" type="integer" />
+				<column name="SP" type="real" />
+				<column name="EP" type="real" />
+				<column name="LP" type="real" />
+				<column name="HP" type="real" />
+				<column name="MEAN" type="real" />
+				<column name="SV5_LOW" type="real" />
+				<column name="GUESS_BP" type="real" />
+				<column name="RATIO" type="real" />
+				<column name="UPFLAG" type="real" />
+				<column name="DAYS" type="real" />
+				<column name="RETAIN" type="real" />
+				<column name="PL" type="real" />
+			</columns>
+			<ui>
+				<position x="130" y="334" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[STAT]]></dataSource>
+			<dataGroupName><![CDATA[ADD_DF]]></dataGroupName>
+			<ui>
+				<position x="328" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="PPRATIO"><![CDATA[{PROFIT} / {최근가}]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[RESULT]]></dataSource>
+			<dataGroupName><![CDATA[SUGGEST]]></dataGroupName>
+			<ui>
+				<position x="328" y="334" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{날짜} = '$(TARGET_DAY)' AND {GUESS_BP} > 0 AND {UPFLAG} > 0 AND {RETAIN} = 0]]></condition>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[STAT_SUMMARY]]></dataGroupName>
+			<ui>
+				<position x="526" y="97" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[]]></groupingColumns>
+			<generate>
+				<column type="sum" delimiter=";"><![CDATA[PROFIT]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_DF]]></dataSource>
+			<dataGroupName><![CDATA[GOOD_RATE]]></dataGroupName>
+			<ui>
+				<position x="328" y="208" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{PPRATIO} >= 0.04]]></condition>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[SUGGEST]]></dataSource>
+				<dataSource alias="A2"><![CDATA[GOOD_RATE]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[CONSIDER_RATE]]></dataGroupName>
+			<ui>
+				<position x="526" y="334" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<joinKeys>
+				<joinKey source="GOOD_RATE"><![CDATA[PCODE]]></joinKey>
+				<joinKey source="SUGGEST"><![CDATA[PCODE]]></joinKey>
+			</joinKeys>
+			<selectColumns>
+				<columns source="GOOD_RATE"><![CDATA[PPRATIO]]></columns>
+				<columns source="SUGGEST"><![CDATA[*]]></columns>
+			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[CONSIDER_RATE]]></dataSource>
+			<dataGroupName><![CDATA[LAST_SUGGEST]]></dataGroupName>
+			<ui>
+				<position x="684" y="334" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="descending">PPRATIO</column>
+			</sortColumns>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>

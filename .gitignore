@@ -137,4 +137,4 @@ jar/
 intermediate/
 
 *.xlsx
-
+Crawlego*.log*

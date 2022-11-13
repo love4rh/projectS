@@ -8,10 +8,10 @@
 
 	<macros>
 		<macro name="DATAFILE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[D:\work\jupyter\krx\resource\companyCodes.txt]]></param>
+			<param name="value"><![CDATA[C:\Workspace\krx\resource\companyCodes.txt]]></param>
 		</macro>
 		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[13.124.29.70]]></param>
+			<param name="value"><![CDATA[52.78.231.221]]></param>
 		</macro>
 	</macros>
 
@@ -20,6 +20,9 @@
 	<inputNodes>
 		<inputNode name="COMPANY" type="FILE">
 			<path><![CDATA[$(DATAFILE)]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
 			<columns>
 				<column name="P_CODE" type="string" />
 				<column name="표준코드" type="string" />
@@ -111,14 +114,17 @@
 			</ui>
 			<joinMethod>anti</joinMethod>
 			<addKeyColumn>false</addKeyColumn>
-			<equalKeys>
-				<equalKey source="COMPANY"><![CDATA[P_CODE]]></equalKey>
-				<equalKey source="OLD_COMPANY"><![CDATA[P_CODE]]></equalKey>
-			</equalKeys>
+			<joinKeys>
+				<joinKey source="COMPANY"><![CDATA[P_CODE]]></joinKey>
+				<joinKey source="OLD_COMPANY"><![CDATA[P_CODE]]></joinKey>
+			</joinKeys>
 			<selectColumns>
 				<columns source="COMPANY"><![CDATA[]]></columns>
 				<columns source="OLD_COMPANY"><![CDATA[*]]></columns>
 			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
 		</processingElem>
 
 		<processingElem type="derived">
@@ -144,6 +150,9 @@
 				<description><![CDATA[]]></description>
 			</ui>
 			<appendMethod>first</appendMethod>
+			<!-- includeSource - 0: no source column, 1: numeric source column, 2: source name column -->
+			<includeSource>0</includeSource>
+			<sourceColumnName><![CDATA[]]></sourceColumnName>
 		</processingElem>
 	</dataProcessing>
 

@@ -2,14 +2,17 @@
 
 # config.py
 
+import os
+
+
 # True이며, 기업 코드 및 업종별 크롤링 데이터 정리까지 모든 작업을 수행함.
 doingAllJob = True # False
 
 # 네이버 API를 호출하기 위한 암호화 파라미터
 # 만료 기간이 지나면 네이버에서 확인 후 수정해야 함.
-encParamKey = 'aXE2cWNHMUZkbGl2dE13UWErOXVadz09'
+encParamKey = 'Z1o1ZU5vZVI3UVZMSVRqYU1laUpjdz09'
 
-runServerType = 3 # 1: window, 2: mac, 3: linux
+runServerType = 1 if os.name == 'nt' else 3 # 3 # 1: window, 2: mac, 3: linux
 
 print('running on', ['Windows', 'OS X', 'Linux'][runServerType - 1])
 
@@ -17,7 +20,7 @@ dataOnServerIP = '127.0.0.1'
 
 
 # 기본 폴더 위치
-dirBase = 'D:\\work\\jupyter\\krx\\' # for Window
+dirBase = 'C:\\Workspace\\krx\\' # for Window
 resourceDir = dirBase + 'resource\\'
 
 # 재무제표 크롤링 데이터 저장 위치

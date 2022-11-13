@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="PCODE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[000270]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\variance\data\]]></param>
+		</macro>
+		<macro name="START" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20220101]]></param>
+		</macro>
+		<macro name="END" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(NOW(), 'yyyyMMdd')]]></param>
+		</macro>
+		<macro name="ALPHA" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[0.011]]></param>
+		</macro>
+		<macro name="N" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[5]]></param>
+		</macro>
+	</macros>
+
+
+	<dataGroups name="ORG_DATA">
+		<fetchMethod name="ORG_DATA">
+			<type>HTTP</type>
+			<path><![CDATA[https://api.finance.naver.com/siseJson.naver?symbol=$(PCODE)&requestType=1&startTime=$(START)&endTime=$(END)&timeframe=day]]></path>
+			<parsingType>PLAIN</parsingType>
+			<ignoreError>false</ignoreError>
+			<params>
+				<param name="delimiter"><![CDATA[Comma(,)]]></param>
+				<param name="encoding"><![CDATA[UTF-8]]></param>
+				<param name="nameAtHead"><![CDATA[true]]></param>
+			</params>
+			<!-- You can add HTTP header like followings.
+			<header>
+				<param name="x-header-name"><![CDATA[header value]]></param>
+				...
+			</header>
+			-->
+			<!-- You can add HTTP body like followings.
+			<bodyData><![CDATA[body data]]></bodyData>
+			-->
+			<header>
+			</header>
+			<bodyData><![CDATA[]]></bodyData>
+			<ui>
+				<position x="67" y="180" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</fetchMethod>
+
+		<runType>auto</runType>
+
+		<dataGroup name="PRICE">
+			<description><![CDATA[]]></description>
+			<path>/vroot</path>
+			<parent />
+			<propValues>
+				<value name="T_날짜" type="string">
+					<path>~/1</path>
+				</value>
+				<value name="시가" type="real">
+					<path>~/2</path>
+				</value>
+				<value name="고가" type="real">
+					<path>~/3</path>
+				</value>
+				<value name="저가" type="real">
+					<path>~/4</path>
+				</value>
+				<value name="종가" type="real">
+					<path>~/5</path>
+				</value>
+				<value name="거래량" type="real">
+					<path>~/6</path>
+				</value>
+				<value name="T_외국인소진율" type="string">
+					<path>~/7</path>
+				</value>
+			</propValues>
+			<ui>
+				<position x="203" y="179" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataGroup>
+	</dataGroups>
+
+
+	<dataProcessing>
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[VALID_ONLY]]></dataSource>
+			<dataGroupName><![CDATA[DF_CLEAN]]></dataGroupName>
+			<ui>
+				<position x="329" y="179" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="날짜"><![CDATA[STRTODATE(SUBSTR({T_날짜}, 3, 10), "yyyyMMdd")]]></derivedColumn>
+				<derivedColumn name="외국인소진율"><![CDATA[REAL(SUBSTR({T_외국인소진율}, 1, LEN({T_외국인소진율}) - 1), 0) / 100]]></derivedColumn>
+				<derivedColumn name="WEEKNO"><![CDATA[GETWEEKOFYEAR({날짜})]]></derivedColumn>
+				<derivedColumn name="YYYYMMDD"><![CDATA[DATETOSTR({날짜}, 'yyyy-MM-dd')]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[PRICE]]></dataSource>
+			<dataGroupName><![CDATA[VALID_ONLY]]></dataGroupName>
+			<ui>
+				<position x="203" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[NOT ISNULL({시가})]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[DF_CLEAN]]></dataSource>
+			<dataGroupName><![CDATA[COL_CLEAN]]></dataGroupName>
+			<ui>
+				<position x="329" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column toName="날짜">YYYYMMDD</column>
+				<column>WEEKNO</column>
+				<column toName="SP">시가</column>
+				<column toName="HP">고가</column>
+				<column toName="LP">저가</column>
+				<column toName="EP">종가</column>
+				<column toName="TA">거래량</column>
+				<column toName="FR">외국인소진율</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[COL_CLEAN]]></dataSource>
+			<dataGroupName><![CDATA[ADD_INDEX]]></dataGroupName>
+			<ui>
+				<position x="461" y="313" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="PCODE"><![CDATA['$(PCODE)']]></derivedColumn>
+				<derivedColumn name="MV_LOW"><![CDATA[INT(MVAVG(@{LP}, $(N), 0), 0)]]></derivedColumn>
+				<derivedColumn name="MV_HIGH"><![CDATA[INT(MVAVG(@{HP}, $(N), 0), 0)]]></derivedColumn>
+				<derivedColumn name="MEAN"><![CDATA[INT(({HP} + {LP}) / 2, 0)]]></derivedColumn>
+				<derivedColumn name="SV5_LOW"><![CDATA[INT(SQRT(MVVAR(@{LP}, $(N))), 0)]]></derivedColumn>
+				<derivedColumn name="SV5_AVG"><![CDATA[INT(SQRT(MVVAR(@{MEAN}, $(N))), 0)]]></derivedColumn>
+				<derivedColumn name="SV5_HIGH"><![CDATA[INT(SQRT(MVVAR(@{HP}, $(N))), 0)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[ADD_INDEX]]></dataSource>
+			<dataGroupName><![CDATA[STD_STAT]]></dataGroupName>
+			<ui>
+				<position x="443" y="441" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[PCODE]]></groupingColumns>
+			<generate>
+				<column type="mean" delimiter=";" toName="SV5MEAN"><![CDATA[SV5_LOW]]></column>
+				<column type="std" delimiter=";" toName="SV5STD"><![CDATA[SV5_LOW]]></column>
+			</generate>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE_STD" source="STD_STAT" type="file">
+			<filePath><![CDATA[$(OUT_PATH)totalStd-$(PCODE).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="590" y="444" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="SAVE_DATA" source="ADD_INDEX" type="file">
+			<filePath><![CDATA[$(OUT_PATH)variance-$(PCODE).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="595" y="312" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

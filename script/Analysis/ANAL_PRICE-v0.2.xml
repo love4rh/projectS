@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="PCODE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[100590]]></param>
+		</macro>
+		<macro name="START" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20220101]]></param>
+		</macro>
+		<macro name="END" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(NOW(), 'yyyyMMdd')]]></param>
+		</macro>
+		<macro name="ALPHA" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[0.011]]></param>
+		</macro>
+		<macro name="RP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[0.05]]></param>
+		</macro>
+		<macro name="RL" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[0.05]]></param>
+		</macro>
+		<macro name="N" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[5]]></param>
+		</macro>
+		<macro name="B" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2]]></param>
+		</macro>
+	</macros>
+
+
+	<dataGroups name="ORG_DATA">
+		<fetchMethod name="ORG_DATA">
+			<type>HTTP</type>
+			<path><![CDATA[https://api.finance.naver.com/siseJson.naver?symbol=$(PCODE)&requestType=1&startTime=$(START)&endTime=$(END)&timeframe=day]]></path>
+			<parsingType>PLAIN</parsingType>
+			<ignoreError>false</ignoreError>
+			<params>
+				<param name="delimiter"><![CDATA[Comma(,)]]></param>
+				<param name="encoding"><![CDATA[UTF-8]]></param>
+				<param name="nameAtHead"><![CDATA[true]]></param>
+			</params>
+			<!-- You can add HTTP header like followings.
+			<header>
+				<param name="x-header-name"><![CDATA[header value]]></param>
+				...
+			</header>
+			-->
+			<!-- You can add HTTP body like followings.
+			<bodyData><![CDATA[body data]]></bodyData>
+			-->
+			<header>
+			</header>
+			<bodyData><![CDATA[]]></bodyData>
+			<ui>
+				<position x="67" y="180" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</fetchMethod>
+
+		<runType>auto</runType>
+
+		<dataGroup name="PRICE">
+			<description><![CDATA[]]></description>
+			<path>/vroot</path>
+			<parent />
+			<propValues>
+				<value name="T_날짜" type="string">
+					<path>~/1</path>
+				</value>
+				<value name="시가" type="real">
+					<path>~/2</path>
+				</value>
+				<value name="고가" type="real">
+					<path>~/3</path>
+				</value>
+				<value name="저가" type="real">
+					<path>~/4</path>
+				</value>
+				<value name="종가" type="real">
+					<path>~/5</path>
+				</value>
+				<value name="거래량" type="real">
+					<path>~/6</path>
+				</value>
+				<value name="T_외국인소진율" type="string">
+					<path>~/7</path>
+				</value>
+			</propValues>
+			<ui>
+				<position x="203" y="179" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataGroup>
+	</dataGroups>
+
+
+	<dataProcessing>
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[VALID_ONLY]]></dataSource>
+			<dataGroupName><![CDATA[DF_CLEAN]]></dataGroupName>
+			<ui>
+				<position x="329" y="179" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="날짜"><![CDATA[STRTODATE(SUBSTR({T_날짜}, 3, 10), "yyyyMMdd")]]></derivedColumn>
+				<derivedColumn name="외국인소진율"><![CDATA[REAL(SUBSTR({T_외국인소진율}, 1, LEN({T_외국인소진율}) - 1), 0) / 100]]></derivedColumn>
+				<derivedColumn name="WEEKNO"><![CDATA[GETWEEKOFYEAR({날짜})]]></derivedColumn>
+				<derivedColumn name="YYYYMMDD"><![CDATA[DATETOSTR({날짜}, 'yyyy-MM-dd')]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[PRICE]]></dataSource>
+			<dataGroupName><![CDATA[VALID_ONLY]]></dataGroupName>
+			<ui>
+				<position x="203" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[NOT ISNULL({시가})]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[DF_CLEAN]]></dataSource>
+			<dataGroupName><![CDATA[COL_CLEAN]]></dataGroupName>
+			<ui>
+				<position x="329" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column toName="날짜">YYYYMMDD</column>
+				<column>WEEKNO</column>
+				<column toName="SP">시가</column>
+				<column toName="HP">고가</column>
+				<column toName="LP">저가</column>
+				<column toName="EP">종가</column>
+				<column toName="TA">거래량</column>
+				<column toName="FR">외국인소진율</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[COL_CLEAN]]></dataSource>
+			<dataGroupName><![CDATA[ADD_INDEX]]></dataGroupName>
+			<ui>
+				<position x="458" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="PCODE"><![CDATA['$(PCODE)']]></derivedColumn>
+				<derivedColumn name="MV_LOW"><![CDATA[INT(MVAVG(@{LP}, $(N), 0), 0)]]></derivedColumn>
+				<derivedColumn name="MV_HIGH"><![CDATA[INT(MVAVG(@{HP}, $(N), 0), 0)]]></derivedColumn>
+				<derivedColumn name="MEAN"><![CDATA[INT(({HP} + {LP}) / 2, 0)]]></derivedColumn>
+				<derivedColumn name="SV5_LOW"><![CDATA[INT(SQRT(MVVAR(@{LP}, $(N))), 0)]]></derivedColumn>
+				<derivedColumn name="SV5_AVG"><![CDATA[INT(SQRT(MVVAR(@{MEAN}, $(N))), 0)]]></derivedColumn>
+				<derivedColumn name="SV5_HIGH"><![CDATA[INT(SQRT(MVVAR(@{HP}, $(N))), 0)]]></derivedColumn>
+				<derivedColumn name="BASIS"><![CDATA[116.22919229194864]]></derivedColumn>
+				<derivedColumn name="IN_COUNT"><![CDATA[IIF({SV5_LOW} < {BASIS}, 1, 0)
++ IIF({SV5_HIGH} < {BASIS}, 1, 1)]]></derivedColumn>
+				<derivedColumn name="T_BOX_IDX"><![CDATA[IIF( @ROWNUM < $(N) + 1, A := 0,
+IIF( {IN_COUNT} >= 2
+   , IIF( GETVALUE(@THIS, -1) > 0
+        , GETVALUE(@THIS, -1)
+        , IIF( MVMAX(@THIS, 2, 0) > 0, MVMAX(@THIS, 2, 0), A := A + 1 )
+     )
+   , 0
+))]]></derivedColumn>
+				<derivedColumn name="BOX_IDX"><![CDATA[IIF( @ROWNUM < $(N) + 1 OR @ROWNUM >= @DATASIZE, 0,
+   IIF( {T_BOX_IDX} > 0, {T_BOX_IDX},
+      IIF( {T_BOX_IDX}[-1] = {T_BOX_IDX}[1], {T_BOX_IDX}[-1], 0 )
+   )
+)]]></derivedColumn>
+				<derivedColumn name="ELEM_IDX"><![CDATA[IIF( @ROWNUM < $(N) + 1 OR {BOX_IDX} = 0, B := 0,
+   IIF( {BOX_IDX}[-1] = {BOX_IDX}, B := B + 1, B := 1 )
+)]]></derivedColumn>
+				<derivedColumn name="MV5-P"><![CDATA[INT((MVSUM(@{MEAN}, 10, 1) - MVSUM(@{MEAN}, 5, 1)) / 5, 0)]]></derivedColumn>
+				<derivedColumn name="MV5-C"><![CDATA[INT(MVAVG(@{MEAN}, 5, 1), 0)]]></derivedColumn>
+				<derivedColumn name="RATIO"><![CDATA[{MEAN} / {MV5-P}]]></derivedColumn>
+				<derivedColumn name="GUESS_BP"><![CDATA[IIF( {ELEM_IDX} < $(B), 0,
+   IIF( {ELEM_IDX} >= $(B) AND MVMAX(@{RATIO}, {ELEM_IDX}) <= 1.05, INT(MVAVG(@{LP}, 5, 0), 0), GETVALUE(@THIS, -1) )
+)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[ADD_INDEX]]></dataSource>
+			<dataGroupName><![CDATA[ITEM_GUESS]]></dataGroupName>
+			<ui>
+				<position x="581" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>날짜</column>
+				<column>BOX_IDX</column>
+				<column>ELEM_IDX</column>
+				<column>SP</column>
+				<column>EP</column>
+				<column>LP</column>
+				<column>HP</column>
+				<column>MEAN</column>
+				<column>SV5_LOW</column>
+				<column>GUESS_BP</column>
+				<column>RATIO</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[PLAT_LINE]]></dataSource>
+			<dataGroupName><![CDATA[BOX_STAT]]></dataGroupName>
+			<ui>
+				<position x="581" y="179" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[BOX_IDX]]></groupingColumns>
+			<generate>
+				<column type="mean" delimiter=";" toName="T_MEAN"><![CDATA[MEAN]]></column>
+				<column type="std" delimiter=";" toName="T_STD"><![CDATA[MEAN]]></column>
+				<column type="count" delimiter=";" toName="COUNT"><![CDATA[WEEKNO]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[BOX_STAT]]></dataSource>
+			<dataGroupName><![CDATA[BOX_SHIFT]]></dataGroupName>
+			<ui>
+				<position x="707" y="179" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="SHIFT_IDX"><![CDATA[{BOX_IDX} + 1]]></derivedColumn>
+				<derivedColumn name="PBOX_AVG"><![CDATA[INT({T_MEAN}, 0)]]></derivedColumn>
+				<derivedColumn name="PBOX_STD"><![CDATA[INT({T_STD}, 0)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[ADD_INDEX]]></dataSource>
+			<dataGroupName><![CDATA[PLAT_LINE]]></dataGroupName>
+			<ui>
+				<position x="455" y="179" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{BOX_IDX} > 0]]></condition>
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[ITEM_GUESS]]></dataSource>
+				<dataSource alias="A2"><![CDATA[BOX_SHIFT]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[ADD_PSTAT]]></dataGroupName>
+			<ui>
+				<position x="707" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>outer</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<joinKeys>
+				<joinKey source="BOX_SHIFT"><![CDATA[SHIFT_IDX]]></joinKey>
+				<joinKey source="ITEM_GUESS"><![CDATA[BOX_IDX]]></joinKey>
+			</joinKeys>
+			<selectColumns>
+				<columns source="BOX_SHIFT"><![CDATA[PBOX_AVG,PBOX_STD]]></columns>
+				<columns source="ITEM_GUESS"><![CDATA[*]]></columns>
+			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
+		</processingElem>
+
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[ADD_PSTAT]]></dataSource>
+			<dataGroupName><![CDATA[ST_TIME]]></dataGroupName>
+			<ui>
+				<position x="830" y="307" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">날짜</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ITEM_GUESS]]></dataSource>
+			<dataGroupName><![CDATA[BS_SIM]]></dataGroupName>
+			<ui>
+				<position x="590" y="441" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="UPFLAG"><![CDATA[IIF( (MVSUM(@{MEAN}, 10, 1) - MVSUM(@{MEAN}, 5, 1)) / 5 <= MVAVG(@{MEAN}, 5, 1), 1, 0 )]]></derivedColumn>
+				<derivedColumn name="T_RETAIN"><![CDATA[CASE( 0
+  , @ROWNUM < $(N) + 1, 0
+  , GETVALUE(@THIS, -1) < 0, 0
+  , GETVALUE(@THIS, -1) > 0 AND GETVALUE(@THIS, -1) * (1 + $(RP)) <= {MEAN}, -1
+  , GETVALUE(@THIS, -1) > 0 AND ISBETWEEN(GETVALUE(@THIS, -1) * (1 - $(RL)), {LP}, {HP}), -2
+  , GETVALUE(@THIS, -1) > 0, GETVALUE(@THIS, -1)
+  , {ELEM_IDX} > $(B) AND {UPFLAG} > 0 AND ISBETWEEN({GUESS_BP}[-1], {LP}, {HP}), {GUESS_BP}[-1]
+)]]></derivedColumn>
+				<derivedColumn name="DAYS"><![CDATA[IIF( {T_RETAIN} <> 0, GETVALUE(@THIS, -1) + 1, 0 )]]></derivedColumn>
+				<derivedColumn name="RETAIN"><![CDATA[IIF( {DAYS}[-1] = 15 AND {T_RETAIN}[-1] > 0, -3,
+  IIF( {DAYS}[-1] > 15, 0, {T_RETAIN} )
+)]]></derivedColumn>
+				<derivedColumn name="PL"><![CDATA[CASE( 0
+  , @ROWNUM < $(N) + 1, 0
+  , {RETAIN} = -1, {MEAN} - {RETAIN}[-1]
+  , {RETAIN} = -2, {MEAN} - {RETAIN}[-1]
+  , {RETAIN} = -3, {MEAN} - {RETAIN}[-1]
+)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[BS_SIM]]></dataSource>
+			<dataGroupName><![CDATA[PROFIT_SUM]]></dataGroupName>
+			<ui>
+				<position x="820" y="450" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[]]></groupingColumns>
+			<generate>
+				<column type="sum" delimiter=";" toName="PROFIT"><![CDATA[PL]]></column>
+			</generate>
+		</processingElem>
+
+		<processingElem type="groupingValue">
+			<dataSource alias="A1"><![CDATA[ADD_INDEX]]></dataSource>
+			<dataGroupName><![CDATA[STD_STAT]]></dataGroupName>
+			<ui>
+				<position x="305" y="451" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<groupingColumns><![CDATA[PCODE]]></groupingColumns>
+			<generate>
+				<column type="mean" delimiter=";" toName="SV5MEAN"><![CDATA[SV5_LOW]]></column>
+				<column type="std" delimiter=";" toName="SV5STD"><![CDATA[SV5_LOW]]></column>
+			</generate>
+		</processingElem>
+	</dataProcessing>
+
+	<extension>
+		<chartNode name="RunChart_1" source="ADD_INDEX" type="runChart">
+			<plotColumns>HP, LP, MEAN</plotColumns>
+			<grouping>false</grouping>
+			<timeVariable>[Data Index]</timeVariable>
+			<ui>
+				<position x="449" y="489" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</chartNode>
+
+	</extension>
+</crawlegoProject>

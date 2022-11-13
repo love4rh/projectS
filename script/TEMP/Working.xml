@@ -6,26 +6,11 @@
 		</params>
 	</settings>
 
-	<macros>
-		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[C:\Workspace\krx\output\2022-04-06\]]></param>
-		</macro>
-		<macro name="PERIOD" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[annual]]></param>
-		</macro>
-		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[52.78.231.221]]></param>
-		</macro>
-		<macro name="DO_TABLE" class="com.lge.crawlego.macro.ExpressionValue">
-			<param name="expression"><![CDATA[IIF('$(PERIOD)' = 'annual', 'ANNUAL_BSCFPL', 'QUARTER_BSCFPL')]]></param>
-		</macro>
-	</macros>
-
 
 
 	<inputNodes>
-		<inputNode name="99-BS" type="FILE">
-			<path><![CDATA[$(IN_PATH)B99.$(PERIOD)BS.txt]]></path>
+		<inputNode name="B99.BS" type="FILE">
+			<path><![CDATA[C:\Workspace\krx\output\2022-04-06\B99.annualBS.txt]]></path>
 			<params>
 				<param name="fetchType"><![CDATA[LOCAL]]></param>
 			</params>
@@ -285,13 +270,13 @@
 				<column name="우선주" type="real" />
 			</columns>
 			<ui>
-				<position x="90" y="71" />
+				<position x="141" y="97" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
 
-		<inputNode name="99-CF" type="FILE">
-			<path><![CDATA[$(IN_PATH)B99.$(PERIOD)CF.txt]]></path>
+		<inputNode name="B99.CF" type="FILE">
+			<path><![CDATA[C:\Workspace\krx\output\2022-04-06\B99.annualCF.txt]]></path>
 			<params>
 				<param name="fetchType"><![CDATA[LOCAL]]></param>
 			</params>
@@ -612,13 +597,13 @@
 				<column name="기말현금및현금성자산" type="real" />
 			</columns>
 			<ui>
-				<position x="90" y="178" />
+				<position x="136" y="209" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
 
-		<inputNode name="99-PL" type="FILE">
-			<path><![CDATA[$(IN_PATH)B99.$(PERIOD)PL.txt]]></path>
+		<inputNode name="B99.PL" type="FILE">
+			<path><![CDATA[C:\Workspace\krx\output\2022-04-06\B99.annualPL.txt]]></path>
 			<params>
 				<param name="fetchType"><![CDATA[LOCAL]]></param>
 			</params>
@@ -871,13 +856,13 @@
 				<column name="(지배주주지분)희석주당순이익" type="real" />
 			</columns>
 			<ui>
-				<position x="90" y="282" />
+				<position x="137" y="323" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
 
-		<inputNode name="99-HTML" type="FILE">
-			<path><![CDATA[$(IN_PATH)B99.$(PERIOD)HTML.txt]]></path>
+		<inputNode name="B99.HTML" type="FILE">
+			<path><![CDATA[C:\Workspace\krx\output\2022-04-06\B99.annualHTML.txt]]></path>
 			<params>
 				<param name="fetchType"><![CDATA[LOCAL]]></param>
 			</params>
@@ -919,455 +904,10 @@
 				<column name="발행주식수(보통주)" type="real" />
 			</columns>
 			<ui>
-				<position x="90" y="434" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</inputNode>
-
-		<inputNode name="BSCFPL_TABLE" type="dataOn">
-			<query><![CDATA[SELECT * FROM $(DO_TABLE)]]></query>
-			<params>
-				<param name="collection"><![CDATA[KRX]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<columns>
-				<column name="P_CODE" type="string" />
-				<column name="TERM" type="string" />
-				<column name="자산총계" type="real" />
-				<column name="유동자산" type="real" />
-				<column name="현금및현금성자산" type="real" />
-				<column name="재고자산" type="real" />
-				<column name="비유동자산" type="real" />
-				<column name="유형자산" type="real" />
-				<column name="무형자산" type="real" />
-				<column name="투자부동산" type="real" />
-				<column name="투자자산" type="real" />
-				<column name="순자산" type="real" />
-				<column name="부채총계" type="real" />
-				<column name="유동부채" type="real" />
-				<column name="매입채무및기타채무" type="real" />
-				<column name="이자발생부채" type="real" />
-				<column name="순부채" type="real" />
-				<column name="CAPEX" type="real" />
-				<column name="자본총계" type="real" />
-				<column name="지배주주지분" type="real" />
-				<column name="자본금" type="real" />
-				<column name="자본잉여금" type="real" />
-				<column name="당기순이익_지배" type="real" />
-				<column name="당기순이익_비지배" type="real" />
-				<column name="비지배주주지분" type="real" />
-				<column name="수권주식수" type="real" />
-				<column name="주당금액" type="real" />
-				<column name="발행주식수" type="real" />
-				<column name="보통주" type="real" />
-				<column name="매출액" type="real" />
-				<column name="매출원가" type="real" />
-				<column name="매출총이익" type="real" />
-				<column name="영업이익" type="real" />
-				<column name="당기순이익" type="real" />
-				<column name="판매비와관리비" type="real" />
-				<column name="감가상각비" type="real" />
-				<column name="법인세비용차감전계속사업이익" type="real" />
-				<column name="법인세비용" type="real" />
-				<column name="기타포괄이익" type="real" />
-				<column name="총포괄이익" type="real" />
-				<column name="주당순이익" type="real" />
-				<column name="주당순이익_지배" type="real" />
-				<column name="영업활동으로인한현금흐름" type="real" />
-				<column name="영업에서창출된현금흐름" type="real" />
-				<column name="배당금수입" type="real" />
-				<column name="배당금지급" type="real" />
-				<column name="법인세납부" type="real" />
-				<column name="투자활동으로인한현금흐름" type="real" />
-				<column name="투자활동현금유입액" type="real" />
-				<column name="투자활동현금유출액" type="real" />
-				<column name="재무활동으로인한현금흐름" type="real" />
-				<column name="재무활동현금유입액" type="real" />
-				<column name="재무활동현금유출액" type="real" />
-				<column name="현금및현금성자산의증가" type="real" />
-				<column name="FCF" type="real" />
-				<column name="ROA" type="real" />
-				<column name="ROE" type="real" />
-				<column name="부채비율" type="real" />
-				<column name="세전계속사업이익" type="real" />
-				<column name="순이익률" type="real" />
-				<column name="영업이익률" type="real" />
-				<column name="자본유보율" type="real" />
-				<column name="현금배당성향" type="real" />
-				<column name="현금배당수익률" type="real" />
-			</columns>
-			<ui>
-				<position x="799" y="156" />
+				<position x="137" y="445" />
 				<description><![CDATA[]]></description>
 			</ui>
 		</inputNode>
 	</inputNodes>
 
-
-	<dataProcessing>
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[99-BS]]></dataSource>
-			<dataGroupName><![CDATA[BS_FILTER]]></dataGroupName>
-			<ui>
-				<position x="362" y="70" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>TERM</column>
-				<column>자산총계</column>
-				<column>유동자산</column>
-				<column>현금및현금성자산</column>
-				<column>재고자산</column>
-				<column>비유동자산</column>
-				<column>유형자산</column>
-				<column>무형자산</column>
-				<column>투자부동산</column>
-				<column>투자자산</column>
-				<column toName="순자산">순자산1</column>
-				<column>부채총계</column>
-				<column>유동부채</column>
-				<column>매입채무및기타채무</column>
-				<column>이자발생부채</column>
-				<column>순부채</column>
-				<column>CAPEX</column>
-				<column>자본총계</column>
-				<column>지배주주지분</column>
-				<column>자본금</column>
-				<column>자본잉여금</column>
-				<column toName="당기순이익(지배)">(지배)당기순이익</column>
-				<column toName="당기순이익(비지배)">(비지배)당기순이익</column>
-				<column>비지배주주지분</column>
-				<column>수권주식수</column>
-				<column>1주당금액</column>
-				<column>발행주식수</column>
-				<column>보통주</column>
-			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[99-CF]]></dataSource>
-			<dataGroupName><![CDATA[CF_FILTER]]></dataGroupName>
-			<ui>
-				<position x="362" y="178" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>TERM</column>
-				<column>영업활동으로인한현금흐름</column>
-				<column>영업에서창출된현금흐름</column>
-				<column>배당금수입</column>
-				<column toName="배당금지급">배당금지급(-)</column>
-				<column toName="법인세납부">법인세납부(-)</column>
-				<column>투자활동으로인한현금흐름</column>
-				<column>투자활동현금유입액</column>
-				<column>투자활동현금유출액</column>
-				<column>재무활동으로인한현금흐름</column>
-				<column>재무활동현금유입액</column>
-				<column>재무활동현금유출액</column>
-				<column>현금및현금성자산의증가</column>
-			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[PL_ADD_DF]]></dataSource>
-			<dataGroupName><![CDATA[PL_FILTER]]></dataGroupName>
-			<ui>
-				<position x="362" y="281" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>TERM</column>
-				<column toName="매출액">매출액(수익)</column>
-				<column>매출원가</column>
-				<column>매출총이익</column>
-				<column>영업이익</column>
-				<column>당기순이익</column>
-				<column>판매비와관리비</column>
-				<column>감가상각비</column>
-				<column>법인세비용차감전계속사업이익</column>
-				<column>법인세비용</column>
-				<column>기타포괄이익</column>
-				<column>총포괄이익</column>
-				<column>주당순이익</column>
-				<column toName="주당순이익(지배)">(지배주주지분)주당순이익</column>
-			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[HTML_DF]]></dataSource>
-			<dataGroupName><![CDATA[HTML_FILTER]]></dataGroupName>
-			<ui>
-				<position x="366" y="435" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>A_TERM</column>
-				<column>FCF</column>
-				<column toName="ROA">ROA(%)</column>
-				<column toName="ROE">ROE(%)</column>
-				<column>부채비율</column>
-				<column>세전계속사업이익</column>
-				<column>순이익률</column>
-				<column>영업이익률</column>
-				<column>자본유보율</column>
-				<column toName="현금배당성향">현금배당성향(%)</column>
-				<column>현금배당수익률</column>
-			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[99-PL]]></dataSource>
-			<dataGroupName><![CDATA[PL_ADD_DF]]></dataGroupName>
-			<ui>
-				<position x="226" y="282" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<addColumns>
-				<derivedColumn name="감가상각비"><![CDATA[NVL({판매비와관리비/감가상각비}, 0) + NVL({판매비와관리비/기타무형자산상각비}, 0)]]></derivedColumn>
-			</addColumns>
-		</processingElem>
-
-		<processingElem type="merge">
-			<dataSources>
-				<dataSource alias="A1"><![CDATA[BS_FILTER]]></dataSource>
-				<dataSource alias="A3"><![CDATA[PL_FILTER]]></dataSource>
-				<dataSource alias="A2"><![CDATA[CF_FILTER]]></dataSource>
-			</dataSources>
-			<dataGroupName><![CDATA[ADD_BSCFPL]]></dataGroupName>
-			<ui>
-				<position x="507" y="178" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<joinMethod>inner</joinMethod>
-			<addKeyColumn>true</addKeyColumn>
-			<joinKeys>
-				<joinKey source="BS_FILTER"><![CDATA[P_CODE,TERM]]></joinKey>
-				<joinKey source="CF_FILTER"><![CDATA[P_CODE,TERM]]></joinKey>
-				<joinKey source="PL_FILTER"><![CDATA[P_CODE,TERM]]></joinKey>
-			</joinKeys>
-			<selectColumns>
-				<columns source="BS_FILTER"><![CDATA[자산총계,유동자산,현금및현금성자산,재고자산,비유동자산,유형자산,무형자산,투자부동산,투자자산,순자산,부채총계,유동부채,매입채무및기타채무,이자발생부채,순부채,CAPEX,자본총계,지배주주지분,자본금,자본잉여금,당기순이익(지배),당기순이익(비지배),비지배주주지분,수권주식수,1주당금액,발행주식수,보통주]]></columns>
-				<columns source="CF_FILTER"><![CDATA[영업활동으로인한현금흐름,영업에서창출된현금흐름,배당금수입,배당금지급,법인세납부,투자활동으로인한현금흐름,투자활동현금유입액,투자활동현금유출액,재무활동으로인한현금흐름,재무활동현금유입액,재무활동현금유출액,현금및현금성자산의증가]]></columns>
-				<columns source="PL_FILTER"><![CDATA[매출액,매출원가,매출총이익,영업이익,당기순이익,판매비와관리비,감가상각비,법인세비용차감전계속사업이익,법인세비용,기타포괄이익,총포괄이익,주당순이익,주당순이익(지배)]]></columns>
-			</selectColumns>
-			<!-- add rename element to rename selected column(s)
-			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
-			-->
-		</processingElem>
-
-		<processingElem type="orderAndFilter">
-			<dataSource alias="A1"><![CDATA[ADD_BSCFPL]]></dataSource>
-			<dataGroupName><![CDATA[MG_FILTER]]></dataGroupName>
-			<ui>
-				<position x="638" y="177" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<orderAndFilter>
-				<column>P_CODE</column>
-				<column>TERM</column>
-				<column>자산총계</column>
-				<column>유동자산</column>
-				<column>현금및현금성자산</column>
-				<column>재고자산</column>
-				<column>비유동자산</column>
-				<column>유형자산</column>
-				<column>무형자산</column>
-				<column>투자부동산</column>
-				<column>투자자산</column>
-				<column>순자산</column>
-				<column>부채총계</column>
-				<column>유동부채</column>
-				<column>매입채무및기타채무</column>
-				<column>이자발생부채</column>
-				<column>순부채</column>
-				<column>CAPEX</column>
-				<column>자본총계</column>
-				<column>지배주주지분</column>
-				<column>자본금</column>
-				<column>자본잉여금</column>
-				<column toName="당기순이익_지배">당기순이익(지배)</column>
-				<column toName="당기순이익_비지배">당기순이익(비지배)</column>
-				<column>비지배주주지분</column>
-				<column>수권주식수</column>
-				<column toName="주당금액">1주당금액</column>
-				<column>발행주식수</column>
-				<column>보통주</column>
-				<column>매출액</column>
-				<column>매출원가</column>
-				<column>매출총이익</column>
-				<column>영업이익</column>
-				<column>당기순이익</column>
-				<column>판매비와관리비</column>
-				<column>감가상각비</column>
-				<column>법인세비용차감전계속사업이익</column>
-				<column>법인세비용</column>
-				<column>기타포괄이익</column>
-				<column>총포괄이익</column>
-				<column>주당순이익</column>
-				<column toName="주당순이익_지배">주당순이익(지배)</column>
-				<column>영업활동으로인한현금흐름</column>
-				<column>영업에서창출된현금흐름</column>
-				<column>배당금수입</column>
-				<column>배당금지급</column>
-				<column>법인세납부</column>
-				<column>투자활동으로인한현금흐름</column>
-				<column>투자활동현금유입액</column>
-				<column>투자활동현금유출액</column>
-				<column>재무활동으로인한현금흐름</column>
-				<column>재무활동현금유입액</column>
-				<column>재무활동현금유출액</column>
-				<column>현금및현금성자산의증가</column>
-			</orderAndFilter>
-		</processingElem>
-
-		<processingElem type="merge">
-			<dataSources>
-				<dataSource alias="A1"><![CDATA[MG_FILTER]]></dataSource>
-				<dataSource alias="A2"><![CDATA[HTML_FILTER]]></dataSource>
-			</dataSources>
-			<dataGroupName><![CDATA[ADD_STAT]]></dataGroupName>
-			<ui>
-				<position x="533" y="436" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<joinMethod>inner</joinMethod>
-			<addKeyColumn>false</addKeyColumn>
-			<joinKeys>
-				<joinKey source="HTML_FILTER"><![CDATA[P_CODE,A_TERM]]></joinKey>
-				<joinKey source="MG_FILTER"><![CDATA[P_CODE,TERM]]></joinKey>
-			</joinKeys>
-			<selectColumns>
-				<columns source="HTML_FILTER"><![CDATA[FCF,ROA,ROE,부채비율,세전계속사업이익,순이익률,영업이익률,자본유보율,현금배당성향,현금배당수익률]]></columns>
-				<columns source="MG_FILTER"><![CDATA[*]]></columns>
-			</selectColumns>
-			<!-- add rename element to rename selected column(s)
-			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
-			-->
-		</processingElem>
-
-		<processingElem type="derived">
-			<dataSource alias="A1"><![CDATA[99-HTML]]></dataSource>
-			<dataGroupName><![CDATA[HTML_DF]]></dataGroupName>
-			<ui>
-				<position x="220" y="434" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<addColumns>
-				<derivedColumn name="A_TERM"><![CDATA[REPLACE({TERM}, '-', '/')]]></derivedColumn>
-			</addColumns>
-		</processingElem>
-
-		<processingElem type="sort">
-			<dataSource alias="A1"><![CDATA[ADD_NEW_DATA]]></dataSource>
-			<dataGroupName><![CDATA[MAKE_INDEX]]></dataGroupName>
-			<ui>
-				<position x="943" y="437" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<sortColumns>
-				<column order="ascending">P_CODE</column>
-				<column order="ascending">TERM</column>
-			</sortColumns>
-		</processingElem>
-
-		<processingElem type="merge">
-			<dataSources>
-				<dataSource alias="A1"><![CDATA[BSCFPL_TABLE]]></dataSource>
-				<dataSource alias="A2"><![CDATA[ADD_STAT]]></dataSource>
-			</dataSources>
-			<dataGroupName><![CDATA[KEEP_OLDS]]></dataGroupName>
-			<ui>
-				<position x="798" y="291" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<joinMethod>anti</joinMethod>
-			<addKeyColumn>false</addKeyColumn>
-			<joinKeys>
-				<joinKey source="ADD_STAT"><![CDATA[P_CODE,TERM]]></joinKey>
-				<joinKey source="BSCFPL_TABLE"><![CDATA[P_CODE,TERM]]></joinKey>
-			</joinKeys>
-			<selectColumns>
-				<columns source="ADD_STAT"><![CDATA[]]></columns>
-				<columns source="BSCFPL_TABLE"><![CDATA[*]]></columns>
-			</selectColumns>
-			<!-- add rename element to rename selected column(s)
-			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
-			-->
-		</processingElem>
-
-		<processingElem type="append">
-			<dataSources>
-				<dataSource alias="A1"><![CDATA[ADD_STAT]]></dataSource>
-				<dataSource alias="A2"><![CDATA[KEEP_OLDS]]></dataSource>
-			</dataSources>
-			<dataGroupName><![CDATA[ADD_NEW_DATA]]></dataGroupName>
-			<ui>
-				<position x="797" y="436" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<appendMethod>first</appendMethod>
-			<!-- includeSource - 0: no source column, 1: numeric source column, 2: source name column -->
-			<includeSource>0</includeSource>
-			<sourceColumnName><![CDATA[]]></sourceColumnName>
-		</processingElem>
-
-		<processingElem type="sort">
-			<dataSource alias="A1"><![CDATA[ADD_STAT]]></dataSource>
-			<dataGroupName><![CDATA[MAKE_INDEX2]]></dataGroupName>
-			<ui>
-				<position x="654" y="545" />
-				<description><![CDATA[]]></description>
-			</ui>
-			<sortColumns>
-				<column order="ascending">P_CODE</column>
-				<column order="ascending">TERM</column>
-			</sortColumns>
-		</processingElem>
-	</dataProcessing>
-
-	<dataLoadings>
-		<dataLoading name="UPLOAD" source="MAKE_INDEX" type="dataOn">
-			<dataGroup>$(DO_TABLE)</dataGroup>
-			<loadType>2</loadType>
-			<useIncubator>false</useIncubator>
-			<remainHistory>true</remainHistory>
-			<params>
-				<param name="collection"><![CDATA[KRX]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<ui>
-				<position x="1091" y="437" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</dataLoading>
-
-		<dataLoading name="UPLOAD2" source="MAKE_INDEX2" type="dataOn">
-			<dataGroup>LATEST_$(DO_TABLE)</dataGroup>
-			<loadType>2</loadType>
-			<useIncubator>false</useIncubator>
-			<remainHistory>true</remainHistory>
-			<params>
-				<param name="collection"><![CDATA[KRX]]></param>
-				<param name="password"><![CDATA[1234]]></param>
-				<param name="port"><![CDATA[6362]]></param>
-				<param name="server"><![CDATA[$(DO_SERVER)]]></param>
-				<param name="user"><![CDATA[admin]]></param>
-			</params>
-			<ui>
-				<position x="802" y="545" />
-				<description><![CDATA[]]></description>
-			</ui>
-		</dataLoading>
-
-	</dataLoadings>
 </crawlegoProject>

@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="DATA_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\variance\result\]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\]]></param>
+		</macro>
+	</macros>
+
+
+
+	<inputNodes>
+		<inputNode name="IN_STAT" type="FILE">
+			<path><![CDATA[$(DATA_PATH)stat-*.txt]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
+			<columns>
+				<column name="PCODE" type="string" />
+				<column name="PROFIT" type="real" />
+			</columns>
+			<ui>
+				<position x="131" y="95" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="IN_REATIN" type="FILE">
+			<path><![CDATA[$(DATA_PATH)retain-*.txt]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
+			<columns>
+				<column name="PCODE" type="string" />
+				<column name="날짜" type="string" />
+				<column name="BOX_IDX" type="integer" />
+				<column name="ELEM_IDX" type="integer" />
+				<column name="SP" type="real" />
+				<column name="EP" type="real" />
+				<column name="LP" type="real" />
+				<column name="HP" type="real" />
+				<column name="MEAN" type="real" />
+				<column name="SV5_LOW" type="real" />
+				<column name="GUESS_BP" type="real" />
+				<column name="RATIO" type="real" />
+				<column name="UPFLAG" type="real" />
+				<column name="T_RETAIN" type="real" />
+				<column name="DAYS" type="real" />
+				<column name="RETAIN" type="real" />
+				<column name="PL" type="real" />
+			</columns>
+			<ui>
+				<position x="132" y="334" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="COMP_INFO" type="dataOn">
+			<query><![CDATA[SELECT 날짜, 종목코드 "PCODE", 종목명, 종가 "최근가", 시장구분, 시가총액 "AMOUNT"
+  FROM PRICE.Y2022
+ WHERE 날짜 = '20221111']]></query>
+			<params>
+				<param name="collection"><![CDATA[PRICE]]></param>
+				<param name="password"><![CDATA[1234]]></param>
+				<param name="port"><![CDATA[6362]]></param>
+				<param name="server"><![CDATA[52.78.231.221]]></param>
+				<param name="user"><![CDATA[admin]]></param>
+			</params>
+			<columns>
+				<column name="날짜" type="string" />
+				<column name="PCODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="최근가" type="real" />
+				<column name="시장구분" type="string" />
+				<column name="AMOUNT" type="real" />
+			</columns>
+			<ui>
+				<position x="129" y="205" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A2"><![CDATA[COMP_INFO]]></dataSource>
+				<dataSource alias="A1"><![CDATA[IN_STAT]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[STAT_ADDNAME]]></dataGroupName>
+			<ui>
+				<position x="298" y="112" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>true</addKeyColumn>
+			<joinKeys>
+				<joinKey source="COMP_INFO"><![CDATA[PCODE]]></joinKey>
+				<joinKey source="IN_STAT"><![CDATA[PCODE]]></joinKey>
+			</joinKeys>
+			<selectColumns>
+				<columns source="COMP_INFO"><![CDATA[종목명,최근가,AMOUNT]]></columns>
+				<columns source="IN_STAT"><![CDATA[PROFIT]]></columns>
+			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
+		</processingElem>
+
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A2"><![CDATA[COMP_INFO]]></dataSource>
+				<dataSource alias="A1"><![CDATA[IN_REATIN]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[RST_ADDNAME]]></dataGroupName>
+			<ui>
+				<position x="280" y="281" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>inner</joinMethod>
+			<addKeyColumn>true</addKeyColumn>
+			<joinKeys>
+				<joinKey source="COMP_INFO"><![CDATA[PCODE]]></joinKey>
+				<joinKey source="IN_REATIN"><![CDATA[PCODE]]></joinKey>
+			</joinKeys>
+			<selectColumns>
+				<columns source="COMP_INFO"><![CDATA[종목명,최근가]]></columns>
+				<columns source="IN_REATIN"><![CDATA[날짜,BOX_IDX,SP,EP,LP,HP,MEAN,SV5_LOW,GUESS_BP,RATIO,UPFLAG,DAYS,RETAIN,PL]]></columns>
+			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE_ADDNAME" source="STAT_ADDNAME" type="file">
+			<filePath><![CDATA[$(OUT_PATH)varianceStat.pmd]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="437" y="107" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="SAVE_RESULT" source="RST_ADDNAME" type="file">
+			<filePath><![CDATA[$(OUT_PATH)varianceResult.pmd]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="442" y="293" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>
