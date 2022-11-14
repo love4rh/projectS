@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+
+
+	<inputNodes>
+		<inputNode name="CURRENT" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\intermediate\variance\suggest\sgt-2022-11-14.txt]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
+			<columns>
+				<column name="PCODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="최근가" type="real" />
+				<column name="날짜" type="string" />
+				<column name="BOX_IDX" type="integer" />
+				<column name="SP" type="real" />
+				<column name="EP" type="real" />
+				<column name="LP" type="real" />
+				<column name="HP" type="real" />
+				<column name="MEAN" type="real" />
+				<column name="SV5_LOW" type="real" />
+				<column name="GUESS_BP" type="real" />
+				<column name="RATIO" type="real" />
+				<column name="UPFLAG" type="integer" />
+				<column name="DAYS" type="integer" />
+				<column name="RETAIN" type="real" />
+				<column name="PL" type="real" />
+				<column name="PPRATIO" type="real" />
+			</columns>
+			<ui>
+				<position x="151" y="144" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+
+		<inputNode name="PREVIOUS" type="FILE">
+			<path><![CDATA[D:\work\jupyter\krx\intermediate\variance\suggest\sgt-2022-11-11.txt]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
+			<columns>
+				<column name="PCODE" type="string" />
+				<column name="종목명" type="string" />
+				<column name="최근가" type="real" />
+				<column name="날짜" type="string" />
+				<column name="BOX_IDX" type="integer" />
+				<column name="SP" type="real" />
+				<column name="EP" type="real" />
+				<column name="LP" type="real" />
+				<column name="HP" type="real" />
+				<column name="MEAN" type="real" />
+				<column name="SV5_LOW" type="real" />
+				<column name="GUESS_BP" type="real" />
+				<column name="RATIO" type="real" />
+				<column name="UPFLAG" type="integer" />
+				<column name="DAYS" type="integer" />
+				<column name="RETAIN" type="real" />
+				<column name="PL" type="real" />
+				<column name="PPRATIO" type="real" />
+			</columns>
+			<ui>
+				<position x="149" y="250" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</inputNode>
+	</inputNodes>
+
+
+	<dataProcessing>
+		<processingElem type="merge">
+			<dataSources>
+				<dataSource alias="A1"><![CDATA[CURRENT]]></dataSource>
+				<dataSource alias="A2"><![CDATA[PREVIOUS]]></dataSource>
+			</dataSources>
+			<dataGroupName><![CDATA[EXIST_NEWS]]></dataGroupName>
+			<ui>
+				<position x="292" y="206" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<joinMethod>anti</joinMethod>
+			<addKeyColumn>false</addKeyColumn>
+			<joinKeys>
+				<joinKey source="CURRENT"><![CDATA[PCODE]]></joinKey>
+				<joinKey source="PREVIOUS"><![CDATA[PCODE]]></joinKey>
+			</joinKeys>
+			<selectColumns>
+				<columns source="CURRENT"><![CDATA[*]]></columns>
+				<columns source="PREVIOUS"><![CDATA[]]></columns>
+			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[EXIST_NEWS]]></dataSource>
+			<dataGroupName><![CDATA[POSSIBLE]]></dataGroupName>
+			<ui>
+				<position x="439" y="208" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{GUESS_BP} > {LP}]]></condition>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>

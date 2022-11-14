@@ -66,21 +66,6 @@ def runDashScript(scriptPathName, parameter, display=True):
     return retCode
 
 
-def runDashScriptJDK8(scriptPathName, parameter, display=True):
-    optionStr = ''
-    for key in parameter:
-        optionStr += ' "' + key + '=' + parameter[key] + '"'
-        
-    cmdStr = 'C:\Program Files\Java\jdk1.8.0_321\bin\java -Dfile.encoding=utf8 -Duser.timezone=GMT -jar ' + crawlegoPath + ' ' + scriptPathName + optionStr
-
-    if display:
-        print(cmdStr, flush=True)
-
-    retCode = os.system(cmdStr)
-    
-    return retCode
-
-
 def set_enc_param(s):
     global enc_param_value
     enc_param_value = s

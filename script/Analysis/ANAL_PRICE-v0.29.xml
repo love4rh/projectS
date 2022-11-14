@@ -8,10 +8,10 @@
 
 	<macros>
 		<macro name="DATA_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\variance\]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\variance\result\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\variance\suggest\]]></param>
 		</macro>
 		<macro name="TARGET_DAY" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[2022-11-10]]></param>
@@ -135,7 +135,7 @@
 			</joinKeys>
 			<selectColumns>
 				<columns source="GOOD_RATE"><![CDATA[PPRATIO]]></columns>
-				<columns source="SUGGEST"><![CDATA[*]]></columns>
+				<columns source="SUGGEST"><![CDATA[PCODE,종목명,날짜,BOX_IDX,SP,EP,LP,HP,MEAN,SV5_LOW,GUESS_BP,RATIO,UPFLAG,DAYS,RETAIN,PL]]></columns>
 			</selectColumns>
 			<!-- add rename element to rename selected column(s)
 			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
@@ -154,4 +154,17 @@
 			</sortColumns>
 		</processingElem>
 	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE_RECOMMEND" source="LAST_SUGGEST" type="file">
+			<filePath><![CDATA[$(OUT_PATH)sgt-$(TARGET_DAY).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="836" y="335" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
 </crawlegoProject>

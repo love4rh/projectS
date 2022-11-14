@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+	<macros>
+		<macro name="COMP_CODE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[066570]]></param>
+		</macro>
+		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\chartData\]]></param>
+		</macro>
+		<macro name="OUT_PATH_BAK" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[/Users/TurboK/EclipseData/ToolSpace/chartX/data/]]></param>
+		</macro>
+		<macro name="DO_SERVER" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[13.124.29.70]]></param>
+		</macro>
+		<macro name="BACKUP" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[002410  079370  066570 000660]]></param>
+		</macro>
+		<macro name="FLATLIMIT" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[2.0]]></param>
+		</macro>
+		<macro name="ZERO_LIMIT" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[0.85]]></param>
+		</macro>
+		<macro name="STAT_PATH" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\stat\]]></param>
+		</macro>
+		<macro name="ST_DATE" class="com.lge.crawlego.macro.DefinedValue">
+			<param name="value"><![CDATA[20110101]]></param>
+		</macro>
+		<macro name="ED_DATE" class="com.lge.crawlego.macro.ExpressionValue">
+			<param name="expression"><![CDATA[DATETOSTR(NOW(), 'yyyyMMdd')]]></param>
+		</macro>
+	</macros>
+
+
+	<dataGroups name="SOURCE">
+		<fetchMethod name="SOURCE">
+			<type>HTTP</type>
+			<path><![CDATA[https://api.finance.naver.com/siseJson.naver?symbol=$(COMP_CODE)&requestType=1&startTime=$(ST_DATE)&endTime=$(ED_DATE)&timeframe=day]]></path>
+			<parsingType>PLAIN</parsingType>
+			<ignoreError>false</ignoreError>
+			<params>
+				<param name="delimiter"><![CDATA[Comma(,)]]></param>
+			</params>
+			<ui>
+				<position x="67" y="54" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</fetchMethod>
+
+		<runType>auto</runType>
+
+		<dataGroup name="VROOT">
+			<description><![CDATA[]]></description>
+			<path>/vroot</path>
+			<parent />
+			<propValues>
+				<value name="DT" type="string">
+					<path>~/1</path>
+				</value>
+				<value name="B_PR" type="real">
+					<path>~/2</path>
+				</value>
+				<value name="HI_PR" type="real">
+					<path>~/3</path>
+				</value>
+				<value name="LO_PR" type="real">
+					<path>~/4</path>
+				</value>
+				<value name="LAST_P" type="real">
+					<path>~/5</path>
+				</value>
+				<value name="TRD" type="real">
+					<path>~/6</path>
+				</value>
+			</propValues>
+			<ui>
+				<position x="67" y="156" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataGroup>
+	</dataGroups>
+
+
+	<dataProcessing>
+		<processingElem type="sort">
+			<dataSource alias="A1"><![CDATA[CONCERN]]></dataSource>
+			<dataGroupName><![CDATA[SORTBYBASE]]></dataGroupName>
+			<ui>
+				<position x="180" y="54" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<sortColumns>
+				<column order="ascending">DATE</column>
+			</sortColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[IN]]></dataSource>
+			<dataGroupName><![CDATA[CONCERN]]></dataGroupName>
+			<ui>
+				<position x="180" y="207" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[{DATE} < '20220101']]></condition>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[VALID]]></dataSource>
+			<dataGroupName><![CDATA[DS_CONV]]></dataGroupName>
+			<ui>
+				<position x="66" y="360" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="P_CODE"><![CDATA['$(COMP_CODE)']]></derivedColumn>
+				<derivedColumn name="DATE"><![CDATA[SUBSTR({DT}, 3, 10)]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[DS_CONV]]></dataSource>
+			<dataGroupName><![CDATA[IN]]></dataGroupName>
+			<ui>
+				<position x="180" y="360" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>P_CODE</column>
+				<column>DATE</column>
+				<column>B_PR</column>
+				<column>HI_PR</column>
+				<column>LO_PR</column>
+				<column>LAST_P</column>
+				<column>TRD</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[VROOT]]></dataSource>
+			<dataGroupName><![CDATA[VALID]]></dataGroupName>
+			<ui>
+				<position x="67" y="258" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[IIF( ISNULL({DT}), 0, IIF( LENGTH({DT}) >= 8, 1, 0 ) )]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
+			<dataGroupName><![CDATA[DISPLAY_COLUMNS]]></dataGroupName>
+			<ui>
+				<position x="493" y="207" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>DATE</column>
+				<column>SUGGEST</column>
+				<column toName="PRICE">LAST_P</column>
+				<column>SLOPE/20</column>
+				<column>SLOPE/40</column>
+				<column>SLOPE/60</column>
+				<column>SLOPE/80</column>
+			</orderAndFilter>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[ADD_FEATURES]]></dataSource>
+			<dataGroupName><![CDATA[GUESS_BUY]]></dataGroupName>
+			<ui>
+				<position x="324" y="207" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="SUGGEST"><![CDATA[{PT/ADJ}]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[SORTBYBASE]]></dataSource>
+			<dataGroupName><![CDATA[ADD_FEATURES]]></dataGroupName>
+			<ui>
+				<position x="324" y="55" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="DX"><![CDATA[@ROWNUM * 0.1]]></derivedColumn>
+				<derivedColumn name="MV/10"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 10), 0 )]]></derivedColumn>
+				<derivedColumn name="MV/40"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 40), 0 )]]></derivedColumn>
+				<derivedColumn name="MV/80"><![CDATA[ROUND( MOVINGAVG(@{LAST_P}, 80), 0 )]]></derivedColumn>
+				<derivedColumn name="S_VALUE"><![CDATA[({LAST_P} - GETSTATISTICS(@{LAST_P}, "min")) / GETSTATISTICS(@{LAST_P}, "range")]]></derivedColumn>
+				<derivedColumn name="SV/10"><![CDATA[MOVINGAVG(@{S_VALUE}, 10)]]></derivedColumn>
+				<derivedColumn name="SLOPE/T20"><![CDATA[IIF( @ROWNUM < 20, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 20) * 100, 4) )]]></derivedColumn>
+				<derivedColumn name="SLOPE/20"><![CDATA[IIF( {SLOPE/T20} > 0 AND {SLOPE/T20} < 0.05, 0, {SLOPE/T20} )]]></derivedColumn>
+				<derivedColumn name="AVG/20"><![CDATA[IIF( @ROWNUM < 31, 1, MOVINGAVG(@{SLOPE/20}, 5) )]]></derivedColumn>
+				<derivedColumn name="STD/20"><![CDATA[IIF( @ROWNUM < 31, 1, SQRT(MOVINGVAR(@{SLOPE/20}, 5)) )]]></derivedColumn>
+				<derivedColumn name="SV/40"><![CDATA[MOVINGAVG(@{S_VALUE}, 40)]]></derivedColumn>
+				<derivedColumn name="SLOPE/40"><![CDATA[IIF( @ROWNUM < 40, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 40) * 100, 4) )]]></derivedColumn>
+				<derivedColumn name="AVG/40"><![CDATA[IIF( @ROWNUM < 51, 1, MOVINGAVG(@{SLOPE/40}, 5) )]]></derivedColumn>
+				<derivedColumn name="SV/60"><![CDATA[MOVINGAVG(@{S_VALUE}, 60)]]></derivedColumn>
+				<derivedColumn name="SLOPE/60"><![CDATA[IIF( @ROWNUM < 60, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 60) * 100, 4) )]]></derivedColumn>
+				<derivedColumn name="AVG/60"><![CDATA[IIF( @ROWNUM < 61, 1, MOVINGAVG(@{SLOPE/60}, 5) )]]></derivedColumn>
+				<derivedColumn name="SV/80"><![CDATA[MOVINGAVG(@{S_VALUE}, 80)]]></derivedColumn>
+				<derivedColumn name="SLOPE/80"><![CDATA[IIF( @ROWNUM < 81, 0, ROUND(LINEARSLOPE(@{DX}, @{S_VALUE}, 80) * 100, 4) )]]></derivedColumn>
+				<derivedColumn name="AVG/80"><![CDATA[IIF( @ROWNUM < 91, 1, MOVINGAVG(@{SLOPE/80}, 5) )]]></derivedColumn>
+				<derivedColumn name="UD/REF"><![CDATA[IIF( @ROWNUM < 91, 0,
+  CASE( -1
+    , {AVG/80}[-1] < 0 AND {AVG/80}[-1] * 1.05 < {SLOPE/80}, 1
+    , {AVG/80}[-1] >= 0 AND {AVG/80}[-1] * 0.95 < {SLOPE/80}, 1
+  )
+)]]></derivedColumn>
+				<derivedColumn name="PT/20"><![CDATA[IIF( @ROWNUM < 91, 0,
+   CASE( 0
+      , {SLOPE/20}[-3] >= {SLOPE/20}[-2] AND {SLOPE/20}[-2] >= {SLOPE/20}[-1]
+        AND {SLOPE/20}[-1] <= {SLOPE/20}
+        AND {SLOPE/20} < 5, 3
+        
+      , {SLOPE/20}[-3] <= {SLOPE/20}[-2] AND {SLOPE/20}[-2] <= {SLOPE/20}[-1]
+        AND {SLOPE/20}[-1] >= {SLOPE/20}
+        AND {SLOPE/20} > 0, 4
+   )
+)]]></derivedColumn>
+				<derivedColumn name="PT/ADJ"><![CDATA[IIF( {PT/20} = 3 AND {UD/REF} > 0 AND {SLOPE/20} < 2, 1, {PT/20} )]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[GUESS_BUY]]></dataSource>
+			<dataGroupName><![CDATA[HAS_POINT]]></dataGroupName>
+			<ui>
+				<position x="495" y="360" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[IIF( @ROWNUM < @DATASIZE - 5, 0,
+  CASE(0
+    , {SUGGEST} = 1 AND {B_PR} > 0, 1
+    , {PT/20} = 3 AND {B_PR} > 0, 1
+    )
+)]]></condition>
+		</processingElem>
+	</dataProcessing>
+
+	<dataLoadings>
+		<dataLoading name="SAVE" source="DISPLAY_COLUMNS" type="file">
+			<filePath><![CDATA[$(OUT_PATH)P$(COMP_CODE).pmd]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="629" y="207" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+		<dataLoading name="SAVE_STAT" source="HAS_POINT" type="file">
+			<filePath><![CDATA[$(STAT_PATH)GS-$(COMP_CODE).txt]]></filePath>
+			<remainFinFile><![CDATA[false]]></remainFinFile>
+			<finFile><![CDATA[]]></finFile>
+			<ui>
+				<position x="631" y="364" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataLoading>
+
+	</dataLoadings>
+</crawlegoProject>

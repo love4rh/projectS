@@ -8,7 +8,7 @@
 
 	<macros>
 		<macro name="PCODE" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[010400]]></param>
+			<param name="value"><![CDATA[214610]]></param>
 		</macro>
 		<macro name="START" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[20210101]]></param>
@@ -32,10 +32,10 @@
 			<param name="value"><![CDATA[2]]></param>
 		</macro>
 		<macro name="DATA_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\variance\data\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\variance\data\]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[C:\Workspace\krx\intermediate\variance\result\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\intermediate\variance\result\]]></param>
 		</macro>
 	</macros>
 
@@ -107,7 +107,7 @@ IIF( {IN_COUNT} >= 2
      )
    , 0
 ))]]></derivedColumn>
-				<derivedColumn name="BOX_IDX"><![CDATA[IIF( @ROWNUM < $(N) + 1 OR @ROWNUM >= @DATASIZE, 0,
+				<derivedColumn name="BOX_IDX"><![CDATA[IIF( @ROWNUM < $(N) + 1, 0,
    IIF( {T_BOX_IDX} > 0, {T_BOX_IDX},
       IIF( {T_BOX_IDX}[-1] = {T_BOX_IDX}[1], {T_BOX_IDX}[-1], 0 )
    )

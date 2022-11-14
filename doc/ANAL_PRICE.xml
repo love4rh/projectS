@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<crawlegoProject version="1.0">
+	<settings>
+		<params>
+		</params>
+	</settings>
+
+
+	<dataGroups name="ORG_DATA">
+		<fetchMethod name="ORG_DATA">
+			<type>HTTP</type>
+			<path><![CDATA[https://api.finance.naver.com/siseJson.naver?symbol=066570&requestType=1&startTime=20220101&endTime=20221030&timeframe=day]]></path>
+			<parsingType>PLAIN</parsingType>
+			<ignoreError>false</ignoreError>
+			<params>
+				<param name="delimiter"><![CDATA[Comma(,)]]></param>
+				<param name="encoding"><![CDATA[UTF-8]]></param>
+				<param name="nameAtHead"><![CDATA[true]]></param>
+			</params>
+			<!-- You can add HTTP header like followings.
+			<header>
+				<param name="x-header-name"><![CDATA[header value]]></param>
+				...
+			</header>
+			-->
+			<!-- You can add HTTP body like followings.
+			<bodyData><![CDATA[body data]]></bodyData>
+			-->
+			<header>
+			</header>
+			<bodyData><![CDATA[]]></bodyData>
+			<ui>
+				<position x="133" y="99" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</fetchMethod>
+
+		<runType>auto</runType>
+
+		<dataGroup name="PRICE">
+			<description><![CDATA[]]></description>
+			<path>/vroot</path>
+			<parent />
+			<propValues>
+				<value name="T_날짜" type="string">
+					<path>~/1</path>
+				</value>
+				<value name="시가" type="string">
+					<path>~/2</path>
+				</value>
+				<value name="고가" type="string">
+					<path>~/3</path>
+				</value>
+				<value name="저가" type="string">
+					<path>~/4</path>
+				</value>
+				<value name="종가" type="string">
+					<path>~/5</path>
+				</value>
+				<value name="거래량" type="string">
+					<path>~/6</path>
+				</value>
+				<value name="T_외국인소진율" type="string">
+					<path>~/7</path>
+				</value>
+			</propValues>
+			<ui>
+				<position x="233" y="99" />
+				<description><![CDATA[]]></description>
+			</ui>
+		</dataGroup>
+	</dataGroups>
+
+
+	<dataProcessing>
+		<processingElem type="derived">
+			<dataSource alias="A1"><![CDATA[VALID_ONLY]]></dataSource>
+			<dataGroupName><![CDATA[DF_CLEAN]]></dataGroupName>
+			<ui>
+				<position x="355" y="197" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<addColumns>
+				<derivedColumn name="날짜"><![CDATA[STRTODATE(SUBSTR({T_날짜}, 3, 10), "yyyyMMdd")]]></derivedColumn>
+				<derivedColumn name="외국인소진율"><![CDATA[REAL(SUBSTR({T_외국인소진율}, 1, LEN({T_외국인소진율}) - 1), 0) / 100]]></derivedColumn>
+				<derivedColumn name="WEEKNO"><![CDATA[GETWEEKOFYEAR({날짜})]]></derivedColumn>
+			</addColumns>
+		</processingElem>
+
+		<processingElem type="select">
+			<dataSource alias="A1"><![CDATA[PRICE]]></dataSource>
+			<dataGroupName><![CDATA[VALID_ONLY]]></dataGroupName>
+			<ui>
+				<position x="228" y="201" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<condition><![CDATA[NOT ISNULL({시가})]]></condition>
+		</processingElem>
+
+		<processingElem type="orderAndFilter">
+			<dataSource alias="A1"><![CDATA[DF_CLEAN]]></dataSource>
+			<dataGroupName><![CDATA[COL_CLEAN]]></dataGroupName>
+			<ui>
+				<position x="445" y="320" />
+				<description><![CDATA[]]></description>
+			</ui>
+			<orderAndFilter>
+				<column>날짜</column>
+				<column>WEEKNO</column>
+				<column>시가</column>
+				<column>고가</column>
+				<column>저가</column>
+				<column>종가</column>
+				<column>거래량</column>
+				<column>외국인소진율</column>
+			</orderAndFilter>
+		</processingElem>
+	</dataProcessing>
+</crawlegoProject>

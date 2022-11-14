@@ -8,13 +8,13 @@
 
 	<macros>
 		<macro name="BASIS_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20220421]]></param>
+			<param name="value"><![CDATA[20220914]]></param>
 		</macro>
 		<macro name="BUY_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20220421]]></param>
+			<param name="value"><![CDATA[20220914]]></param>
 		</macro>
 		<macro name="SELL_DAY" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[20220422]]></param>
+			<param name="value"><![CDATA[20221013]]></param>
 		</macro>
 		<macro name="CASH" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[10000000]]></param>
@@ -23,10 +23,10 @@
 			<param name="value"><![CDATA[ANNUAL]]></param>
 		</macro>
 		<macro name="IN_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[C:\Workspace\krx\output\index\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\index\]]></param>
 		</macro>
 		<macro name="OUT_PATH" class="com.lge.crawlego.macro.DefinedValue">
-			<param name="value"><![CDATA[C:\Workspace\krx\output\]]></param>
+			<param name="value"><![CDATA[D:\work\jupyter\krx\output\]]></param>
 		</macro>
 		<macro name="TOP_N" class="com.lge.crawlego.macro.DefinedValue">
 			<param name="value"><![CDATA[20]]></param>
@@ -56,6 +56,9 @@
 	<inputNodes>
 		<inputNode name="EVAL_INDEX" type="FILE">
 			<path><![CDATA[$(IN_PATH)$(PERIOD)-$(YYYYMM).txt]]></path>
+			<params>
+				<param name="fetchType"><![CDATA[LOCAL]]></param>
+			</params>
 			<columns>
 				<column name="P_CODE" type="string" />
 				<column name="TERM" type="string" />
@@ -253,16 +256,19 @@
 			</ui>
 			<joinMethod>outer</joinMethod>
 			<addKeyColumn>false</addKeyColumn>
-			<equalKeys>
-				<equalKey source="BUY_PRICE"><![CDATA[종목코드]]></equalKey>
-				<equalKey source="SELL_PRICE"><![CDATA[종목코드]]></equalKey>
-				<equalKey source="SMALL_SIZE"><![CDATA[P_CODE]]></equalKey>
-			</equalKeys>
+			<joinKeys>
+				<joinKey source="BUY_PRICE"><![CDATA[종목코드]]></joinKey>
+				<joinKey source="SELL_PRICE"><![CDATA[종목코드]]></joinKey>
+				<joinKey source="SMALL_SIZE"><![CDATA[P_CODE]]></joinKey>
+			</joinKeys>
 			<selectColumns>
 				<columns source="BUY_PRICE"><![CDATA[매수일,종목명,매수가]]></columns>
 				<columns source="SELL_PRICE"><![CDATA[매도일,매도가]]></columns>
 				<columns source="SMALL_SIZE"><![CDATA[P_CODE,TERM,자산총계,시가총액_억,RANK_시가총액,RISK,거래량]]></columns>
 			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
 		</processingElem>
 
 		<processingElem type="merge">
@@ -277,14 +283,17 @@
 			</ui>
 			<joinMethod>inner</joinMethod>
 			<addKeyColumn>false</addKeyColumn>
-			<equalKeys>
-				<equalKey source="BUY_PRICE"><![CDATA[종목코드]]></equalKey>
-				<equalKey source="EVAL_INDEX"><![CDATA[P_CODE]]></equalKey>
-			</equalKeys>
+			<joinKeys>
+				<joinKey source="BUY_PRICE"><![CDATA[종목코드]]></joinKey>
+				<joinKey source="EVAL_INDEX"><![CDATA[P_CODE]]></joinKey>
+			</joinKeys>
 			<selectColumns>
 				<columns source="BUY_PRICE"><![CDATA[매수가,시장구분,거래대금,거래량]]></columns>
 				<columns source="EVAL_INDEX"><![CDATA[*]]></columns>
 			</selectColumns>
+			<!-- add rename element to rename selected column(s)
+			<renameMap><rename source="dataSrouce" column="columnName to be changed">new name</rename> ... </renameMap>
+			-->
 		</processingElem>
 
 		<processingElem type="select">
